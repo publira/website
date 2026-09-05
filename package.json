@@ -6,8 +6,9 @@
   "type": "module",
   "types": "module",
   "imports": {
-    "#components/*": "./components/*",
-    "#lib/*": "./lib/*"
+    "#assets/*": "./assets/*",
+    "#components/*": "./components/*.tsx",
+    "#lib/*": "./lib/*.ts"
   },
   "scripts": {
     "build": "next build",

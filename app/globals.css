@@ -1,1 +1,43 @@
 @import "tailwindcss";
+
+@theme {
+  --color-canvas: #f6f0e9;
+  --color-canvas-deep: #ede3d6;
+  --color-surface: #fdfaf6;
+  --color-ink: #1b2836;
+  --color-ink-soft: #55606d;
+  --color-line: #e5dbcd;
+  --color-terracotta: #b0523a;
+  --color-terracotta-soft: #f2ddd5;
+  --color-teal: #0f6a62;
+  --color-teal-soft: #d8e8e5;
+  --color-sage: #5f8f70;
+  --color-sage-soft: #dcebdf;
+
+  --font-sans:
+    ui-sans-serif, system-ui, "Helvetica Neue", Arial,
+    "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  --font-display:
+    "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+    "Hiragino Mincho ProN", "Yu Mincho", ui-serif, serif;
+  --font-mono:
+    ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-terracotta-soft);
+  }
+}

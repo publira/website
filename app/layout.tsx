@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({ children }: LayoutProps<"/">) => (
-  <html lang="en">
+  <html data-scroll-behavior="smooth" lang="en">
     <body>{children}</body>
   </html>
 );
