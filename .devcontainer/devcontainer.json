@@ -1,0 +1,26 @@
+{
+  "name": "publira website",
+  "image": "ghcr.io/publira/base-images/publira-dev:2026.09.02@sha256:854bab10c927145a91a27494ebc593305569b1a416615008de6b5eeac9ce5a8f",
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0.5": {},
+    "ghcr.io/devcontainers/features/github-cli:1.1.2": {}
+  },
+  "mounts": [
+    "source=publira-website-claude-${devcontainerId},target=/home/vscode/.claude,type=volume",
+    "source=publira-website-codex-${devcontainerId},target=/home/vscode/.codex,type=volume",
+    "source=publira-website-gemini-${devcontainerId},target=/home/vscode/.gemini,type=volume",
+    "source=publira-website-gh-${devcontainerId},target=/home/vscode/.config/gh,type=volume",
+    "source=publira-website-grok-${devcontainerId},target=/home/vscode/.grok,type=volume"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "oxc.oxc-vscode",
+        "TypeScriptTeam.native-preview"
+      ]
+    }
+  },
+  "postCreateCommand": ".devcontainer/post-create.sh"
+}
