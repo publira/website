@@ -37,6 +37,12 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Hold the page where the reader left it while a modal is open, so the
+     focus restoration on close does not scroll them somewhere else. */
+  html:has(dialog[open]) {
+    overflow: hidden;
+  }
+
   ::selection {
     background-color: var(--color-terracotta-soft);
   }
