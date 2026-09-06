@@ -21,9 +21,10 @@ The site is then served on `http://localhost:3000`. A Dev Container definition i
 | `pnpm check` | Verify formatting and lint rules with [Ultracite] (oxfmt + oxlint) |
 | `pnpm fix` | Apply the formatting and lint fixes `pnpm check` reports |
 
-Run `pnpm check` and `pnpm build` before opening a pull request. `pnpm build` is what runs the TypeScript compiler, so a type error surfaces there rather than in `pnpm check`.
+`pnpm install` also installs the [lefthook] git hooks, so committing formats the staged files with oxfmt and commits the result. It reformats nothing you have left unstaged, and `git commit --no-verify` skips it. Lint rules and the type check are not part of the hook: run `pnpm check` and `pnpm build` before opening a pull request. `pnpm build` is what runs the TypeScript compiler, so a type error surfaces there rather than in `pnpm check`.
 
 [Ultracite]: https://www.ultracite.ai/
+[lefthook]: https://lefthook.dev/
 
 ## Project structure
 
