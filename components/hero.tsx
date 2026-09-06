@@ -47,6 +47,20 @@ export const Hero = () => (
         </a>
       </div>
 
+      <aside className="border-line bg-surface mt-10 max-w-2xl rounded-xl border p-5 sm:p-6">
+        <p className="text-terracotta text-xs tracking-[0.22em] uppercase">
+          Still being built
+        </p>
+        <p className="text-ink-soft mt-3 text-sm leading-relaxed">
+          Publira is under active development and has not reached a stable
+          release. Everything shown on this page runs today, but running it for
+          a real publisher is not a matter of installing it as-is: expect to
+          read the code, adapt it to your own environment, and follow changes
+          that are still landing. Take it as something to evaluate, build on,
+          and contribute to — not as a finished product.
+        </p>
+      </aside>
+
       <dl className="border-line bg-line mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-xl border sm:grid-cols-4">
         {facts.map((fact) => (
           <div className="bg-surface px-5 py-5" key={fact.label}>
