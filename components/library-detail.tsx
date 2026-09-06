@@ -58,11 +58,11 @@ export const LibraryDetail = ({
     </div>
     <div className="min-w-0 space-y-4">
       <CodeBlock code={install} label="Install" />
-      <ul className="flex flex-wrap gap-x-5 gap-y-2">
+      <ul className="flex flex-wrap gap-2">
         {links.map((link) => (
           <li key={link.href}>
             <a
-              className="text-ink-soft hover:text-teal text-xs underline underline-offset-4 transition-colors"
+              className="border-ink/15 text-ink-soft hover:border-teal hover:text-teal inline-block rounded-full border px-4 py-1.5 text-xs font-medium transition-colors"
               href={link.href}
               rel="noreferrer"
               target="_blank"
