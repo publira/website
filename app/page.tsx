@@ -228,6 +228,20 @@ export const Home = () => (
             codeLabel="app/reader.tsx"
             href="https://github.com/publira/comic-viewer"
             install="npm install @publira/comic-viewer"
+            links={[
+              {
+                href: "https://www.npmjs.com/package/@publira/comic-viewer",
+                label: "npm",
+              },
+              {
+                href: "https://demo.comic-viewer.publira.dev/",
+                label: "Demo with core.css",
+              },
+              {
+                href: "https://demo-tw.comic-viewer.publira.dev/",
+                label: "Demo with Tailwind only",
+              },
+            ]}
             name="@publira/comic-viewer"
             note="Pre-1.0: within a 0.x line, patch releases aim to preserve compatibility, while a minor release may change the public API. Read the changelog before upgrading."
             points={[
@@ -245,6 +259,12 @@ export const Home = () => (
             codeLabel="main.go"
             href="https://github.com/publira/epub"
             install="go get github.com/publira/epub"
+            links={[
+              {
+                href: "https://pkg.go.dev/github.com/publira/epub",
+                label: "pkg.go.dev",
+              },
+            ]}
             name="publira/epub"
             note="Generated publications can be checked against the official W3C EPUBCheck through the script the repository ships, which caches the tool under .tools/."
             points={[
