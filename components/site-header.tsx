@@ -17,7 +17,7 @@ export const SiteHeader = () => (
           Publira
         </span>
         <span className="text-ink-soft hidden text-xs tracking-[0.18em] uppercase sm:inline">
-          Open source
+          Open source · In development
         </span>
       </Link>
 

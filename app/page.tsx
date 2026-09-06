@@ -293,7 +293,15 @@ export const Home = () => (
             </p>
           </div>
         </div>
-        <div className="mt-10 flex flex-wrap gap-3">
+        <p className="border-line bg-surface text-ink-soft mt-10 rounded-xl border p-5 text-sm leading-relaxed sm:p-6">
+          What the repository supports today is this local setup, and it is the
+          honest edge of the project: the schema, the APIs, and the surfaces
+          above are still moving, and nothing here is packaged for a deployment
+          you can hand to readers unchanged. Getting there means doing that work
+          yourself, on a codebase that will change under you. Issues and pull
+          requests are the fastest way to shape where it goes next.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3">
           <a
             className="bg-terracotta hover:bg-ink rounded-full px-6 py-3 text-sm font-medium text-white transition-colors"
             href="https://github.com/publira/publira"
