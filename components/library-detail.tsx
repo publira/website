@@ -1,10 +1,16 @@
 import { CodeBlock } from "#components/code-block";
 
+interface LibraryLink {
+  readonly href: string;
+  readonly label: string;
+}
+
 interface LibraryDetailProps {
   readonly code: string;
   readonly codeLabel: string;
   readonly href: string;
   readonly install: string;
+  readonly links: readonly LibraryLink[];
   readonly name: string;
   readonly note: string;
   readonly points: readonly string[];
@@ -16,6 +22,7 @@ export const LibraryDetail = ({
   codeLabel,
   href,
   install,
+  links,
   name,
   note,
   points,
@@ -51,6 +58,20 @@ export const LibraryDetail = ({
     </div>
     <div className="min-w-0 space-y-4">
       <CodeBlock code={install} label="Install" />
+      <ul className="flex flex-wrap gap-x-5 gap-y-2">
+        {links.map((link) => (
+          <li key={link.href}>
+            <a
+              className="text-ink-soft hover:text-teal text-xs underline underline-offset-4 transition-colors"
+              href={link.href}
+              rel="noreferrer"
+              target="_blank"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
       <CodeBlock code={code} label={codeLabel} />
     </div>
   </article>
