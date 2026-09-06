@@ -1,32 +1,32 @@
 import Image from "next/image";
 
 import { BrowserFrame } from "#components/browser-frame";
+import { ScreenshotDialog } from "#components/screenshot-dialog";
 import type { Screenshot } from "#lib/screenshots";
 
 interface ScreenshotCardProps {
   readonly address: string;
-  readonly priority?: boolean;
   readonly screenshot: Screenshot;
   readonly sizes: string;
 }
 
 export const ScreenshotCard = ({
   address,
-  priority = false,
   screenshot,
   sizes,
 }: ScreenshotCardProps) => (
   <figure>
-    <BrowserFrame address={address}>
-      <Image
-        alt={screenshot.title}
-        className="border-line w-full border-t"
-        placeholder="blur"
-        priority={priority}
-        sizes={sizes}
-        src={screenshot.image}
-      />
-    </BrowserFrame>
+    <ScreenshotDialog address={address} screenshot={screenshot}>
+      <BrowserFrame address={address}>
+        <Image
+          alt={screenshot.title}
+          className="border-line w-full border-t"
+          placeholder="blur"
+          sizes={sizes}
+          src={screenshot.image}
+        />
+      </BrowserFrame>
+    </ScreenshotDialog>
     <figcaption className="mt-4">
       <span className="font-display text-ink text-lg font-medium">
         {screenshot.title}
