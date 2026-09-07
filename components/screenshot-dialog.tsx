@@ -48,7 +48,7 @@ export const ScreenshotDialog = ({
       <button
         aria-haspopup="dialog"
         aria-label={`Open the ${screenshot.title} screenshot of ${address} at full size`}
-        className="focus-visible:outline-teal block w-full cursor-zoom-in rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4"
+        className="block w-full cursor-zoom-in rounded-lg"
         onClick={() => setIsEnlarged(true)}
         type="button"
       >
@@ -57,7 +57,7 @@ export const ScreenshotDialog = ({
       <dialog
         aria-describedby={captionId}
         aria-labelledby={titleId}
-        className="border-line bg-surface backdrop:bg-ink/70 m-auto max-h-[92dvh] w-[min(90rem,92vw)] max-w-none overflow-y-auto rounded-xl border p-0"
+        className="border-line bg-surface backdrop:bg-ink/70 m-auto max-h-[92dvh] w-[min(90rem,92vw)] max-w-none overflow-y-auto rounded-lg border p-0"
         onClose={() => setIsEnlarged(false)}
         ref={dialogRef}
       >
@@ -72,7 +72,7 @@ export const ScreenshotDialog = ({
             />
             <button
               aria-label="Close"
-              className="border-line bg-surface/90 text-ink-soft hover:border-teal hover:text-teal absolute top-3 right-3 flex size-9 items-center justify-center rounded-full border text-xl leading-none shadow-[0_6px_20px_-12px_rgba(27,40,54,0.6)] transition-colors"
+              className="border-line bg-surface text-ink-soft hover:text-ai absolute top-3 right-3 flex size-9 items-center justify-center rounded-sm border text-xl leading-none"
               onClick={close}
               type="button"
             >
@@ -81,7 +81,7 @@ export const ScreenshotDialog = ({
             <div className="border-line flex items-start justify-between gap-6 border-t p-5">
               <div className="min-w-0">
                 <span
-                  className="font-display text-ink block text-lg font-medium"
+                  className="font-display text-ink block text-lg"
                   id={titleId}
                 >
                   {screenshot.title}
@@ -94,7 +94,7 @@ export const ScreenshotDialog = ({
                 </span>
               </div>
               <button
-                className="border-ink/15 text-ink hover:border-teal hover:text-teal shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors"
+                className="border-ai text-ai hover:bg-ai-soft shrink-0 rounded-sm border px-4 py-2 text-sm font-medium"
                 onClick={close}
                 type="button"
               >

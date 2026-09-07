@@ -8,10 +8,10 @@ const repositories = [
 ];
 
 export const SiteFooter = () => (
-  <footer className="border-line bg-canvas-deep/50 border-t">
+  <footer className="border-line bg-surface border-t">
     <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8">
       <div>
-        <p className="font-display text-ink text-xl font-bold">Publira</p>
+        <p className="font-display text-ink text-xl">Publira</p>
         <p className="text-ink-soft mt-3 max-w-sm text-sm leading-relaxed">
           An open-source project that values portability, ease of operation, and
           freedom from vendor lock-in. Every repository is licensed under
@@ -19,14 +19,12 @@ export const SiteFooter = () => (
         </p>
       </div>
       <nav aria-label="Repositories" className="sm:justify-self-end">
-        <p className="text-ink-soft text-xs tracking-[0.18em] uppercase">
-          Repositories
-        </p>
+        <p className="text-ink-soft text-sm">Repositories</p>
         <ul className="mt-4 space-y-2">
           {repositories.map((repository) => (
             <li key={repository.href}>
               <a
-                className="text-ink hover:text-terracotta font-mono text-sm transition-colors"
+                className="text-ai text-sm hover:underline"
                 href={repository.href}
                 rel="noreferrer"
                 target="_blank"

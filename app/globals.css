@@ -1,25 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #f6f0e9;
-  --color-canvas-deep: #ede3d6;
-  --color-surface: #fdfaf6;
-  --color-ink: #1b2836;
-  --color-ink-soft: #55606d;
-  --color-line: #e5dbcd;
-  --color-terracotta: #b0523a;
-  --color-terracotta-soft: #f2ddd5;
-  --color-teal: #0f6a62;
-  --color-teal-soft: #d8e8e5;
-  --color-sage: #5f8f70;
-  --color-sage-soft: #dcebdf;
+  --color-canvas: #f5f5f2;
+  --color-canvas-deep: #e8e8e3;
+  --color-surface: #ffffff;
+  --color-ink: #1f1d1a;
+  --color-ink-soft: #5f5e59;
+  --color-line: #d6d6d0;
+  --color-shu: #c63d17;
+  --color-ai: #2b4c8c;
+  --color-ai-soft: #e3e9f5;
 
   --font-sans:
-    ui-sans-serif, system-ui, "Helvetica Neue", Arial,
-    "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    "Hiragino Sans", "BIZ UDPGothic", "Yu Gothic", "Noto Sans CJK JP",
+    "Noto Sans JP", system-ui, sans-serif;
   --font-display:
-    "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
-    "Hiragino Mincho ProN", "Yu Mincho", ui-serif, serif;
+    "Iowan Old Style", "Palatino Linotype", "Hiragino Mincho ProN",
+    "BIZ UDPMincho", "Yu Mincho", "Noto Serif CJK JP", "Noto Serif JP", serif;
   --font-mono:
     ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
 }
@@ -28,7 +25,7 @@
   :root {
     color-scheme: light;
     scroll-behavior: smooth;
-    scroll-padding-top: 6rem;
+    scroll-padding-top: 5rem;
   }
 
   body {
@@ -37,13 +34,26 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  code {
+    @apply font-mono;
+  }
+
+  :focus-visible {
+    @apply outline-ai outline-2 outline-offset-2;
+  }
+
   /* Hold the page where the reader left it while a modal is open, so the
      focus restoration on close does not scroll them somewhere else. */
   html:has(dialog[open]) {
     overflow: hidden;
   }
 
+  dialog[open] {
+    box-shadow: 0 1.5rem 4rem -2rem
+      color-mix(in oklab, var(--color-ink) 55%, transparent);
+  }
+
   ::selection {
-    background-color: var(--color-terracotta-soft);
+    background-color: var(--color-ai-soft);
   }
 }

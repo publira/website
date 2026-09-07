@@ -27,10 +27,10 @@ const requirements = [
 ];
 
 export const RequirementsTable = () => (
-  <div className="border-line bg-surface overflow-x-auto rounded-xl border">
+  <div className="border-line overflow-x-auto border-t pt-6">
     <table className="w-full border-collapse text-left text-sm">
-      <caption className="border-line border-b px-6 py-4 text-left">
-        <span className="font-display text-ink text-lg">
+      <caption className="pb-6 text-left">
+        <span className="font-display text-ink block text-lg">
           What it needs to run
         </span>
         <span className="text-ink-soft mt-1 block text-sm">
@@ -39,20 +39,25 @@ export const RequirementsTable = () => (
         </span>
       </caption>
       <thead>
-        <tr className="bg-canvas-deep/50 text-ink-soft text-xs tracking-[0.14em] uppercase">
-          <th className="px-6 py-3 font-medium" scope="col">
+        <tr className="border-line text-ink-soft border-b text-xs">
+          <th className="py-3 pr-6 font-medium" scope="col">
             Dependency
           </th>
-          <th className="px-6 py-3 font-medium" scope="col">
+          <th className="py-3 font-medium" scope="col">
             What it holds
           </th>
         </tr>
       </thead>
       <tbody>
         {requirements.map((requirement) => (
-          <tr className="border-line border-t" key={requirement.name}>
-            <td className="text-ink px-6 py-3">{requirement.name}</td>
-            <td className="text-ink-soft px-6 py-3">{requirement.purpose}</td>
+          <tr
+            className="border-line border-b last:border-b-0"
+            key={requirement.name}
+          >
+            <td className="text-ink py-3 pr-6 align-top">{requirement.name}</td>
+            <td className="text-ink-soft py-3 align-top">
+              {requirement.purpose}
+            </td>
           </tr>
         ))}
       </tbody>

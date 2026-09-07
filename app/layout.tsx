@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   description: "The Open-Source Gateway to Your Digital Publishing Utopia.",
-  title: "Publira",
+  title: "Publira — The Open-Source Gateway to Your Digital Publishing Utopia",
 };
 
 const RootLayout = ({ children }: LayoutProps<"/">) => (
