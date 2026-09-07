@@ -28,27 +28,18 @@ export const LibraryDetail = ({
   points,
   tagline,
 }: LibraryDetailProps) => (
-  <article className="border-line bg-surface grid gap-8 rounded-xl border p-6 sm:p-8 lg:grid-cols-2 lg:gap-12">
+  <article className="border-line grid gap-8 border-l pl-5 lg:grid-cols-2 lg:gap-12">
     <div className="min-w-0">
       <h3 className="font-display text-ink text-2xl">{name}</h3>
       <p className="text-ink-soft mt-3 leading-relaxed">{tagline}</p>
-      <ul className="mt-6 space-y-3">
+      <ul className="text-ink-soft marker:text-line mt-6 list-disc space-y-3 pl-5 text-sm leading-relaxed">
         {points.map((point) => (
-          <li
-            className="text-ink-soft flex gap-3 text-sm leading-relaxed"
-            key={point}
-          >
-            <span
-              aria-hidden="true"
-              className="bg-terracotta mt-2 size-1.5 shrink-0 rounded-full"
-            />
-            {point}
-          </li>
+          <li key={point}>{point}</li>
         ))}
       </ul>
       <p className="text-ink-soft mt-6 text-xs leading-relaxed">{note}</p>
       <a
-        className="border-ink/15 text-ink hover:border-teal hover:text-teal mt-6 inline-block rounded-full border px-5 py-2.5 text-sm font-medium transition-colors"
+        className="border-ai text-ai hover:bg-ai-soft mt-6 inline-block rounded-sm border px-5 py-2.5 text-sm font-medium"
         href={href}
         rel="noreferrer"
         target="_blank"
@@ -58,11 +49,11 @@ export const LibraryDetail = ({
     </div>
     <div className="min-w-0 space-y-4">
       <CodeBlock code={install} label="Install" />
-      <ul className="flex flex-wrap gap-2">
+      <ul className="flex flex-wrap gap-x-5 gap-y-1">
         {links.map((link) => (
           <li key={link.href}>
             <a
-              className="border-ink/15 text-ink-soft hover:border-teal hover:text-teal inline-block rounded-full border px-4 py-1.5 text-xs font-medium transition-colors"
+              className="text-ai text-sm hover:underline"
               href={link.href}
               rel="noreferrer"
               target="_blank"

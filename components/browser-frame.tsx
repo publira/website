@@ -6,14 +6,20 @@ interface BrowserFrameProps {
 }
 
 export const BrowserFrame = ({ address, children }: BrowserFrameProps) => (
-  <div className="border-line bg-surface overflow-hidden rounded-xl border shadow-[0_18px_50px_-28px_rgba(27,40,54,0.45)]">
-    <div className="border-line bg-canvas-deep/60 flex items-center gap-3 border-b px-4 py-2.5">
-      <span aria-hidden="true" className="flex gap-1.5">
-        <span className="bg-terracotta/60 size-2.5 rounded-full" />
-        <span className="bg-sage/60 size-2.5 rounded-full" />
-        <span className="bg-teal/40 size-2.5 rounded-full" />
-      </span>
-      <span className="bg-surface text-ink-soft truncate rounded-full px-3 py-0.5 font-mono text-xs">
+  <div className="border-line bg-surface overflow-hidden rounded-lg border">
+    <div className="border-line bg-canvas-deep flex items-center gap-3 border-b px-4 py-2.5">
+      <svg
+        aria-hidden="true"
+        className="fill-line shrink-0"
+        height="8"
+        viewBox="0 0 32 8"
+        width="32"
+      >
+        <circle cx="4" cy="4" r="4" />
+        <circle cx="16" cy="4" r="4" />
+        <circle cx="28" cy="4" r="4" />
+      </svg>
+      <span className="border-line bg-surface text-ink-soft truncate rounded-sm border px-3 py-0.5 text-xs">
         {address}
       </span>
     </div>

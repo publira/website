@@ -21,7 +21,7 @@ const repositories = [
     description:
       "The platform itself: three Next.js apps, five Go services, a Flutter mobile client, and the Compose stack that runs them all locally.",
     href: "https://github.com/publira/publira",
-    language: "TypeScript · Go",
+    language: "TypeScript and Go",
     name: "publira/publira",
     role: "The platform",
   },
@@ -141,7 +141,6 @@ export const Home = () => (
       <Hero />
 
       <Section
-        eyebrow="The repositories"
         id="projects"
         lead="Publira is the platform. Two of the pieces it needed grew into libraries of their own, and both are published for anyone to use without the rest of it."
         title="One platform, and the two libraries it grew"
@@ -163,7 +162,6 @@ export const Home = () => (
       </Section>
 
       <Section
-        eyebrow="The platform"
         id="platform"
         lead="A publisher gets a reader-facing site, an editorial console, and — for whoever runs the install — a console above them both."
         title="What a publisher gets on day one"
@@ -172,13 +170,12 @@ export const Home = () => (
       </Section>
 
       <Section
-        eyebrow="The screens"
         id="screens"
         lead="Three Next.js apps, each with its own audience. Every screenshot below is the development seed data that ships with the repository."
         title="Three surfaces, one catalog"
         tone="surface"
       >
-        <div className="space-y-20">
+        <div className="space-y-28">
           <ScreenGroup
             address="publisher.example"
             app="apps/web-host"
@@ -204,7 +201,6 @@ export const Home = () => (
       </Section>
 
       <Section
-        eyebrow="The architecture"
         id="architecture"
         lead="Next.js at the front, Go behind Connect RPC, and nothing underneath that you cannot already run."
         title="How the pieces fit together"
@@ -216,7 +212,6 @@ export const Home = () => (
       </Section>
 
       <Section
-        eyebrow="The libraries"
         id="libraries"
         lead="Both are Apache-2.0, both are used by Publira in production paths, and neither asks you to adopt the platform to use it."
         title="Two pieces you can take on their own"
@@ -281,7 +276,6 @@ export const Home = () => (
       </Section>
 
       <Section
-        eyebrow="Get started"
         id="start"
         lead="One command installs the toolchain and initializes the database, and a second brings up local stand-ins for everything the platform depends on."
         title="Running it locally"
@@ -303,9 +297,8 @@ export const Home = () => (
               label="Two keys, issued per environment"
             />
             <p className="text-ink-soft text-sm leading-relaxed">
-              <code className="font-mono">PUBLIRA_AUTH_SECRET</code> is the JWE
-              key that seals the login session cookie;{" "}
-              <code className="font-mono">PUBLIRA_AUTH_JWT_SECRET</code> signs
+              <code>PUBLIRA_AUTH_SECRET</code> is the JWE key that seals the
+              login session cookie; <code>PUBLIRA_AUTH_JWT_SECRET</code> signs
               the HS256 access token the Go servers verify. Different readers,
               different purpose — and every server refuses to start when either
               is unset or shorter than 32 bytes. The values written in the
@@ -313,7 +306,7 @@ export const Home = () => (
             </p>
           </div>
         </div>
-        <p className="border-line bg-surface text-ink-soft mt-10 rounded-xl border p-5 text-sm leading-relaxed sm:p-6">
+        <p className="border-line text-ink-soft mt-10 max-w-3xl border-t pt-6 text-sm leading-relaxed">
           What the repository supports today is this local setup, and it is the
           honest edge of the project: the schema, the APIs, and the surfaces
           above are still moving, and nothing here is packaged for a deployment
@@ -323,7 +316,7 @@ export const Home = () => (
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a
-            className="bg-terracotta hover:bg-ink rounded-full px-6 py-3 text-sm font-medium text-white transition-colors"
+            className="bg-ai text-canvas hover:bg-ink rounded-sm px-5 py-2.5 text-sm font-medium"
             href="https://github.com/publira/publira"
             rel="noreferrer"
             target="_blank"
@@ -331,7 +324,7 @@ export const Home = () => (
             Read the full setup guide
           </a>
           <a
-            className="border-ink/15 bg-surface text-ink hover:border-teal hover:text-teal rounded-full border px-6 py-3 text-sm font-medium transition-colors"
+            className="border-ai text-ai hover:bg-ai-soft rounded-sm border px-5 py-2.5 text-sm font-medium"
             href="https://github.com/publira/publira/blob/main/CONTRIBUTING.md"
             rel="noreferrer"
             target="_blank"

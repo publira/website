@@ -17,22 +17,21 @@ export const ScreenGroup = ({
   title,
 }: ScreenGroupProps) => (
   <article>
-    <div className="flex flex-wrap items-baseline gap-3">
+    <div className="border-line flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-6">
       <h3 className="font-display text-ink text-2xl">{title}</h3>
-      <span className="bg-canvas-deep text-ink-soft rounded-full px-3 py-1 font-mono text-xs">
-        {app}
-      </span>
+      <span className="text-ink-soft text-sm tabular-nums">{app}</span>
     </div>
     <p className="text-ink-soft mt-3 max-w-2xl leading-relaxed">
       {description}
     </p>
-    <div className="mt-8 grid gap-10 lg:grid-cols-2">
-      {screenshots.map((screenshot) => (
+    <div className="mt-12 space-y-24">
+      {screenshots.map((screenshot, index) => (
         <ScreenshotCard
           address={address}
           key={screenshot.title}
+          reversed={index % 2 === 1}
           screenshot={screenshot}
-          sizes="(min-width: 1024px) 560px, 100vw"
+          sizes="(min-width: 1024px) 672px, 100vw"
         />
       ))}
     </div>
