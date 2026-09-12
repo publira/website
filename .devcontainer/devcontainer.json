@@ -1,6 +1,6 @@
 {
   "name": "publira website",
-  "image": "ghcr.io/publira/base-images/publira-dev:2026.09.11@sha256:159f485c850b688a33e9cd393ca9516779e13079bd00a4f0c7f63a33e6258079",
+  "image": "ghcr.io/publira/base-images/publira-dev:2026.09.12@sha256:001639164863aab9a1825f4d09e6145729b5b9c681df2420963bc7d5d71d7988",
   "features": {
     "ghcr.io/anthropics/devcontainer-features/claude-code:1.0.5": {},
     "ghcr.io/devcontainers/features/github-cli:1.1.2": {}
