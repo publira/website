@@ -5,8 +5,9 @@ import { heroScreenshot } from "#lib/screenshots";
 
 const facts = [
   { label: "Next.js apps", value: "3" },
-  { label: "Go services", value: "5" },
-  { label: "Companion libraries", value: "2" },
+  { label: "Go binaries", value: "4" },
+  { label: "Mobile client", value: "Flutter" },
+  { label: "Reader languages", value: "5" },
   { label: "License", value: "Apache-2.0" },
 ];
 
@@ -67,7 +68,7 @@ export const Hero = () => (
       <figure className="mt-14">
         <BrowserFrame address="publisher.example / catalog">
           <Image
-            alt="The Publira reader-facing catalog, showing recommended series"
+            alt="The Publira reader-facing catalog, led by the work the tenant is featuring"
             className="w-full"
             placeholder="blur"
             priority

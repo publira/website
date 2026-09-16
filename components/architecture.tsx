@@ -1,16 +1,10 @@
 const layers = [
-  { label: "Clients", nodes: ["Browser", "Mobile app"] },
+  { label: "Clients", nodes: ["Browser", "Flutter app"] },
   { label: "Web (Next.js)", nodes: ["web-host", "web-admin", "web-platform"] },
   { label: "Transport", nodes: ["Connect RPC over Protocol Buffers"] },
   {
-    label: "API (Go)",
-    nodes: [
-      "api-server",
-      "admin-api-server",
-      "platform-api-server",
-      "image-server",
-      "admin-image-server",
-    ],
+    label: "Servers (Go)",
+    nodes: ["api-server", "image-server", "outbox-worker", "batch"],
   },
   {
     label: "Infrastructure",
@@ -46,6 +40,14 @@ export const Architecture = () => (
       ))}
     </ol>
     <p className="text-ink-soft mt-6 text-sm leading-relaxed">
+      One <code>api-server</code> process carries the public, admin, and
+      platform namespaces, and one <code>image-server</code> answers both the
+      reader’s origin and the console’s. Beside them the outbox worker delivers
+      the mail and runs the periodic jobs that promote due episodes, apply the
+      free-window boundaries, and turn over each tenant’s calendar day;{" "}
+      <code>batch</code> holds the one-shot jobs behind a subcommand.
+    </p>
+    <p className="text-ink-soft mt-4 text-sm leading-relaxed">
       Every layer is instrumented with{" "}
       <strong className="text-ink font-medium">OpenTelemetry</strong>, so one
       browser request reads as a single trace: the Next.js root span, the

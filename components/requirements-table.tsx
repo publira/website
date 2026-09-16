@@ -2,7 +2,7 @@ const requirements = [
   {
     name: "PostgreSQL",
     purpose:
-      "The catalog, tenants, users, and the audit log. Each server connects as its own role.",
+      "The catalog, tenants, users, purchases, and the audit log. Each server connects as its own role.",
   },
   {
     name: "A Redis-compatible cache",
@@ -12,12 +12,17 @@ const requirements = [
   {
     name: "S3-compatible object storage",
     purpose:
-      "Episode images and other uploads, delivered through the image servers.",
+      "Episode pages, eye-catches, and the other uploads, delivered through the image server.",
   },
   {
     name: "An SMTP relay",
     purpose:
       "Notifications and tenant mail, configured per platform and per tenant.",
+  },
+  {
+    name: "A Stripe account",
+    purpose:
+      "Optional. Paid episodes only: Checkout takes the payment and a signed webhook is what confirms it.",
   },
   {
     name: "An OpenTelemetry collector",
