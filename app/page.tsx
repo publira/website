@@ -254,6 +254,7 @@ export const Home = () => (
           <LibraryDetail
             code={comicViewerCode}
             codeLabel="app/reader.tsx"
+            codeLang="typescript"
             href="https://github.com/publira/comic-viewer"
             install="npm install @publira/comic-viewer"
             links={[
@@ -285,6 +286,7 @@ export const Home = () => (
           <LibraryDetail
             code={epubCode}
             codeLabel="main.go"
+            codeLang="go"
             href="https://github.com/publira/epub"
             install="go get github.com/publira/epub"
             links={[
@@ -315,7 +317,7 @@ export const Home = () => (
       >
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="min-w-0 space-y-4">
-            <CodeBlock code={setupCode} label="bash" />
+            <CodeBlock code={setupCode} label="bash" lang="shell" />
             <p className="text-ink-soft text-sm leading-relaxed">
               Migrations carry the schema changes and seeds carry the initial
               data, so the local database is rebuilt the same way every time.
@@ -328,6 +330,7 @@ export const Home = () => (
             <CodeBlock
               code={secretsCode}
               label="Two keys, issued per environment"
+              lang="shell"
             />
             <p className="text-ink-soft text-sm leading-relaxed">
               <code>PUBLIRA_AUTH_SECRET</code> is the JWE key that seals the
