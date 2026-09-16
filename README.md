@@ -51,7 +51,7 @@ import cover from "#assets/screenshots/01-host-catalog-top.png";
 
 Images are imported from `assets/` rather than served from a `public/` directory, so that Next.js derives their intrinsic size and blur placeholder at build time.
 
-Screenshots of the platform come from the development seed data that ships with its repository, and the site says so where it shows them. Never present seeded records as a real publisher's catalog.
+Screenshots of the platform come from the development seed data that ships with its repository, and the site says so where it shows them. Never present seeded records as a real publisher's catalog. The web screens are photographed at 1440×817 in the pinned browser that repository records its own screenshot baselines in, and the app screens at a phone viewport, so one set can be refreshed without the others looking out of place beside it.
 
 ## Styling
 

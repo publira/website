@@ -1,3 +1,4 @@
+import { AppScreenGroup } from "#components/app-screen-group";
 import { Architecture } from "#components/architecture";
 import { CodeBlock } from "#components/code-block";
 import { FeatureGrid } from "#components/feature-grid";
@@ -13,15 +14,16 @@ import { SiteHeader } from "#components/site-header";
 import {
   adminScreenshots,
   hostScreenshots,
+  mobileScreenshots,
   platformScreenshots,
 } from "#lib/screenshots";
 
 const repositories = [
   {
     description:
-      "The platform itself: three Next.js apps, five Go services, a Flutter mobile client, and the Compose stack that runs them all locally.",
+      "The platform itself: three Next.js apps, four Go binaries, a Flutter mobile client, and the Compose stack that runs them all locally.",
     href: "https://github.com/publira/publira",
-    language: "TypeScript and Go",
+    language: "TypeScript, Go, and Dart",
     name: "publira/publira",
     role: "The platform",
   },
@@ -47,23 +49,47 @@ const repositories = [
 
 const platformFeatures: readonly Feature[] = [
   {
-    body: "Every publisher runs under its own brand and domain, while a separate platform console manages tenant status, plans, and contacts across the whole install.",
+    body: "Every publisher runs under its own brand and domain, while a separate platform console manages tenant status, the operators, and the readers of every tenant across the whole install.",
     title: "Multi-tenant from the ground up",
   },
   {
-    body: "The public, admin, and platform servers each connect to PostgreSQL as their own role, so the reader-facing site cannot reach what only an operator should see.",
-    title: "Role-separated database access",
+    body: "Series, episodes, labels, authors and the roles they are credited in, genres, tags, pages, announcements, access tickets, and comments, all from one console with a queue of everything awaiting release.",
+    title: "One console for the whole catalog",
   },
   {
-    body: "Brand colors are edited against a live preview built from the same parts as the public site, and the site keeps its current colors until the theme is saved.",
+    body: "Colors, typefaces, logo, and icon are edited against a live preview built from the same parts as the public site, and the site keeps its current theme until this one is saved.",
     title: "Themes with a real preview",
+  },
+  {
+    body: "An episode is sold as a one-time payment through Stripe Checkout. The redirect unlocks nothing: the purchase is written when the signed webhook arrives, and a refund is recorded against the purchase it reverses.",
+    title: "Paid episodes through Stripe",
+  },
+  {
+    body: "R15 and R18 titles are marked wherever they are listed, hidden until the reader confirms, and gated on the birth date the account carries — under the verification rule each tenant chooses.",
+    title: "Age ratings under the tenant's own rule",
+  },
+  {
+    body: "Readers comment where an episode ends, under the mode its series publishes in. Staff work through what was posted and what was flagged, and a withdrawn comment is purged once its retention window has passed.",
+    title: "Comments, and the queue behind them",
+  },
+  {
+    body: "Follows, reactions, and read-through are recorded per episode, rated into a score for the series, and aggregated into the daily and weekly charts by a batch job.",
+    title: "What readers do feeds the catalog",
+  },
+  {
+    body: "A new episode reaches a follower in the reader's inbox, as mail an outbox worker delivers, and as a Web Push notification the browser shows once the reader has allowed it.",
+    title: "Notifications three ways",
   },
   {
     body: "Who did what, when, and how it turned out — filtered by period, action, or actor, with dates read as calendar days in the tenant's own time zone.",
     title: "An audit log per tenant",
   },
   {
-    body: "Episode images upload to S3-compatible storage and are delivered by a dedicated image server, taking the same path locally as they do in production.",
+    body: "The public, admin, platform, worker, and image roles each connect to PostgreSQL as themselves, so the reader-facing site cannot reach what only an operator should see.",
+    title: "Role-separated database access",
+  },
+  {
+    body: "Episode pages and eye-catches upload to S3-compatible storage and are delivered by a dedicated image server, taking the same path locally as they do in production.",
     title: "Object storage and image delivery",
   },
   {
@@ -71,12 +97,12 @@ const platformFeatures: readonly Feature[] = [
     title: "A cache built for many instances",
   },
   {
-    body: "Series, episodes, labels, authors, pages, announcements, and limited-access tickets are managed from one console, with a queue of everything awaiting release.",
-    title: "One console for the whole catalog",
+    body: "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, and in the app — and the tenant's own time zone governs how its records are read.",
+    title: "Localized end to end",
   },
   {
-    body: "The reader site and both consoles ship a language switcher, and the tenant's time zone governs how its own records are read.",
-    title: "Localized end to end",
+    body: "A Flutter client for Android and iOS calls the same public API as the site, down to the episodes it keeps on the device so a member can read them with no network.",
+    title: "A reader app in the same repository",
   },
   {
     body: "Apache-2.0, ordinary infrastructure underneath, and no managed service in the way — portability and freedom from lock-in are the point, not a side effect.",
@@ -121,14 +147,15 @@ if err := epub.Encode(out, doc); err != nil {
 	log.Fatal(err)
 }`;
 
-const setupCode = `# Install dependencies and initialize the database.
-task setup
-
-# Bring up the database, cache, storage, and mail.
+const setupCode = `# Bring up the database, cache, storage, and mail.
 docker compose up -d
 
-# Apply the migrations and the baseline seed.
-task db:setup`;
+# Install the toolchain, migrate and seed the database,
+# and upload the seed's images to object storage.
+task setup
+
+# Start the Go servers and the three web apps.
+task dev`;
 
 const secretsCode = `# Both are required, and neither has a fallback in the code.
 export PUBLIRA_AUTH_SECRET="$(openssl rand -base64 32)"
@@ -163,7 +190,7 @@ export const Home = () => (
 
       <Section
         id="platform"
-        lead="A publisher gets a reader-facing site, an editorial console, and — for whoever runs the install — a console above them both."
+        lead="A publisher gets a reader-facing site, an app, an editorial console, and — for whoever runs the install — a console above them all."
         title="What a publisher gets on day one"
       >
         <FeatureGrid features={platformFeatures} />
@@ -171,38 +198,44 @@ export const Home = () => (
 
       <Section
         id="screens"
-        lead="Three Next.js apps, each with its own audience. Every screenshot below is the development seed data that ships with the repository."
-        title="Three surfaces, one catalog"
+        lead="Three Next.js apps and a Flutter client, each with its own audience. Every screenshot below is the development seed data that ships with the repository."
+        title="Four surfaces, one catalog"
         tone="surface"
       >
         <div className="space-y-28">
           <ScreenGroup
             address="publisher.example"
             app="apps/web-host"
-            description="The site a reader lands on, published under the publisher's own brand. Browsing, searching, following, and the viewer that turns the pages."
+            description="The site a reader lands on, published under the publisher's own brand. Browsing, searching, ranking, following, and the viewer that turns the pages."
             screenshots={hostScreenshots}
             title="The reader-facing site"
           />
           <ScreenGroup
             address="admin.publisher.example"
             app="apps/web-admin"
-            description="Where editors work: the catalog, the publishing queue, the theme of the public site, and the record of every change made to any of it."
+            description="Where editors work: the catalog, the publishing queue, the comments readers left, the theme of the public site, and the record of every change made to any of it."
             screenshots={adminScreenshots}
             title="The tenant console"
           />
           <ScreenGroup
             address="platform.publira.example"
             app="apps/web-platform"
-            description="One level above the tenants, for whoever operates the install: tenant status, cross-tenant events, operators, and platform-wide defaults."
+            description="One level above the tenants, for whoever operates the install: tenant status, cross-tenant events, operators, the readers of every tenant, and platform-wide defaults."
             screenshots={platformScreenshots}
             title="The platform console"
+          />
+          <AppScreenGroup
+            app="mobile"
+            description="The same catalog on a phone, from one Flutter codebase for Android and iOS. It calls the public API directly rather than going through the site, and keeps what a member has opened on the device."
+            screenshots={mobileScreenshots}
+            title="The mobile app"
           />
         </div>
       </Section>
 
       <Section
         id="architecture"
-        lead="Next.js at the front, Go behind Connect RPC, and nothing underneath that you cannot already run."
+        lead="Next.js at the front, one Go API behind Connect RPC, and nothing underneath that you cannot already run."
         title="How the pieces fit together"
       >
         <div className="space-y-8">
@@ -277,7 +310,7 @@ export const Home = () => (
 
       <Section
         id="start"
-        lead="One command installs the toolchain and initializes the database, and a second brings up local stand-ins for everything the platform depends on."
+        lead="One command brings up local stand-ins for everything the platform depends on, and a second installs the toolchain and initializes the database."
         title="Running it locally"
       >
         <div className="grid gap-8 lg:grid-cols-2">
