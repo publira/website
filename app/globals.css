@@ -26,6 +26,18 @@
     color-scheme: light;
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
+
+    /* Sugar High token colors, drawn from the site palette and kept at
+       4.5:1 or better against the code block background. */
+    --sh-class: var(--color-ai);
+    --sh-comment: var(--color-ink-soft);
+    --sh-entity: var(--color-ai);
+    --sh-identifier: var(--color-ink);
+    --sh-jsxliterals: var(--color-ink);
+    --sh-keyword: #a8330f;
+    --sh-property: #1d5c6e;
+    --sh-sign: var(--color-ink-soft);
+    --sh-string: #3d6428;
   }
 
   body {

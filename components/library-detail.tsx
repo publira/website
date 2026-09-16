@@ -1,4 +1,5 @@
 import { CodeBlock } from "#components/code-block";
+import type { CodeBlockProps } from "#components/code-block";
 
 interface LibraryLink {
   readonly href: string;
@@ -8,6 +9,7 @@ interface LibraryLink {
 interface LibraryDetailProps {
   readonly code: string;
   readonly codeLabel: string;
+  readonly codeLang: CodeBlockProps["lang"];
   readonly href: string;
   readonly install: string;
   readonly links: readonly LibraryLink[];
@@ -20,6 +22,7 @@ interface LibraryDetailProps {
 export const LibraryDetail = ({
   code,
   codeLabel,
+  codeLang,
   href,
   install,
   links,
@@ -48,7 +51,7 @@ export const LibraryDetail = ({
       </a>
     </div>
     <div className="min-w-0 space-y-4">
-      <CodeBlock code={install} label="Install" />
+      <CodeBlock code={install} label="Install" lang="shell" />
       <ul className="flex flex-wrap gap-x-5 gap-y-1">
         {links.map((link) => (
           <li key={link.href}>
@@ -63,7 +66,7 @@ export const LibraryDetail = ({
           </li>
         ))}
       </ul>
-      <CodeBlock code={code} label={codeLabel} />
+      <CodeBlock code={code} label={codeLabel} lang={codeLang} />
     </div>
   </article>
 );
