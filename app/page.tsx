@@ -77,8 +77,8 @@ const platformFeatures: readonly Feature[] = [
     title: "What readers do feeds the catalog",
   },
   {
-    body: "A new episode reaches a follower in the reader's inbox, as mail an outbox worker delivers, and as a Web Push notification the browser shows once the reader has allowed it.",
-    title: "Notifications three ways",
+    body: "A new episode reaches a follower in the reader's inbox, as mail an outbox worker delivers, as a Web Push notification the browser shows once the reader has allowed it, and as a push notification on the phone that opens the episode in the app.",
+    title: "Notifications wherever the reader is",
   },
   {
     body: "Who did what, when, and how it turned out — filtered by period, action, or actor, with dates read as calendar days in the tenant's own time zone.",
@@ -101,7 +101,7 @@ const platformFeatures: readonly Feature[] = [
     title: "Localized end to end",
   },
   {
-    body: "A Flutter client for Android and iOS calls the same public API as the site, down to the episodes it keeps on the device so a member can read them with no network.",
+    body: "A Flutter client for Android and iOS under the tenant's own name and theme, calling the same public API as the site: search, follows, purchases through the site's checkout, and episodes saved encrypted on the device to read with no network.",
     title: "A reader app in the same repository",
   },
   {
@@ -226,7 +226,7 @@ export const Home = () => (
           />
           <AppScreenGroup
             app="mobile"
-            description="The same catalog on a phone, from one Flutter codebase for Android and iOS. It calls the public API directly rather than going through the site, and keeps what a member has opened on the device."
+            description="The same catalog on a phone, from one Flutter codebase for Android and iOS, under the tenant's own name and theme. It calls the public API directly rather than going through the site, opens from the site's links, and keeps the episodes a reader has opened or saved on the device."
             screenshots={mobileScreenshots}
             title="The mobile app"
           />

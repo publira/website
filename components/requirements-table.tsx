@@ -25,6 +25,11 @@ const requirements = [
       "Optional. Paid episodes only: Checkout takes the payment and a signed webhook is what confirms it.",
   },
   {
+    name: "A Firebase project",
+    purpose:
+      "Optional. Push notifications to the mobile app, sent through Firebase Cloud Messaging, which relays to APNs for iOS.",
+  },
+  {
     name: "An OpenTelemetry collector",
     purpose:
       "Optional. Traces from the Next.js apps and the Go servers; off unless enabled.",
