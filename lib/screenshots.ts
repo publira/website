@@ -20,8 +20,11 @@ import platformDashboard from "#assets/screenshots/17-platform-dashboard.png";
 import platformTenants from "#assets/screenshots/18-platform-tenants.png";
 import platformUsers from "#assets/screenshots/19-platform-users.png";
 import mobileCatalog from "#assets/screenshots/20-mobile-catalog.png";
-import mobileSeriesDetail from "#assets/screenshots/21-mobile-series-detail.png";
-import mobileViewer from "#assets/screenshots/22-mobile-episode-viewer.png";
+import mobileSearch from "#assets/screenshots/21-mobile-search.png";
+import mobileSeriesDetail from "#assets/screenshots/22-mobile-series-detail.png";
+import mobileViewer from "#assets/screenshots/23-mobile-episode-viewer.png";
+import mobileAuthor from "#assets/screenshots/24-mobile-author.png";
+import mobileDownloads from "#assets/screenshots/25-mobile-downloads.png";
 
 export interface Screenshot {
   readonly caption: string;
@@ -162,20 +165,38 @@ export const platformScreenshots: readonly Screenshot[] = [
 export const mobileScreenshots: readonly Screenshot[] = [
   {
     caption:
-      "The week's chart and the newest arrivals above the whole catalog, which asks for another page as the reader scrolls. The app calls the same public API the site does, so a tenant publishes once and both surfaces show it.",
+      "The week's chart and the newest arrivals above the whole catalog, which asks for another page as the reader scrolls. The app bar carries the tenant's own name and the colors of its theme, so a publisher's app is branded the way its site is rather than as Publira.",
     image: mobileCatalog,
     title: "Catalog",
   },
   {
     caption:
-      "Cover, credits, genres, and the episode list, with following offered behind a sign-in. An age-rated series is marked and gated here the way it is on the site.",
+      "One keyword answered by the series, the authors, and the labels that match it, the first few of each on one screen and a chip to open any group whole. Search is answered by the same public API the site's search is, so only what the tenant has published can be found.",
+    image: mobileSearch,
+    title: "Search",
+  },
+  {
+    caption:
+      "Cover, credits in the roles the tenant defined, label, and genres, with Follow for the series and for each author and Share handing out the site's own link. Each episode can be saved for reading offline, and the ones already on the device are marked before the reader loses their connection.",
     image: mobileSeriesDetail,
     title: "Series detail",
   },
   {
     caption:
-      "The episode the site serves, turned a page at a time with the controls along the bottom. What a member has opened is kept on the device as well, so an episode already read turns again with no network at all.",
+      "The episode the site serves, laid out from the spread and the reading direction the editor set on it and turned a page at a time. A paid episode is bought through the site's Stripe Checkout in the system browser, and the app opens it again once the purchase is confirmed.",
     image: mobileViewer,
     title: "Episode viewer",
+  },
+  {
+    caption:
+      "An author's portrait and profile above every published series credited to them, with the same follow the site records. A new episode from someone the reader follows arrives as a push notification that opens straight into the viewer.",
+    image: mobileAuthor,
+    title: "Author",
+  },
+  {
+    caption:
+      "What the device holds against its cap, by series, with when each episode was saved and its size. Pages are kept encrypted under a key the device mints for itself, and a paid episode stays tied to the account it was bought with, closing again once the API stops confirming the purchase.",
+    image: mobileDownloads,
+    title: "Downloads",
   },
 ];
