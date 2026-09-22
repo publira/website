@@ -12,7 +12,7 @@ const requirements = [
   {
     name: "S3-compatible object storage",
     purpose:
-      "Episode pages, eye-catches, and the other uploads, delivered through the image server.",
+      "Episode pages, eye-catches, and the other uploads. The bucket is set in the platform console rather than in each process's environment.",
   },
   {
     name: "An SMTP relay",
@@ -22,12 +22,12 @@ const requirements = [
   {
     name: "A Stripe account",
     purpose:
-      "Optional. Paid episodes only: Checkout takes the payment and a signed webhook is what confirms it.",
+      "Optional, one per tenant. Paid episodes only: Checkout takes the payment and a signed webhook is what confirms it.",
   },
   {
     name: "A Firebase project",
     purpose:
-      "Optional. Push notifications to the mobile app, sent through Firebase Cloud Messaging, which relays to APNs for iOS.",
+      "Optional, one per tenant app. Push notifications to the mobile app, sent through Firebase Cloud Messaging, which relays to APNs for iOS.",
   },
   {
     name: "An OpenTelemetry collector",

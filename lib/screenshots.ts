@@ -13,18 +13,20 @@ import adminSeries from "#assets/screenshots/10-admin-series-list.png";
 import adminSeriesForm from "#assets/screenshots/11-admin-series-form.png";
 import adminEpisodes from "#assets/screenshots/12-admin-episode-management.png";
 import adminAuthorRoles from "#assets/screenshots/13-admin-author-roles.png";
-import adminTheme from "#assets/screenshots/14-admin-theme.png";
-import adminThemePreview from "#assets/screenshots/15-admin-theme-preview.png";
-import adminAuditLog from "#assets/screenshots/16-admin-audit-log.png";
-import platformDashboard from "#assets/screenshots/17-platform-dashboard.png";
-import platformTenants from "#assets/screenshots/18-platform-tenants.png";
-import platformUsers from "#assets/screenshots/19-platform-users.png";
-import mobileCatalog from "#assets/screenshots/20-mobile-catalog.png";
-import mobileSearch from "#assets/screenshots/21-mobile-search.png";
-import mobileSeriesDetail from "#assets/screenshots/22-mobile-series-detail.png";
-import mobileViewer from "#assets/screenshots/23-mobile-episode-viewer.png";
-import mobileAuthor from "#assets/screenshots/24-mobile-author.png";
-import mobileDownloads from "#assets/screenshots/25-mobile-downloads.png";
+import adminRoyalties from "#assets/screenshots/14-admin-royalties.png";
+import adminTheme from "#assets/screenshots/15-admin-theme.png";
+import adminThemePreview from "#assets/screenshots/16-admin-theme-preview.png";
+import adminAuditLog from "#assets/screenshots/17-admin-audit-log.png";
+import platformDashboard from "#assets/screenshots/18-platform-dashboard.png";
+import platformTenants from "#assets/screenshots/19-platform-tenants.png";
+import platformUsers from "#assets/screenshots/20-platform-users.png";
+import platformStorage from "#assets/screenshots/21-platform-storage.png";
+import mobileCatalog from "#assets/screenshots/22-mobile-catalog.png";
+import mobileSearch from "#assets/screenshots/23-mobile-search.png";
+import mobileSeriesDetail from "#assets/screenshots/24-mobile-series-detail.png";
+import mobileViewer from "#assets/screenshots/25-mobile-episode-viewer.png";
+import mobileAuthor from "#assets/screenshots/26-mobile-author.png";
+import mobileLibrary from "#assets/screenshots/27-mobile-library.png";
 
 export interface Screenshot {
   readonly caption: string;
@@ -105,13 +107,13 @@ export const adminScreenshots: readonly Screenshot[] = [
   },
   {
     caption:
-      "One series in detail: title, synopsis, reading period, label, and a credit for every author in the role they hold, dragged into the order the credits are shown in. Those credits are the template its new episodes are created from, and changing them leaves the episodes that already exist as they were.",
+      "One series in detail: title, synopsis, reading period, label, and a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes are created from, and changing them leaves the episodes that already exist as they were.",
     image: adminSeriesForm,
     title: "Series form",
   },
   {
     caption:
-      "Every episode of one series in the order readers meet them, each card showing its publication status and its price. Reading order is what a reader sees, so the cards are dragged into it — or moved with an arrow key — rather than renumbered by hand.",
+      "Every episode of one series in the order readers meet them, each card showing its publication status and its price. Reading order is what a reader sees, so the cards are dragged into it — or moved with an arrow key — rather than renumbered by hand, and a selection of them takes a credit added, replaced, removed, or reshared in one step.",
     image: adminEpisodes,
     title: "Episodes",
   },
@@ -120,6 +122,12 @@ export const adminScreenshots: readonly Screenshot[] = [
       "The roles this tenant credits authors in, renamed and moved into the priority the credits follow. The vocabulary belongs to the tenant, so a publisher that separates the artist from the writer says so here instead of living with a fixed list.",
     image: adminAuthorRoles,
     title: "Author roles",
+  },
+  {
+    caption:
+      "A month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV, and a tenant can have each month closed for it on the day it chooses.",
+    image: adminRoyalties,
+    title: "Royalties",
   },
   {
     caption:
@@ -160,12 +168,18 @@ export const platformScreenshots: readonly Screenshot[] = [
     image: platformUsers,
     title: "Users",
   },
+  {
+    caption:
+      "The one S3-compatible bucket every tenant's uploads go to, set here rather than handed to each process at deploy time. A saved change reaches every running server without a restart, and mail, Web Push, security policy, and retention are set on the tabs beside it.",
+    image: platformStorage,
+    title: "Object storage",
+  },
 ];
 
 export const mobileScreenshots: readonly Screenshot[] = [
   {
     caption:
-      "The week's chart and the newest arrivals above the whole catalog, which asks for another page as the reader scrolls. The app bar carries the tenant's own name and the colors of its theme, so a publisher's app is branded the way its site is rather than as Publira.",
+      "The week's chart and the newest arrivals above the whole catalog, which asks for another page as the reader scrolls. The app bar carries the tenant's own name, the colors of its theme, and the way into its announcements, and a bar along the bottom reaches home, search, the library, notifications, and the account from every screen but the viewer.",
     image: mobileCatalog,
     title: "Catalog",
   },
@@ -195,8 +209,8 @@ export const mobileScreenshots: readonly Screenshot[] = [
   },
   {
     caption:
-      "What the device holds against its cap, by series, with when each episode was saved and its size. Pages are kept encrypted under a key the device mints for itself, and a paid episode stays tied to the account it was bought with, closing again once the API stops confirming the purchase.",
-    image: mobileDownloads,
-    title: "Downloads",
+      "Continue reading, follows, and downloads, each a list of its own. Downloads shows what the device holds against its cap, by series, with when each episode was saved and its size; pages are kept encrypted under a key the device mints for itself, and a paid episode stays tied to the account it was bought with, closing again once the API stops confirming the purchase.",
+    image: mobileLibrary,
+    title: "Library",
   },
 ];

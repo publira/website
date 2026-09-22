@@ -21,7 +21,7 @@ import {
 const repositories = [
   {
     description:
-      "The platform itself: three Next.js apps, four Go binaries, a Flutter mobile client, and the Compose stack that runs them all locally.",
+      "The platform itself: three Next.js apps, a Go server and worker that run from one image, a Flutter mobile client, and the Compose stack that runs them all locally.",
     href: "https://github.com/publira/publira",
     language: "TypeScript, Go, and Dart",
     name: "publira/publira",
@@ -49,11 +49,11 @@ const repositories = [
 
 const platformFeatures: readonly Feature[] = [
   {
-    body: "Every publisher runs under its own brand and domain, while a separate platform console manages tenant status, the operators, and the readers of every tenant across the whole install.",
+    body: "Every publisher runs under its own brand and domain, while a separate platform console manages tenant status, the operators, the readers of every tenant, and the settings the whole install shares — object storage, mail, Web Push, and security policy.",
     title: "Multi-tenant from the ground up",
   },
   {
-    body: "Series, episodes, labels, authors and the roles they are credited in, genres, tags, pages, announcements, access tickets, and comments, all from one console with a queue of everything awaiting release.",
+    body: "Series, episodes, labels, authors and the roles they are credited in, genres, tags, pages, announcements, access tickets, comments, and the messages readers send through the contact form, all from one console with a queue of everything awaiting release. A tenant admin invites the rest of the staff from it too.",
     title: "One console for the whole catalog",
   },
   {
@@ -63,6 +63,14 @@ const platformFeatures: readonly Feature[] = [
   {
     body: "An episode is sold as a one-time payment through Stripe Checkout. The redirect unlocks nothing: the purchase is written when the signed webhook arrives, and a refund is recorded against the purchase it reverses.",
     title: "Paid episodes through Stripe",
+  },
+  {
+    body: "A series can be kept to the site or to the app, and an episode can narrow it further; the server answers every catalog read for the surface that asks. Where an episode is sold is set the same way, from a tenant default down to the episode itself.",
+    title: "The site, the app, or both",
+  },
+  {
+    body: "Each credited author carries a share of an episode's sales. A month closes into a statement — by hand, or on the day the tenant chooses — and a closed statement downloads as CSV.",
+    title: "Royalties, closed month by month",
   },
   {
     body: "R15 and R18 titles are marked wherever they are listed, hidden until the reader confirms, and gated on the birth date the account carries — under the verification rule each tenant chooses.",
@@ -77,7 +85,7 @@ const platformFeatures: readonly Feature[] = [
     title: "What readers do feeds the catalog",
   },
   {
-    body: "A new episode reaches a follower in the reader's inbox, as mail an outbox worker delivers, as a Web Push notification the browser shows once the reader has allowed it, and as a push notification on the phone that opens the episode in the app.",
+    body: "A new episode reaches a follower in the reader's inbox, as mail the worker delivers, as a Web Push notification the browser shows once the reader has allowed it, and as a push notification on the phone that opens the episode in the app.",
     title: "Notifications wherever the reader is",
   },
   {
@@ -85,11 +93,11 @@ const platformFeatures: readonly Feature[] = [
     title: "An audit log per tenant",
   },
   {
-    body: "The public, admin, platform, worker, and image roles each connect to PostgreSQL as themselves, so the reader-facing site cannot reach what only an operator should see.",
+    body: "The reader-facing API, the tenant console, the platform console, and each background job connect to PostgreSQL as roles of their own, with row-level security keeping every tenant's rows apart, so the reader-facing site cannot reach what only an operator should see.",
     title: "Role-separated database access",
   },
   {
-    body: "Episode pages and eye-catches upload to S3-compatible storage and are delivered by a dedicated image server, taking the same path locally as they do in production.",
+    body: "Episode pages and eye-catches upload to the S3-compatible bucket set in the platform console, and the server resizes and converts them to WebP or AVIF on the way out, taking the same path locally as it does in production.",
     title: "Object storage and image delivery",
   },
   {
@@ -97,11 +105,15 @@ const platformFeatures: readonly Feature[] = [
     title: "A cache built for many instances",
   },
   {
+    body: "When the connection drops, a navigation, a prefetch, or a form submission waits for it to return instead of failing, and every screen of the three web apps says the connection is gone rather than looking like a slow server.",
+    title: "Built for a dropped connection",
+  },
+  {
     body: "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, and in the app — and the tenant's own time zone governs how its records are read.",
     title: "Localized end to end",
   },
   {
-    body: "A Flutter client for Android and iOS under the tenant's own name and theme, calling the same public API as the site: search, follows, purchases through the site's checkout, and episodes saved encrypted on the device to read with no network.",
+    body: "A Flutter client for Android and iOS under the tenant's own name and theme, calling the same public API as the site: accounts from sign-up to deletion, search, follows, announcements and an inbox, purchases through the site's checkout, and episodes saved encrypted on the device to read with no network. Each tenant builds its own app from one manifest.",
     title: "A reader app in the same repository",
   },
   {
@@ -213,20 +225,20 @@ export const Home = () => (
           <ScreenGroup
             address="admin.publisher.example"
             app="apps/web-admin"
-            description="Where editors work: the catalog, the publishing queue, the comments readers left, the theme of the public site, and the record of every change made to any of it."
+            description="Where editors work: the catalog, the publishing queue, the comments and messages readers left, what each author is owed, the theme of the public site, and the record of every change made to any of it."
             screenshots={adminScreenshots}
             title="The tenant console"
           />
           <ScreenGroup
             address="platform.publira.example"
             app="apps/web-platform"
-            description="One level above the tenants, for whoever operates the install: tenant status, cross-tenant events, operators, the readers of every tenant, and platform-wide defaults."
+            description="One level above the tenants, for whoever operates the install: tenant status, cross-tenant events, operators, the readers of every tenant, and the settings every tenant shares, from object storage to security policy."
             screenshots={platformScreenshots}
             title="The platform console"
           />
           <AppScreenGroup
             app="mobile"
-            description="The same catalog on a phone, from one Flutter codebase for Android and iOS, under the tenant's own name and theme. It calls the public API directly rather than going through the site, opens from the site's links, and keeps the episodes a reader has opened or saved on the device."
+            description="The same catalog on a phone, from one Flutter codebase for Android and iOS, under the tenant's own name and theme. It calls the public API directly rather than going through the site, lets a reader sign up and manage the account without leaving it, and keeps the episodes a reader has opened or saved on the device."
             screenshots={mobileScreenshots}
             title="The mobile app"
           />
@@ -235,7 +247,7 @@ export const Home = () => (
 
       <Section
         id="architecture"
-        lead="Next.js at the front, one Go API behind Connect RPC, and nothing underneath that you cannot already run."
+        lead="Next.js at the front, one Go server behind Connect RPC with a worker beside it, and nothing underneath that you cannot already run."
         title="How the pieces fit together"
       >
         <div className="space-y-8">
