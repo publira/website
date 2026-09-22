@@ -5,7 +5,7 @@ import { heroScreenshot } from "#lib/screenshots";
 
 const facts = [
   { label: "Next.js apps", value: "3" },
-  { label: "Go binaries", value: "4" },
+  { label: "Go processes", value: "2" },
   { label: "Mobile client", value: "Flutter" },
   { label: "Reader languages", value: "5" },
   { label: "License", value: "Apache-2.0" },

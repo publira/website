@@ -4,7 +4,7 @@ const layers = [
   { label: "Transport", nodes: ["Connect RPC over Protocol Buffers"] },
   {
     label: "Servers (Go)",
-    nodes: ["api-server", "image-server", "outbox-worker", "batch"],
+    nodes: ["publira server", "publira worker"],
   },
   {
     label: "Infrastructure",
@@ -40,12 +40,15 @@ export const Architecture = () => (
       ))}
     </ol>
     <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
-      One <code>api-server</code> process carries the public, admin, and
-      platform namespaces, and one <code>image-server</code> answers both the
-      reader’s origin and the console’s. Beside them the outbox worker delivers
-      the mail and runs the periodic jobs that promote due episodes, apply the
-      free-window boundaries, and turn over each tenant’s calendar day;{" "}
-      <code>batch</code> holds the one-shot jobs behind a subcommand.
+      One <code>publira server</code> process carries the public, admin, and
+      platform namespaces and delivers the images for both the reader’s origin
+      and the console’s. <code>publira worker</code>, from the same binary,
+      delivers the mail and the push notifications and runs every scheduled job:
+      promoting due episodes, applying the free-window boundaries, turning over
+      each tenant’s calendar day, rebuilding the charts, closing royalty months,
+      and purging what has outlived its retention. Running it is all the
+      scheduling a deployment needs; <code>publiractl</code> runs any of those
+      jobs by hand.
     </p>
     <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
       Every layer is instrumented with{" "}
