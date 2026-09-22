@@ -1,22 +1,8 @@
 @import "tailwindcss";
+@import "@publira/design-tokens/theme.css";
 
 @theme {
-  --color-canvas: #f5f5f2;
-  --color-canvas-deep: #e8e8e3;
-  --color-surface: #ffffff;
-  --color-ink: #1f1d1a;
-  --color-ink-soft: #5f5e59;
-  --color-line: #d6d6d0;
-  --color-shu: #c63d17;
-  --color-ai: #2b4c8c;
-  --color-ai-soft: #e3e9f5;
-
-  --font-sans:
-    "Hiragino Sans", "BIZ UDPGothic", "Yu Gothic", "Noto Sans CJK JP",
-    "Noto Sans JP", system-ui, sans-serif;
-  --font-display:
-    "Iowan Old Style", "Palatino Linotype", "Hiragino Mincho ProN",
-    "BIZ UDPMincho", "Yu Mincho", "Noto Serif CJK JP", "Noto Serif JP", serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", var(--font-serif);
   --font-mono:
     ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
 }
@@ -29,20 +15,20 @@
 
     /* Sugar High token colors, drawn from the site palette and kept at
        4.5:1 or better against the code block background. */
-    --sh-class: var(--color-ai);
-    --sh-comment: var(--color-ink-soft);
-    --sh-entity: var(--color-ai);
-    --sh-identifier: var(--color-ink);
-    --sh-jsxliterals: var(--color-ink);
+    --sh-class: var(--color-primary);
+    --sh-comment: var(--color-muted-foreground);
+    --sh-entity: var(--color-primary);
+    --sh-identifier: var(--color-foreground);
+    --sh-jsxliterals: var(--color-foreground);
     --sh-keyword: #a8330f;
     --sh-property: #1d5c6e;
-    --sh-sign: var(--color-ink-soft);
+    --sh-sign: var(--color-muted-foreground);
     --sh-string: #3d6428;
   }
 
   body {
-    background-color: var(--color-canvas);
-    color: var(--color-ink);
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -51,7 +37,7 @@
   }
 
   :focus-visible {
-    @apply outline-ai outline-2 outline-offset-2;
+    @apply outline-ring outline-2 outline-offset-2;
   }
 
   /* Hold the page where the reader left it while a modal is open, so the
@@ -62,10 +48,10 @@
 
   dialog[open] {
     box-shadow: 0 1.5rem 4rem -2rem
-      color-mix(in oklab, var(--color-ink) 55%, transparent);
+      color-mix(in oklab, var(--color-foreground) 55%, transparent);
   }
 
   ::selection {
-    background-color: var(--color-ai-soft);
+    background-color: var(--color-accent);
   }
 }

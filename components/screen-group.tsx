@@ -17,11 +17,11 @@ export const ScreenGroup = ({
   title,
 }: ScreenGroupProps) => (
   <article>
-    <div className="border-line flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-6">
-      <h3 className="font-display text-ink text-2xl">{title}</h3>
-      <span className="text-ink-soft text-sm tabular-nums">{app}</span>
+    <div className="border-border flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-6">
+      <h3 className="font-display text-foreground text-2xl">{title}</h3>
+      <span className="text-muted-foreground text-sm tabular-nums">{app}</span>
     </div>
-    <p className="text-ink-soft mt-3 max-w-2xl leading-relaxed">
+    <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">
       {description}
     </p>
     <div className="mt-12 space-y-24">

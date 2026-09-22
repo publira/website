@@ -8,11 +8,13 @@ interface FeatureGridProps {
 }
 
 export const FeatureGrid = ({ features }: FeatureGridProps) => (
-  <ul className="border-line bg-line grid gap-px border-y sm:grid-cols-2 lg:grid-cols-3">
+  <ul className="border-border bg-border grid gap-px border-y sm:grid-cols-2 lg:grid-cols-3">
     {features.map((feature) => (
-      <li className="bg-canvas px-5 py-6 sm:px-6" key={feature.title}>
-        <h3 className="font-display text-ink text-lg">{feature.title}</h3>
-        <p className="text-ink-soft mt-2 text-sm leading-relaxed">
+      <li className="bg-background px-5 py-6 sm:px-6" key={feature.title}>
+        <h3 className="font-display text-foreground text-lg">
+          {feature.title}
+        </h3>
+        <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
           {feature.body}
         </p>
       </li>

@@ -182,6 +182,9 @@ importers:
         specifier: 2.4.1
         version: 2.4.1
     devDependencies:
+      '@publira/design-tokens':
+        specifier: 1.0.0
+        version: 1.0.0(tailwindcss@4.3.3)
       '@tailwindcss/postcss':
         specifier: 4.3.3
         version: 4.3.3
@@ -950,6 +953,11 @@ packages:
   '@pkgr/core@0.3.6':
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  '@publira/design-tokens@1.0.0':
+    resolution: {integrity: sha512-ZaN01DF1GWrIpmVwBLGX2p1zetg3UVUbgZj5RUrEcx3qr072xfw0TEqU4mO4N8hdQhRLvmHsXi+z3YmZFMU6Ew==}
+    peerDependencies:
+      tailwindcss: ^4.0.0
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -3503,6 +3511,10 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.3.6': {}
+
+  '@publira/design-tokens@1.0.0(tailwindcss@4.3.3)':
+    dependencies:
+      tailwindcss: 4.3.3
 
   '@rtsao/scc@1.1.0': {}
 
