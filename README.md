@@ -55,7 +55,7 @@ Screenshots of the platform come from the development seed data that ships with 
 
 ## Styling
 
-Colors, fonts, and spacing come from the Tailwind theme tokens declared in `app/globals.css`, and the palette follows the product's own. Add a new value as a token there rather than as a one-off hex in a class.
+Colors and fonts come from [`@publira/design-tokens`](https://github.com/publira/design-tokens), which the other Publira web projects share; use its roles (`bg-primary`, `text-muted-foreground`, …) rather than a one-off hex in a class. Spacing is Tailwind's own. `app/globals.css` adds only what this site alone needs, such as the display face for headings.
 
 ## Writing for the site
 

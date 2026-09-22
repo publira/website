@@ -318,7 +318,7 @@ export const Home = () => (
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="min-w-0 space-y-4">
             <CodeBlock code={setupCode} label="bash" lang="shell" />
-            <p className="text-ink-soft text-sm leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               Migrations carry the schema changes and seeds carry the initial
               data, so the local database is rebuilt the same way every time.
               Nothing here needs a cloud account: the stand-ins speak the same
@@ -332,7 +332,7 @@ export const Home = () => (
               label="Two keys, issued per environment"
               lang="shell"
             />
-            <p className="text-ink-soft text-sm leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               <code>PUBLIRA_AUTH_SECRET</code> is the JWE key that seals the
               login session cookie; <code>PUBLIRA_AUTH_JWT_SECRET</code> signs
               the HS256 access token the Go servers verify. Different readers,
@@ -342,7 +342,7 @@ export const Home = () => (
             </p>
           </div>
         </div>
-        <p className="border-line text-ink-soft mt-10 max-w-3xl border-t pt-6 text-sm leading-relaxed">
+        <p className="border-border text-muted-foreground mt-10 max-w-3xl border-t pt-6 text-sm leading-relaxed">
           What the repository supports today is this local setup, and it is the
           honest edge of the project: the schema, the APIs, and the surfaces
           above are still moving, and nothing here is packaged for a deployment
@@ -352,7 +352,7 @@ export const Home = () => (
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a
-            className="bg-ai text-canvas hover:bg-ink rounded-sm px-5 py-2.5 text-sm font-medium"
+            className="bg-primary text-primary-foreground hover:bg-foreground rounded-sm px-5 py-2.5 text-sm font-medium"
             href="https://github.com/publira/publira"
             rel="noreferrer"
             target="_blank"
@@ -360,7 +360,7 @@ export const Home = () => (
             Read the full setup guide
           </a>
           <a
-            className="border-ai text-ai hover:bg-ai-soft rounded-sm border px-5 py-2.5 text-sm font-medium"
+            className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
             href="https://github.com/publira/publira/blob/main/CONTRIBUTING.md"
             rel="noreferrer"
             target="_blank"

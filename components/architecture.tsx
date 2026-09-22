@@ -18,18 +18,18 @@ const layers = [
 ] as const;
 
 export const Architecture = () => (
-  <div className="border-line border-l pl-5">
+  <div className="border-border border-l pl-5">
     <ol>
       {layers.map((layer) => (
         <li
-          className="border-line grid gap-2 border-b py-4 first:pt-0 sm:grid-cols-[10rem_1fr] sm:items-baseline"
+          className="border-border grid gap-2 border-b py-4 first:pt-0 sm:grid-cols-[10rem_1fr] sm:items-baseline"
           key={layer.label}
         >
-          <span className="text-ink-soft text-sm">{layer.label}</span>
+          <span className="text-muted-foreground text-sm">{layer.label}</span>
           <span className="flex flex-wrap gap-y-1">
             {layer.nodes.map((node) => (
               <span
-                className="border-line text-ink border-l px-3 text-sm tabular-nums first:border-l-0 first:pl-0"
+                className="border-border text-foreground border-l px-3 text-sm tabular-nums first:border-l-0 first:pl-0"
                 key={node}
               >
                 {node}
@@ -39,7 +39,7 @@ export const Architecture = () => (
         </li>
       ))}
     </ol>
-    <p className="text-ink-soft mt-6 text-sm leading-relaxed">
+    <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
       One <code>api-server</code> process carries the public, admin, and
       platform namespaces, and one <code>image-server</code> answers both the
       reader’s origin and the console’s. Beside them the outbox worker delivers
@@ -47,10 +47,10 @@ export const Architecture = () => (
       free-window boundaries, and turn over each tenant’s calendar day;{" "}
       <code>batch</code> holds the one-shot jobs behind a subcommand.
     </p>
-    <p className="text-ink-soft mt-4 text-sm leading-relaxed">
+    <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
       Every layer is instrumented with{" "}
-      <strong className="text-ink font-medium">OpenTelemetry</strong>, so one
-      browser request reads as a single trace: the Next.js root span, the
+      <strong className="text-foreground font-medium">OpenTelemetry</strong>, so
+      one browser request reads as a single trace: the Next.js root span, the
       Connect RPC it makes during SSR, the identically named span on the Go
       side, and the <code>db.query</code> children below it. Point it at
       whatever collector you already run, or leave tracing off — it is disabled

@@ -57,7 +57,7 @@ export const ScreenshotDialog = ({
       <dialog
         aria-describedby={captionId}
         aria-labelledby={titleId}
-        className="border-line bg-surface backdrop:bg-ink/70 m-auto max-h-[92dvh] w-[min(90rem,92vw)] max-w-none overflow-y-auto rounded-lg border p-0"
+        className="border-border bg-popover backdrop:bg-foreground/70 m-auto max-h-[92dvh] w-[min(90rem,92vw)] max-w-none overflow-y-auto rounded-lg border p-0"
         onClose={() => setIsEnlarged(false)}
         ref={dialogRef}
       >
@@ -65,36 +65,36 @@ export const ScreenshotDialog = ({
           <div className="relative flex flex-col">
             <Image
               alt={screenshot.title}
-              className="bg-canvas-deep max-h-[70dvh] w-full object-contain"
+              className="bg-muted max-h-[70dvh] w-full object-contain"
               placeholder="blur"
               sizes="(min-width: 1536px) 1440px, 92vw"
               src={screenshot.image}
             />
             <button
               aria-label="Close"
-              className="border-line bg-surface text-ink-soft hover:text-ai absolute top-3 right-3 flex size-9 items-center justify-center rounded-sm border text-xl leading-none"
+              className="border-border bg-card text-muted-foreground hover:text-primary absolute top-3 right-3 flex size-9 items-center justify-center rounded-sm border text-xl leading-none"
               onClick={close}
               type="button"
             >
               ×
             </button>
-            <div className="border-line flex items-start justify-between gap-6 border-t p-5">
+            <div className="border-border flex items-start justify-between gap-6 border-t p-5">
               <div className="min-w-0">
                 <span
-                  className="font-display text-ink block text-lg"
+                  className="font-display text-foreground block text-lg"
                   id={titleId}
                 >
                   {screenshot.title}
                 </span>
                 <span
-                  className="text-ink-soft mt-1 block text-sm leading-relaxed"
+                  className="text-muted-foreground mt-1 block text-sm leading-relaxed"
                   id={captionId}
                 >
                   {screenshot.caption}
                 </span>
               </div>
               <button
-                className="border-ai text-ai hover:bg-ai-soft shrink-0 rounded-sm border px-4 py-2 text-sm font-medium"
+                className="border-primary text-primary hover:bg-accent shrink-0 rounded-sm border px-4 py-2 text-sm font-medium"
                 onClick={close}
                 type="button"
               >

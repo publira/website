@@ -37,19 +37,19 @@ const requirements = [
 ];
 
 export const RequirementsTable = () => (
-  <div className="border-line overflow-x-auto border-t pt-6">
+  <div className="border-border overflow-x-auto border-t pt-6">
     <table className="w-full border-collapse text-left text-sm">
       <caption className="pb-6 text-left">
-        <span className="font-display text-ink block text-lg">
+        <span className="font-display text-foreground block text-lg">
           What it needs to run
         </span>
-        <span className="text-ink-soft mt-1 block text-sm">
+        <span className="text-muted-foreground mt-1 block text-sm">
           Ordinary infrastructure with no managed service behind it — bring your
           own, or keep the ones a checkout brings up for you.
         </span>
       </caption>
       <thead>
-        <tr className="border-line text-ink-soft border-b text-xs">
+        <tr className="border-border text-muted-foreground border-b text-xs">
           <th className="py-3 pr-6 font-medium" scope="col">
             Dependency
           </th>
@@ -61,11 +61,13 @@ export const RequirementsTable = () => (
       <tbody>
         {requirements.map((requirement) => (
           <tr
-            className="border-line border-b last:border-b-0"
+            className="border-border border-b last:border-b-0"
             key={requirement.name}
           >
-            <td className="text-ink py-3 pr-6 align-top">{requirement.name}</td>
-            <td className="text-ink-soft py-3 align-top">
+            <td className="text-foreground py-3 pr-6 align-top">
+              {requirement.name}
+            </td>
+            <td className="text-muted-foreground py-3 align-top">
               {requirement.purpose}
             </td>
           </tr>

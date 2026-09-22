@@ -34,8 +34,10 @@ export const ScreenshotCard = ({
     <figcaption
       className={reversed ? "lg:order-1 lg:col-span-5" : "lg:col-span-5"}
     >
-      <span className="font-display text-ink text-lg">{screenshot.title}</span>
-      <span className="text-ink-soft mt-2 block text-sm leading-relaxed">
+      <span className="font-display text-foreground text-lg">
+        {screenshot.title}
+      </span>
+      <span className="text-muted-foreground mt-2 block text-sm leading-relaxed">
         {screenshot.caption}
       </span>
     </figcaption>

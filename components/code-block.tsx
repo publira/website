@@ -36,11 +36,11 @@ export interface CodeBlockProps {
 }
 
 export const CodeBlock = ({ code, label, lang }: CodeBlockProps) => (
-  <div className="border-line bg-canvas-deep overflow-hidden rounded-lg border">
-    <div className="border-line text-ink-soft border-b px-4 py-2 font-mono text-xs">
+  <div className="border-border bg-muted overflow-hidden rounded-lg border">
+    <div className="border-border text-muted-foreground border-b px-4 py-2 font-mono text-xs">
       {label}
     </div>
-    <pre className="text-ink overflow-x-auto px-4 py-4 font-mono text-[0.8rem] leading-relaxed">
+    <pre className="text-foreground overflow-x-auto px-4 py-4 font-mono text-[0.8rem] leading-relaxed">
       <Highlight
         code={code}
         lang={languages[lang]}

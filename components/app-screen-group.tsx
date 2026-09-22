@@ -19,11 +19,11 @@ export const AppScreenGroup = ({
   title,
 }: AppScreenGroupProps) => (
   <article>
-    <div className="border-line flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-6">
-      <h3 className="font-display text-ink text-2xl">{title}</h3>
-      <span className="text-ink-soft text-sm tabular-nums">{app}</span>
+    <div className="border-border flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-6">
+      <h3 className="font-display text-foreground text-2xl">{title}</h3>
+      <span className="text-muted-foreground text-sm tabular-nums">{app}</span>
     </div>
-    <p className="text-ink-soft mt-3 max-w-2xl leading-relaxed">
+    <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">
       {description}
     </p>
     <div className="mt-12 grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
@@ -41,10 +41,10 @@ export const AppScreenGroup = ({
             </PhoneFrame>
           </ScreenshotDialog>
           <figcaption className="mt-5">
-            <span className="font-display text-ink text-lg">
+            <span className="font-display text-foreground text-lg">
               {screenshot.title}
             </span>
-            <span className="text-ink-soft mt-2 block text-sm leading-relaxed">
+            <span className="text-muted-foreground mt-2 block text-sm leading-relaxed">
               {screenshot.caption}
             </span>
           </figcaption>

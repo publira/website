@@ -14,10 +14,10 @@ const facts = [
 export const Hero = () => (
   <section>
     <div className="mx-auto max-w-6xl px-5 pt-16 pb-20 sm:px-8 sm:pt-24">
-      <h1 className="font-display text-ink max-w-4xl text-4xl leading-[1.15] text-balance sm:text-5xl">
+      <h1 className="font-display text-foreground max-w-4xl text-4xl leading-[1.15] text-balance sm:text-5xl">
         The open-source gateway to your digital publishing utopia.
       </h1>
-      <p className="text-ink-soft mt-6 max-w-2xl text-lg leading-relaxed">
+      <p className="text-muted-foreground mt-6 max-w-2xl text-lg leading-relaxed">
         Publira is a multi-tenant SaaS that gives publishers with limited IT
         resources a digital distribution platform for manga and novels, run
         under their own brand. Editors submit the book information they receive
@@ -26,7 +26,7 @@ export const Hero = () => (
 
       <div className="mt-8 flex flex-wrap items-center gap-3">
         <a
-          className="bg-shu text-canvas hover:bg-ink rounded-sm px-5 py-2.5 text-sm font-medium"
+          className="bg-secondary text-secondary-foreground hover:bg-foreground rounded-sm px-5 py-2.5 text-sm font-medium"
           href="https://github.com/publira/publira"
           rel="noreferrer"
           target="_blank"
@@ -34,28 +34,28 @@ export const Hero = () => (
           publira/publira on GitHub
         </a>
         <a
-          className="border-ai text-ai hover:bg-ai-soft rounded-sm border px-5 py-2.5 text-sm font-medium"
+          className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
           href="#screens"
         >
           See the screens
         </a>
       </div>
 
-      <dl className="border-line mt-12 max-w-2xl border-t text-sm">
+      <dl className="border-border mt-12 max-w-2xl border-t text-sm">
         {facts.map((fact) => (
           <div
-            className="border-line flex items-baseline justify-between gap-4 border-b py-2.5 last:border-b-0"
+            className="border-border flex items-baseline justify-between gap-4 border-b py-2.5 last:border-b-0"
             key={fact.label}
           >
-            <dt className="text-ink-soft">{fact.label}</dt>
-            <dd className="text-ink tabular-nums">{fact.value}</dd>
+            <dt className="text-muted-foreground">{fact.label}</dt>
+            <dd className="text-foreground tabular-nums">{fact.value}</dd>
           </div>
         ))}
       </dl>
 
-      <div className="border-line mt-10 max-w-2xl border-t pt-6">
-        <p className="text-ink text-sm font-medium">Still being built</p>
-        <p className="text-ink-soft mt-2 text-sm leading-relaxed">
+      <div className="border-border mt-10 max-w-2xl border-t pt-6">
+        <p className="text-foreground text-sm font-medium">Still being built</p>
+        <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
           Publira is under active development and has not reached a stable
           release. Everything shown on this page runs today, but running it for
           a real publisher is not a matter of installing it as-is: expect to
@@ -76,7 +76,7 @@ export const Hero = () => (
             src={heroScreenshot.image}
           />
         </BrowserFrame>
-        <figcaption className="text-ink-soft mt-3 text-sm">
+        <figcaption className="text-muted-foreground mt-3 text-sm">
           {heroScreenshot.caption}
         </figcaption>
       </figure>
