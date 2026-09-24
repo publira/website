@@ -4,7 +4,7 @@ import type { Locale } from "next-intl";
 import { useLocale } from "next-intl";
 import { useEffect, useRef } from "react";
 
-import { Link } from "#i18n/navigation";
+import { Link, usePathname } from "#i18n/navigation";
 
 interface LocaleOption {
   readonly locale: Locale;
@@ -21,10 +21,13 @@ interface LocaleMenuProps {
  * The locales as a disclosure rather than a row of links, so the header keeps
  * its width however many there are. It opens and closes without JavaScript;
  * the effect only adds closing on Escape and on a click outside it. Switching
- * is a client-side navigation, so the scripts already loaded stay.
+ * keeps the reader on the same page in the other locale, as a client-side
+ * navigation, so the scripts already loaded stay.
  */
 export const LocaleMenu = ({ label, options }: LocaleMenuProps) => {
   const current = useLocale();
+  // The path without its locale prefix, which `Link` prefixes again.
+  const pathname = usePathname();
   const currentName = options.find(({ locale }) => locale === current)?.name;
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
@@ -102,7 +105,7 @@ export const LocaleMenu = ({ label, options }: LocaleMenuProps) => {
             <Link
               aria-current={locale === current ? "page" : undefined}
               className="hover:bg-accent text-foreground aria-[current=page]:text-primary block px-4 py-2 aria-[current=page]:font-medium"
-              href="/"
+              href={pathname}
               lang={locale}
               locale={locale}
               onClick={close}
