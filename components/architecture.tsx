@@ -1,63 +1,69 @@
+import { getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
+
+// Each node carries its whole key, so the key of every node is checked
+// against the catalog rather than combined with each layer's key.
 const layers = [
-  { label: "Clients", nodes: ["Browser", "Flutter app"] },
-  { label: "Web (Next.js)", nodes: ["web-host", "web-admin", "web-platform"] },
-  { label: "Transport", nodes: ["Connect RPC over Protocol Buffers"] },
   {
-    label: "Servers (Go)",
-    nodes: ["publira server", "publira worker"],
+    key: "clients",
+    nodes: ["clients.nodes.browser", "clients.nodes.flutter"],
   },
   {
-    label: "Infrastructure",
+    key: "web",
+    nodes: ["web.nodes.host", "web.nodes.admin", "web.nodes.platform"],
+  },
+  { key: "transport", nodes: ["transport.nodes.connect"] },
+  { key: "servers", nodes: ["servers.nodes.server", "servers.nodes.worker"] },
+  {
+    key: "infrastructure",
     nodes: [
-      "PostgreSQL",
-      "Redis-compatible cache",
-      "S3-compatible storage",
-      "SMTP",
+      "infrastructure.nodes.postgres",
+      "infrastructure.nodes.cache",
+      "infrastructure.nodes.storage",
+      "infrastructure.nodes.smtp",
     ],
   },
 ] as const;
 
-export const Architecture = () => (
-  <div className="border-border border-l pl-5">
-    <ol>
-      {layers.map((layer) => (
-        <li
-          className="border-border grid gap-2 border-b py-4 first:pt-0 sm:grid-cols-[10rem_1fr] sm:items-baseline"
-          key={layer.label}
-        >
-          <span className="text-muted-foreground text-sm">{layer.label}</span>
-          <span className="flex flex-wrap gap-y-1">
-            {layer.nodes.map((node) => (
-              <span
-                className="border-border text-foreground border-l px-3 text-sm tabular-nums first:border-l-0 first:pl-0"
-                key={node}
-              >
-                {node}
-              </span>
-            ))}
-          </span>
-        </li>
-      ))}
-    </ol>
-    <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
-      One <code>publira server</code> process carries the public, admin, and
-      platform namespaces and delivers the images for both the reader’s origin
-      and the console’s. <code>publira worker</code>, from the same binary,
-      delivers the mail and the push notifications and runs every scheduled job:
-      promoting due episodes, applying the free-window boundaries, turning over
-      each tenant’s calendar day, rebuilding the charts, closing royalty months,
-      and purging what has outlived its retention. Running it is all the
-      scheduling a deployment needs; <code>publiractl</code> runs any of those
-      jobs by hand.
-    </p>
-    <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
-      Every layer is instrumented with{" "}
-      <strong className="text-foreground font-medium">OpenTelemetry</strong>, so
-      one browser request reads as a single trace: the Next.js root span, the
-      Connect RPC it makes during SSR, the identically named span on the Go
-      side, and the <code>db.query</code> children below it. Point it at
-      whatever collector you already run, or leave tracing off — it is disabled
-      by default.
-    </p>
-  </div>
+const code = (chunks: ReactNode) => <code>{chunks}</code>;
+
+const strong = (chunks: ReactNode) => (
+  <strong className="text-foreground font-medium">{chunks}</strong>
 );
+
+export const Architecture = async () => {
+  const t = await getTranslations("architecture");
+
+  return (
+    <div className="border-border border-l pl-5">
+      <ol>
+        {layers.map((layer) => (
+          <li
+            className="border-border grid gap-2 border-b py-4 first:pt-0 sm:grid-cols-[10rem_1fr] sm:items-baseline"
+            key={layer.key}
+          >
+            <span className="text-muted-foreground text-sm">
+              {t(`layers.${layer.key}.label`)}
+            </span>
+            <span className="flex flex-wrap gap-y-1">
+              {layer.nodes.map((node) => (
+                <span
+                  className="border-border text-foreground border-l px-3 text-sm tabular-nums first:border-l-0 first:pl-0"
+                  key={node}
+                >
+                  {t(`layers.${node}`)}
+                </span>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
+        {t.rich("processes", { code })}
+      </p>
+      <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
+        {t.rich("tracing", { code, strong })}
+      </p>
+    </div>
+  );
+};

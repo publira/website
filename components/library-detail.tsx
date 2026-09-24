@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 import { CodeBlock } from "#components/code-block";
 import type { CodeBlockProps } from "#components/code-block";
 
@@ -19,7 +21,7 @@ interface LibraryDetailProps {
   readonly tagline: string;
 }
 
-export const LibraryDetail = ({
+export const LibraryDetail = async ({
   code,
   codeLabel,
   codeLang,
@@ -30,45 +32,49 @@ export const LibraryDetail = ({
   note,
   points,
   tagline,
-}: LibraryDetailProps) => (
-  <article className="border-border grid gap-8 border-l pl-5 lg:grid-cols-2 lg:gap-12">
-    <div className="min-w-0">
-      <h3 className="font-display text-foreground text-2xl">{name}</h3>
-      <p className="text-muted-foreground mt-3 leading-relaxed">{tagline}</p>
-      <ul className="text-muted-foreground marker:text-border mt-6 list-disc space-y-3 pl-5 text-sm leading-relaxed">
-        {points.map((point) => (
-          <li key={point}>{point}</li>
-        ))}
-      </ul>
-      <p className="text-muted-foreground mt-6 text-xs leading-relaxed">
-        {note}
-      </p>
-      <a
-        className="border-primary text-primary hover:bg-accent mt-6 inline-block rounded-sm border px-5 py-2.5 text-sm font-medium"
-        href={href}
-        rel="noreferrer"
-        target="_blank"
-      >
-        Read the documentation
-      </a>
-    </div>
-    <div className="min-w-0 space-y-4">
-      <CodeBlock code={install} label="Install" lang="shell" />
-      <ul className="flex flex-wrap gap-x-5 gap-y-1">
-        {links.map((link) => (
-          <li key={link.href}>
-            <a
-              className="text-primary text-sm hover:underline"
-              href={link.href}
-              rel="noreferrer"
-              target="_blank"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <CodeBlock code={code} label={codeLabel} lang={codeLang} />
-    </div>
-  </article>
-);
+}: LibraryDetailProps) => {
+  const t = await getTranslations("libraries");
+
+  return (
+    <article className="border-border grid gap-8 border-l pl-5 lg:grid-cols-2 lg:gap-12">
+      <div className="min-w-0">
+        <h3 className="font-display text-foreground text-2xl">{name}</h3>
+        <p className="text-muted-foreground mt-3 leading-relaxed">{tagline}</p>
+        <ul className="text-muted-foreground marker:text-border mt-6 list-disc space-y-3 pl-5 text-sm leading-relaxed">
+          {points.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+        <p className="text-muted-foreground mt-6 text-xs leading-relaxed">
+          {note}
+        </p>
+        <a
+          className="border-primary text-primary hover:bg-accent mt-6 inline-block rounded-sm border px-5 py-2.5 text-sm font-medium"
+          href={href}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {t("documentation")}
+        </a>
+      </div>
+      <div className="min-w-0 space-y-4">
+        <CodeBlock code={install} label={t("install")} lang="shell" />
+        <ul className="flex flex-wrap gap-x-5 gap-y-1">
+          {links.map((link) => (
+            <li key={link.href}>
+              <a
+                className="text-primary text-sm hover:underline"
+                href={link.href}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <CodeBlock code={code} label={codeLabel} lang={codeLang} />
+      </div>
+    </article>
+  );
+};

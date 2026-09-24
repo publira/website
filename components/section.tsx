@@ -24,7 +24,7 @@ export const Section = ({
     id={id}
   >
     <div className="mx-auto max-w-6xl px-5 sm:px-8">
-      <h2 className="font-display text-foreground max-w-3xl text-4xl text-balance">
+      <h2 className="font-display text-foreground break-phrase max-w-3xl text-4xl text-balance">
         {title}
       </h2>
       {lead ? (
