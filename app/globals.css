@@ -5,16 +5,20 @@
   --font-display: "Iowan Old Style", "Palatino Linotype", var(--font-serif);
   --font-mono:
     ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+  --shadow-dialog: 0 1.5rem 4rem -2rem
+    color-mix(in oklab, var(--color-foreground) 55%, transparent);
+}
+
+/* Japanese has no spaces to wrap at, so a heading breaks between phrases
+   rather than inside a word. Tailwind has no utility for this value. */
+@utility break-phrase {
+  word-break: auto-phrase;
 }
 
 @layer base {
+  /* Sugar High token colors, drawn from the site palette and kept at 4.5:1
+     or better against the code block background. */
   :root {
-    color-scheme: light;
-    scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
-
-    /* Sugar High token colors, drawn from the site palette and kept at
-       4.5:1 or better against the code block background. */
     --sh-class: var(--color-primary);
     --sh-comment: var(--color-muted-foreground);
     --sh-entity: var(--color-primary);
@@ -26,12 +30,6 @@
     --sh-string: #3d6428;
   }
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    -webkit-font-smoothing: antialiased;
-  }
-
   code {
     @apply font-mono;
   }
@@ -40,18 +38,7 @@
     @apply outline-ring outline-2 outline-offset-2;
   }
 
-  /* Hold the page where the reader left it while a modal is open, so the
-     focus restoration on close does not scroll them somewhere else. */
-  html:has(dialog[open]) {
-    overflow: hidden;
-  }
-
-  dialog[open] {
-    box-shadow: 0 1.5rem 4rem -2rem
-      color-mix(in oklab, var(--color-foreground) 55%, transparent);
-  }
-
   ::selection {
-    background-color: var(--color-accent);
+    @apply bg-accent;
   }
 }

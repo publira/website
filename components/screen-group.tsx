@@ -18,7 +18,9 @@ export const ScreenGroup = ({
 }: ScreenGroupProps) => (
   <article>
     <div className="border-border flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t pt-6">
-      <h3 className="font-display text-foreground text-2xl">{title}</h3>
+      <h3 className="font-display text-foreground break-phrase text-2xl">
+        {title}
+      </h3>
       <span className="text-muted-foreground text-sm tabular-nums">{app}</span>
     </div>
     <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">

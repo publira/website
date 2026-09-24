@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 const repositories = [
   { href: "https://github.com/publira/publira", name: "publira/publira" },
   {
@@ -7,40 +9,48 @@ const repositories = [
   { href: "https://github.com/publira/epub", name: "publira/epub" },
 ];
 
-export const SiteFooter = () => (
-  <footer className="border-border bg-surface border-t">
-    <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8">
-      <div>
-        <p className="font-display text-foreground text-xl">Publira</p>
-        <p className="text-muted-foreground mt-3 max-w-sm text-sm leading-relaxed">
-          An open-source project that values portability, ease of operation, and
-          freedom from vendor lock-in. Every repository is licensed under
-          Apache-2.0.
+export const SiteFooter = async () => {
+  const t = await getTranslations();
+
+  return (
+    <footer className="border-border bg-surface border-t">
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8">
+        <div>
+          <p className="font-display text-foreground text-xl">
+            {t("site.name")}
+          </p>
+          <p className="text-muted-foreground mt-3 max-w-sm text-sm leading-relaxed">
+            {t("footer.about")}
+          </p>
+        </div>
+        <nav
+          aria-label={t("footer.repositories")}
+          className="sm:justify-self-end"
+        >
+          <p className="text-muted-foreground text-sm">
+            {t("footer.repositories")}
+          </p>
+          <ul className="mt-4 space-y-2">
+            {repositories.map((repository) => (
+              <li key={repository.href}>
+                <a
+                  className="text-primary text-sm hover:underline"
+                  href={repository.href}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {repository.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+      <div className="border-border border-t">
+        <p className="text-muted-foreground mx-auto max-w-6xl px-5 py-6 text-xs sm:px-8">
+          {t("footer.seedData")}
         </p>
       </div>
-      <nav aria-label="Repositories" className="sm:justify-self-end">
-        <p className="text-muted-foreground text-sm">Repositories</p>
-        <ul className="mt-4 space-y-2">
-          {repositories.map((repository) => (
-            <li key={repository.href}>
-              <a
-                className="text-primary text-sm hover:underline"
-                href={repository.href}
-                rel="noreferrer"
-                target="_blank"
-              >
-                {repository.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
-    <div className="border-border border-t">
-      <p className="text-muted-foreground mx-auto max-w-6xl px-5 py-6 text-xs sm:px-8">
-        Every screenshot on this page is the development seed data that ships
-        with the repository.
-      </p>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};

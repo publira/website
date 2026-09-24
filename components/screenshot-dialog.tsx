@@ -7,14 +7,16 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { Screenshot } from "#lib/screenshots";
 
 interface ScreenshotDialogProps {
-  readonly address: string;
   readonly children: ReactNode;
+  readonly closeLabel: string;
+  readonly openLabel: string;
   readonly screenshot: Screenshot;
 }
 
 export const ScreenshotDialog = ({
-  address,
   children,
+  closeLabel,
+  openLabel,
   screenshot,
 }: ScreenshotDialogProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -47,7 +49,7 @@ export const ScreenshotDialog = ({
     <>
       <button
         aria-haspopup="dialog"
-        aria-label={`Open the ${screenshot.title} screenshot of ${address} at full size`}
+        aria-label={openLabel}
         className="block w-full cursor-zoom-in rounded-lg"
         onClick={() => setIsEnlarged(true)}
         type="button"
@@ -57,7 +59,7 @@ export const ScreenshotDialog = ({
       <dialog
         aria-describedby={captionId}
         aria-labelledby={titleId}
-        className="border-border bg-popover backdrop:bg-foreground/70 m-auto max-h-[92dvh] w-[min(90rem,92vw)] max-w-none overflow-y-auto rounded-lg border p-0"
+        className="border-border bg-popover backdrop:bg-foreground/70 open:shadow-dialog m-auto max-h-[92dvh] w-[min(90rem,92vw)] max-w-none overflow-y-auto rounded-lg border p-0"
         onClose={() => setIsEnlarged(false)}
         ref={dialogRef}
       >
@@ -71,7 +73,7 @@ export const ScreenshotDialog = ({
               src={screenshot.image}
             />
             <button
-              aria-label="Close"
+              aria-label={closeLabel}
               className="border-border bg-card text-muted-foreground hover:text-primary absolute top-3 right-3 flex size-9 items-center justify-center rounded-sm border text-xl leading-none"
               onClick={close}
               type="button"
@@ -98,7 +100,7 @@ export const ScreenshotDialog = ({
                 onClick={close}
                 type="button"
               >
-                Close
+                {closeLabel}
               </button>
             </div>
           </div>

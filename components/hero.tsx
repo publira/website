@@ -1,85 +1,88 @@
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 
+import heroImage from "#assets/screenshots/01-host-catalog-top.png";
 import { BrowserFrame } from "#components/browser-frame";
-import { heroScreenshot } from "#lib/screenshots";
 
 const facts = [
-  { label: "Next.js apps", value: "3" },
-  { label: "Go processes", value: "2" },
-  { label: "Mobile client", value: "Flutter" },
-  { label: "Reader languages", value: "5" },
-  { label: "License", value: "Apache-2.0" },
-];
+  "nextApps",
+  "goProcesses",
+  "mobileClient",
+  "readerLanguages",
+  "license",
+] as const;
 
-export const Hero = () => (
-  <section>
-    <div className="mx-auto max-w-6xl px-5 pt-16 pb-20 sm:px-8 sm:pt-24">
-      <h1 className="font-display text-foreground max-w-4xl text-4xl leading-[1.15] text-balance sm:text-5xl">
-        The open-source gateway to your digital publishing utopia.
-      </h1>
-      <p className="text-muted-foreground mt-6 max-w-2xl text-lg leading-relaxed">
-        Publira is a multi-tenant SaaS that gives publishers with limited IT
-        resources a digital distribution platform for manga and novels, run
-        under their own brand. Editors submit the book information they receive
-        from creators, and readers read it on the web or on mobile.
-      </p>
+export const Hero = async () => {
+  const t = await getTranslations("hero");
 
-      <div className="mt-8 flex flex-wrap items-center gap-3">
-        <a
-          className="bg-secondary text-secondary-foreground hover:bg-foreground rounded-sm px-5 py-2.5 text-sm font-medium"
-          href="https://github.com/publira/publira"
-          rel="noreferrer"
-          target="_blank"
-        >
-          publira/publira on GitHub
-        </a>
-        <a
-          className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
-          href="#screens"
-        >
-          See the screens
-        </a>
-      </div>
-
-      <dl className="border-border mt-12 max-w-2xl border-t text-sm">
-        {facts.map((fact) => (
-          <div
-            className="border-border flex items-baseline justify-between gap-4 border-b py-2.5 last:border-b-0"
-            key={fact.label}
-          >
-            <dt className="text-muted-foreground">{fact.label}</dt>
-            <dd className="text-foreground tabular-nums">{fact.value}</dd>
-          </div>
-        ))}
-      </dl>
-
-      <div className="border-border mt-10 max-w-2xl border-t pt-6">
-        <p className="text-foreground text-sm font-medium">Still being built</p>
-        <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-          Publira is under active development and has not reached a stable
-          release. Everything shown on this page runs today, but running it for
-          a real publisher is not a matter of installing it as-is: expect to
-          read the code, adapt it to your own environment, and follow changes
-          that are still landing. Take it as something to evaluate, build on,
-          and contribute to — not as a finished product.
+  return (
+    <section>
+      <div className="mx-auto max-w-6xl px-5 pt-16 pb-20 sm:px-8 sm:pt-24">
+        <h1 className="font-display text-foreground break-phrase max-w-4xl text-4xl leading-[1.15] text-balance sm:text-5xl">
+          {t("title")}
+        </h1>
+        <p className="text-muted-foreground mt-6 max-w-2xl text-lg leading-relaxed">
+          {t("lead")}
         </p>
-      </div>
 
-      <figure className="mt-14">
-        <BrowserFrame address="publisher.example / catalog">
-          <Image
-            alt="The Publira reader-facing catalog, led by the work the tenant is featuring"
-            className="w-full"
-            placeholder="blur"
-            priority
-            sizes="(min-width: 1280px) 1152px, 100vw"
-            src={heroScreenshot.image}
-          />
-        </BrowserFrame>
-        <figcaption className="text-muted-foreground mt-3 text-sm">
-          {heroScreenshot.caption}
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-);
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <a
+            className="bg-secondary text-secondary-foreground hover:bg-foreground rounded-sm px-5 py-2.5 text-sm font-medium"
+            href="https://github.com/publira/publira"
+            rel="noreferrer"
+            target="_blank"
+          >
+            {t("github")}
+          </a>
+          <a
+            className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
+            href="#screens"
+          >
+            {t("screens")}
+          </a>
+        </div>
+
+        <dl className="border-border mt-12 max-w-2xl border-t text-sm">
+          {facts.map((fact) => (
+            <div
+              className="border-border flex items-baseline justify-between gap-4 border-b py-2.5 last:border-b-0"
+              key={fact}
+            >
+              <dt className="text-muted-foreground">
+                {t(`facts.${fact}.label`)}
+              </dt>
+              <dd className="text-foreground tabular-nums">
+                {t(`facts.${fact}.value`)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className="border-border mt-10 max-w-2xl border-t pt-6">
+          <p className="text-foreground text-sm font-medium">
+            {t("status.title")}
+          </p>
+          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+            {t("status.body")}
+          </p>
+        </div>
+
+        <figure className="mt-14">
+          <BrowserFrame address="publisher.example / catalog">
+            <Image
+              alt={t("screenshot.alt")}
+              className="w-full"
+              placeholder="blur"
+              priority
+              sizes="(min-width: 1280px) 1152px, 100vw"
+              src={heroImage}
+            />
+          </BrowserFrame>
+          <figcaption className="text-muted-foreground mt-3 text-sm">
+            {t("screenshot.caption")}
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+};
