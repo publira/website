@@ -34,8 +34,10 @@ components/   Presentational building blocks
 lib/          Data shared across components
 i18n/         The locales, the navigation helpers, and the request configuration
 messages/     Every string the site shows, one catalog per locale
+content/      Long-form documents in Markdown, one directory per locale
 assets/       Images imported by the code
 proxy.ts      Serves a path without a locale prefix in English
+mdx-components.tsx  The site's styles for the elements Markdown produces
 ```
 
 ## Localization
@@ -58,7 +60,7 @@ import messages from "#messages/en.json";
 import cover from "#assets/screenshots/01-host-catalog-top.png";
 ```
 
-`#components/*`, `#i18n/*`, and `#lib/*` map to targets that carry an explicit extension. TypeScript does not probe for extensions when it resolves a subpath import, so leaving them off resolves under Turbopack but fails type-checking with `TS2307`. `#assets/*` and `#messages/*` need none, because the importing side already writes one.
+`#components/*`, `#i18n/*`, and `#lib/*` map to targets that carry an explicit extension. TypeScript does not probe for extensions when it resolves a subpath import, so leaving them off resolves under Turbopack but fails type-checking with `TS2307`. `#assets/*`, `#content/*`, and `#messages/*` need none, because the importing side already writes one.
 
 ## Images
 
@@ -77,6 +79,8 @@ Every string a reader sees lives in `messages/`, never as a literal under `app/`
 In Japanese, leave no space between Latin letters or digits and Japanese text (`Next.jsアプリ`, `32バイト`): spacing between scripts is the font rendering's job. Parentheses are half-width, with a space outside each one that touches text, as in English (`設定 (オブジェクトストレージ、メール) を管理`).
 
 The message keys are typed from `messages/en.json`, and the build fails when `messages/ja.json` is missing a key the source has. Add a key to both catalogs in the same change.
+
+A long document, such as the privacy policy and the terms of use, is a Markdown file under `content/<locale>/` instead of a run of messages, so a translation tool segments it by paragraph. `@next/mdx` compiles it with `format: "detect"`, so a `.md` file is plain Markdown: no JSX, no imports, and no expressions. Its frontmatter carries the page's `title` and `description`, and `mdx-components.tsx` gives each element the site's styles. `lib/documents.ts` lists every document for every locale, so a translation that is missing fails the type check. Link from one document to another with a relative path (`./privacy`), which stays in the reader's locale.
 
 Write about Publira at the level someone deploying or evaluating it would see. The platform's own README is written for contributors, so content taken from it needs that filter rather than being transcribed:
 

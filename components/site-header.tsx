@@ -35,14 +35,16 @@ export const SiteHeader = async () => {
           aria-label={t("header.sectionsLabel")}
           className="ml-auto hidden items-center gap-6 lg:flex"
         >
+          {/* The sections live on the home page, so a document page links
+              back to them there. */}
           {navigation.map((section) => (
-            <a
+            <Link
               className="text-muted-foreground hover:text-foreground text-sm whitespace-nowrap"
-              href={`#${section}`}
+              href={{ hash: section, pathname: "/" }}
               key={section}
             >
               {t(`header.navigation.${section}`)}
-            </a>
+            </Link>
           ))}
         </nav>
 

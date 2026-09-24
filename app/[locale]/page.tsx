@@ -331,7 +331,7 @@ export const Home = async () => {
           </div>
         </Section>
       </main>
-      <SiteFooter />
+      <SiteFooter note={t("footer.seedData")} />
     </>
   );
 };

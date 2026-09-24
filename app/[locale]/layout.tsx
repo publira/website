@@ -21,7 +21,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
     // deployment points them at production, so a preview is not indexed as
     // the site.
     metadataBase: productionUrl ? new URL(`https://${productionUrl}`) : null,
-    title: t("metadata.title", { name: t("site.name") }),
+    title: {
+      default: t("metadata.title", { name: t("site.name") }),
+      template: `%s — ${t("site.name")}`,
+    },
   };
 };
 
