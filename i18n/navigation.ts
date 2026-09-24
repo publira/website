@@ -4,7 +4,7 @@ import { createNavigation } from "next-intl/navigation";
 
 import { routing } from "#i18n/routing";
 
-export const { getPathname, Link } = createNavigation(routing);
+export const { getPathname, Link, usePathname } = createNavigation(routing);
 
 /** The canonical URL of a page and the `hreflang` alternates of every locale. */
 export const getAlternates = (

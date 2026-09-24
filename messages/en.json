@@ -432,6 +432,9 @@
   "footer": {
     "about": "An open-source project that values portability, ease of operation, and freedom from vendor lock-in. Every repository is licensed under Apache-2.0.",
     "repositories": "Repositories",
+    "policies": "Policies",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
     "seedData": "Every screenshot on this page is the development seed data that ships with the repository."
   }
 }
