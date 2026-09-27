@@ -429,6 +429,9 @@
     "guide": "설정 가이드 전체 읽기",
     "contributing": "Contributing"
   },
+  "documents": {
+    "referenceTranslation": "이 문서는 참고용 번역입니다. 원문은 <link>일본어판</link>이며, 내용이 서로 다를 경우 일본어판이 우선합니다."
+  },
   "footer": {
     "about": "이식성, 운영의 수월함, 벤더 락인으로부터의 자유를 소중히 여기는 오픈 소스 프로젝트입니다. 모든 저장소는 Apache-2.0으로 라이선스됩니다.",
     "repositories": "저장소",

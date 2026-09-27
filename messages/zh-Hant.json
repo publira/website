@@ -429,6 +429,9 @@
     "guide": "閱讀完整的安裝指南",
     "contributing": "Contributing"
   },
+  "documents": {
+    "referenceTranslation": "本文為參考譯文。原文為<link>日文版</link>，兩者內容不一致時以日文版為準。"
+  },
   "footer": {
     "about": "一個重視可攜性、易於營運和免於供應商鎖定的開源專案。每個儲存庫都以 Apache-2.0 授權。",
     "repositories": "儲存庫",

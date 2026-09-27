@@ -429,6 +429,9 @@
     "guide": "阅读完整的安装指南",
     "contributing": "Contributing"
   },
+  "documents": {
+    "referenceTranslation": "本文为参考译文。原文为<link>日文版</link>，两者内容不一致时以日文版为准。"
+  },
   "footer": {
     "about": "一个重视可移植性、易于运维和免于厂商锁定的开源项目。每个仓库都以 Apache-2.0 授权。",
     "repositories": "仓库",

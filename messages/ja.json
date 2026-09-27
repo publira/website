@@ -429,6 +429,9 @@
     "guide": "セットアップガイド",
     "contributing": "Contributing"
   },
+  "documents": {
+    "referenceTranslation": "これは参考訳です。原文は<link>日本語版</link>で、内容に相違がある場合は日本語版が優先します。"
+  },
   "footer": {
     "about": "ポータビリティと運用のしやすさ、ベンダーロックインからの自由を大切にするオープンソースプロジェクトです。すべてのリポジトリはApache-2.0でライセンスされています。",
     "repositories": "リポジトリ",
