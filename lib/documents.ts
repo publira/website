@@ -21,10 +21,16 @@ const documents: Record<
   privacy: {
     en: () => import("#content/en/privacy.md"),
     ja: () => import("#content/ja/privacy.md"),
+    ko: () => import("#content/ko/privacy.md"),
+    "zh-Hans": () => import("#content/zh-Hans/privacy.md"),
+    "zh-Hant": () => import("#content/zh-Hant/privacy.md"),
   },
   terms: {
     en: () => import("#content/en/terms.md"),
     ja: () => import("#content/ja/terms.md"),
+    ko: () => import("#content/ko/terms.md"),
+    "zh-Hans": () => import("#content/zh-Hans/terms.md"),
+    "zh-Hant": () => import("#content/zh-Hant/terms.md"),
   },
 };
 

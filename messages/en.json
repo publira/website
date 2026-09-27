@@ -429,6 +429,9 @@
     "guide": "Read the full setup guide",
     "contributing": "Contributing"
   },
+  "documents": {
+    "referenceTranslation": "This is a reference translation. The <link>Japanese version</link> is the original, and it prevails where the two differ."
+  },
   "footer": {
     "about": "An open-source project that values portability, ease of operation, and freedom from vendor lock-in. Every repository is licensed under Apache-2.0.",
     "repositories": "Repositories",

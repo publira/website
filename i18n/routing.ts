@@ -6,7 +6,8 @@ export const routing = defineRouting({
   // no `Accept-Language`, and no redirect away from the page that was asked for.
   localeCookie: false,
   localeDetection: false,
-  // English is served without a prefix (`/`), every other locale with one (`/ja`).
+  // English is served without a prefix (`/`), every other locale with one
+  // (`/ja`, `/zh-Hant`).
   localePrefix: "as-needed",
-  locales: ["en", "ja"],
+  locales: ["en", "ja", "ko", "zh-Hans", "zh-Hant"],
 });
