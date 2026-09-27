@@ -10,12 +10,45 @@
 }
 
 /* Japanese has no spaces to wrap at, so a heading breaks between phrases
-   rather than inside a word. Tailwind has no utility for this value. */
+   rather than inside a word. Tailwind has no utility for this value.
+   Browsers segment only Japanese this way, and Korean does have spaces. */
 @utility break-phrase {
   word-break: auto-phrase;
+
+  &:lang(ko) {
+    word-break: keep-all;
+  }
 }
 
 @layer base {
+  /* The token stacks name Japanese faces first, which draw Korean and
+     Chinese with Japanese glyph forms. */
+  /* Korean wraps at the spaces between words, not between syllables. */
+  :root:lang(ko) {
+    word-break: keep-all;
+    --font-sans:
+      "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR",
+      "Noto Sans KR", system-ui, sans-serif;
+    --font-serif:
+      "Apple Myungjo", Batang, "Noto Serif CJK KR", "Noto Serif KR", serif;
+  }
+
+  :root:lang(zh-Hans) {
+    --font-sans:
+      "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC",
+      system-ui, sans-serif;
+    --font-serif:
+      "Songti SC", SimSun, "Noto Serif CJK SC", "Noto Serif SC", serif;
+  }
+
+  :root:lang(zh-Hant) {
+    --font-sans:
+      "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC",
+      system-ui, sans-serif;
+    --font-serif:
+      "Songti TC", PMingLiU, "Noto Serif CJK TC", "Noto Serif TC", serif;
+  }
+
   /* Sugar High token colors, drawn from the site palette and kept at 4.5:1
      or better against the code block background. */
   :root {
