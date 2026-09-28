@@ -3,6 +3,9 @@
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "emmet.showExpandedAbbreviation": "never",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   "js/ts.experimental.useTsgo": true,
   "js/ts.tsdk.path": "./node_modules/typescript",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,
@@ -25,6 +28,9 @@
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[markdown]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[tailwindcss]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "[typescript]": {
