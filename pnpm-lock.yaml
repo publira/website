@@ -173,8 +173,8 @@ importers:
         specifier: 16.3.6
         version: 16.3.6(@mdx-js/loader@3.1.1(supports-color@7.2.0))
       '@sugar-high/react':
-        specifier: 2.4.0
-        version: 2.4.0(react@19.3.0)
+        specifier: 2.4.1
+        version: 2.4.1(react@19.3.0)
       next:
         specifier: 16.3.6
         version: 16.3.6(@types/node@24.13.6)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -1128,8 +1128,8 @@ packages:
   '@sonarsource/analyzer-commons-configurations@2.31.0-5284':
     resolution: {integrity: sha512-ruk3blMs9BE9RNSp9LPpWZAIjxJmq4Cp00E3cELIHz7Kym3WxdWGRlKOMYLRQ5tJg/de7jN5AtEElY3bGIfTcw==}
 
-  '@sugar-high/react@2.4.0':
-    resolution: {integrity: sha512-3QlbpPCDQouDl0TEgT5PAPfxymEBdnkPC1EnJjL/n0lMqLv2RdR0XnYpYchmwkvdrCn5+2ZaazMcVHncvfsLPA==}
+  '@sugar-high/react@2.4.1':
+    resolution: {integrity: sha512-neyeiAhHx/0pmpY97SwR/4tcpQ0Q94D36Uy0IuOb8V49B49XWdIg5kGNdQmXKH5p/Ol68srtCczhfz+andwh2g==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -4300,7 +4300,7 @@ snapshots:
 
   '@sonarsource/analyzer-commons-configurations@2.31.0-5284': {}
 
-  '@sugar-high/react@2.4.0(react@19.3.0)':
+  '@sugar-high/react@2.4.1(react@19.3.0)':
     dependencies:
       react: 19.3.0
       sugar-high: 2.5.0
