@@ -20,7 +20,29 @@
   }
 }
 
+@utility text-autospace-* {
+  text-autospace: --value(
+    "normal",
+    "no-autospace",
+    "ideograph-alpha",
+    "ideograph-numeric",
+    "punctuation",
+    "insert",
+    "replace",
+    "auto",
+    [*],
+    --default(normal)
+  );
+}
+
 @layer base {
+  :lang(ja),
+  :lang(ko),
+  :lang(zh-Hans),
+  :lang(zh-Hant) {
+    @apply text-autospace;
+  }
+
   /* The token stacks name Japanese faces first, which draw Korean and
      Chinese with Japanese glyph forms. */
   /* Korean wraps at the spaces between words, not between syllables. */
