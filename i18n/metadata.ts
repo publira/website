@@ -6,12 +6,10 @@ import type { Locale } from "next-intl";
 import { openGraphImage } from "#components/open-graph-image";
 import { getPathname } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
+import type { Page } from "#lib/site";
 
 /** The canonical URL of a page and the `hreflang` alternates of every locale. */
-export const getAlternates = (
-  href: string,
-  locale: Locale
-): Metadata["alternates"] => ({
+export const getAlternates = (href: Page, locale: Locale) => ({
   canonical: getPathname({ href, locale }),
   languages: {
     ...Object.fromEntries(
@@ -49,7 +47,7 @@ interface OpenGraphOptions {
  * whole object, so every page builds its own from here.
  */
 export const getOpenGraph = (
-  href: string,
+  href: Page,
   locale: Locale,
   { siteName, title }: OpenGraphOptions
 ): Metadata["openGraph"] => ({
