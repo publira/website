@@ -1,11 +1,12 @@
 import { getTranslations } from "next-intl/server";
 
 const requirements = [
+  { key: "proxy", required: true },
   { key: "postgres", required: true },
   { key: "cache", required: true },
   { key: "storage", required: true },
   { key: "smtp", required: true },
-  { key: "stripe", required: false },
+  { key: "payments", required: false },
   { key: "firebase", required: false },
   { key: "openTelemetry", required: false },
 ] as const;

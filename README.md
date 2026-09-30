@@ -57,7 +57,7 @@ import { CodeBlock } from "#components/code-block";
 import { routing } from "#i18n/routing";
 import { getScreenshots } from "#lib/screenshots";
 import messages from "#messages/en.json";
-import cover from "#assets/screenshots/01-host-catalog-top.png";
+import cover from "#assets/screenshots/host/catalog.png";
 ```
 
 `#components/*`, `#i18n/*`, and `#lib/*` map to targets that carry an explicit extension. TypeScript does not probe for extensions when it resolves a subpath import, so leaving them off resolves under Turbopack but fails type-checking with `TS2307`. `#assets/*`, `#content/*`, and `#messages/*` need none, because the importing side already writes one.
@@ -66,7 +66,9 @@ import cover from "#assets/screenshots/01-host-catalog-top.png";
 
 Images are imported from `assets/` rather than served from a `public/` directory, so that Next.js derives their intrinsic size and blur placeholder at build time.
 
-Screenshots of the platform come from the development seed data that ships with its repository, and the site says so where it shows them. Never present seeded records as a real publisher's catalog. The web screens are photographed at 1440×817 in the pinned browser that repository records its own screenshot baselines in, and the app screens from a profile build on an Android emulator with the Pixel 7 hardware profile, its status bar held in demo mode so the clock and the signal read the same in every shot. Keeping each set to one setup is what lets one of them be refreshed without the others looking out of place beside it.
+Screenshots of the platform come from the development seed data, and the scenario seeds, that ship with its repository, and the site says so where it shows them. Never present seeded records as a real publisher's catalog. They live under `assets/screenshots/<surface>/`, one file per view, and `lib/screenshots.ts` lists each screen's views in the order its dialog shows them.
+
+The web screens are photographed at 1440×817 in one browser, the mail at 640 pixels wide as the development stack's mail catcher renders it, and the app screens with `task mobile:screenshot` on an Android emulator with the Pixel 7 hardware profile, its status bar held in demo mode so the clock and the signal read the same in every shot. Keeping each set to one setup is what lets one of them be refreshed without the others looking out of place beside it.
 
 ## Styling
 
