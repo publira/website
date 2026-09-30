@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "Still being built",
-      "body": "Publira is under active development and has not reached a stable release. Everything shown on this page runs today, but running it for a real publisher is not a matter of installing it as-is: expect to read the code, adapt it to your own environment, and follow changes that are still landing. Take it as something to evaluate, build on, and contribute to — not as a finished product."
+      "body": "Publira is under active development and has not reached a stable release. Everything shown on this page runs today, and an install can be brought up from its images with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and following changes that are still landing. Take it as something to evaluate, build on, and contribute to — not as a finished product."
     },
     "screenshot": {
       "alt": "The Publira reader-facing catalog, led by the work the tenant is featuring",
@@ -82,7 +82,7 @@
     "features": {
       "multiTenant": {
         "title": "Multi-tenant from the ground up",
-        "body": "Every publisher runs under its own brand and domain, while a separate platform console manages tenant status, the operators, the readers of every tenant, and the settings the whole install shares — object storage, mail, Web Push, and security policy."
+        "body": "Every publisher runs under its own brand and domain. Above them, the platform console — or publiractl, for an install that runs without it — manages tenant status, the operators, the readers of every tenant, and the settings the whole install shares: object storage, mail, Web Push, and security policy."
       },
       "console": {
         "title": "One console for the whole catalog",
@@ -93,8 +93,12 @@
         "body": "Colors, typefaces, logo, and icon are edited against a live preview built from the same parts as the public site, and the site keeps its current theme until this one is saved."
       },
       "payments": {
-        "title": "Paid episodes through Stripe",
-        "body": "An episode is sold as a one-time payment through Stripe Checkout. The redirect unlocks nothing: the purchase is written when the signed webhook arrives, and a refund is recorded against the purchase it reverses."
+        "title": "Paid episodes, through the provider you choose",
+        "body": "A tenant sells episodes through Stripe or PAY.JP Checkout on the web, and through the App Store and Google Play in its app. The redirect unlocks nothing: a purchase is written when the provider's signed notification arrives, and a refund is recorded against the purchase it reverses."
+      },
+      "signIn": {
+        "title": "Sign in with Apple and Google",
+        "body": "Each tenant registers its own Apple and Google credentials, and its readers sign in with them on the site and in the app as well as with an email address. Tenant staff can turn on two-step verification, and the platform can require it of every tenant administrator."
       },
       "surfaces": {
         "title": "The site, the app, or both",
@@ -102,11 +106,11 @@
       },
       "royalties": {
         "title": "Royalties, closed month by month",
-        "body": "Each credited author carries a share of an episode's sales. A month closes into a statement — by hand, or on the day the tenant chooses — and a closed statement downloads as CSV."
+        "body": "Each credited author carries a share of an episode's sales. A month closes into a statement — by hand, or on the day the tenant chooses — and a closed statement downloads as CSV. An author linked to a reader account reads their own episodes without buying them, and cannot rate them."
       },
       "ageRatings": {
         "title": "Age ratings under the tenant's own rule",
-        "body": "R15 and R18 titles are marked wherever they are listed, hidden until the reader confirms, and gated on the birth date the account carries — under the verification rule each tenant chooses."
+        "body": "R15 and R18 titles are marked wherever they are listed, hidden until the reader confirms, gated on the birth date the account carries under the verification rule each tenant chooses, and ranked in charts of their own that only a reader who may see them can open."
       },
       "comments": {
         "title": "Comments, and the queue behind them",
@@ -120,6 +124,10 @@
         "title": "Notifications wherever the reader is",
         "body": "A new episode reaches a follower in the reader's inbox, as mail the worker delivers, as a Web Push notification the browser shows once the reader has allowed it, and as a push notification on the phone that opens the episode in the app."
       },
+      "mail": {
+        "title": "Mail that reads well",
+        "body": "Account mail — confirming an address, resetting a password, a changed address — and the contact form's notice to staff are drawn from React components into HTML under the tenant's name and in its language, with a plain-text part beside it. The renderer is an optional service of its own; without it the same mail goes out as plain text."
+      },
       "auditLog": {
         "title": "An audit log per tenant",
         "body": "Who did what, when, and how it turned out — filtered by period, action, or actor, with dates read as calendar days in the tenant's own time zone."
@@ -130,7 +138,7 @@
       },
       "storage": {
         "title": "Object storage and image delivery",
-        "body": "Episode pages and eye-catches upload to the S3-compatible bucket set in the platform console, and the server resizes and converts them to WebP or AVIF on the way out, taking the same path locally as it does in production."
+        "body": "Episode pages, eye-catches, and genre artwork upload to the S3-compatible bucket the install is set up with, and the server resizes and converts them to WebP or AVIF on the way out, taking the same path locally as it does in production."
       },
       "cache": {
         "title": "A cache built for many instances",
@@ -142,56 +150,78 @@
       },
       "localization": {
         "title": "Localized end to end",
-        "body": "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, and in the app — and the tenant's own time zone governs how its records are read."
+        "body": "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, in the app, and in the mail. A tenant's own pages — its terms and its privacy policy among them — carry a translation per language, and its time zone governs how its records are read."
+      },
+      "searchEngines": {
+        "title": "Found by search engines",
+        "body": "Every tenant site serves its own robots.txt and sitemap, and every public page names its canonical address and the same page in each of the other languages, so a search engine indexes each publisher as the site it is."
       },
       "mobile": {
         "title": "A reader app in the same repository",
-        "body": "A Flutter client for Android and iOS under the tenant's own name and theme, calling the same public API as the site: accounts from sign-up to deletion, search, follows, announcements and an inbox, purchases through the site's checkout, and episodes saved encrypted on the device to read with no network. Each tenant builds its own app from one manifest."
+        "body": "A Flutter client for Android and iOS under the tenant's own name and theme, calling the same public API as the site: accounts from sign-up to deletion, Sign in with Apple and Google, search, genres and tags, follows, an inbox, purchases in the store or through the site's checkout, and episodes saved encrypted on the device to read with no network. Each tenant builds its own app from one manifest."
       },
       "portability": {
         "title": "Yours to run anywhere",
-        "body": "Apache-2.0, ordinary infrastructure underneath, and no managed service in the way — portability and freedom from lock-in are the point, not a side effect."
+        "body": "Apache-2.0, an image for every process, one Compose file that runs an install on a single host, and publiractl to migrate the database and set the install up. Ordinary infrastructure underneath and no managed service in the way — portability and freedom from lock-in are the point, not a side effect."
       }
     }
   },
   "screens": {
     "title": "Four surfaces, one catalog",
-    "lead": "Three Next.js apps and a Flutter client, each with its own audience. Every screenshot below is the development seed data that ships with the repository.",
+    "lead": "Three Next.js apps, a Flutter client, and the mail they send, each with its own audience. Every screenshot below is the development seed data, and the scenario seeds, that ship with the repository.",
     "host": {
       "title": "The reader-facing site",
-      "description": "The site a reader lands on, published under the publisher's own brand. Browsing, searching, ranking, following, and the viewer that turns the pages."
+      "description": "The site a reader lands on, published under the publisher's own brand. Browsing, searching, ranking, following, signing in, and the viewer that turns the pages."
     },
     "admin": {
       "title": "The tenant console",
-      "description": "Where editors work: the catalog, the publishing queue, the comments and messages readers left, what each author is owed, the theme of the public site, and the record of every change made to any of it."
+      "description": "Where editors work: the catalog and the publishing queue, the payment and sign-in providers, the theme and the pages of the public site, the messages readers send, what each author is owed, and the record of every change made to any of it."
     },
     "platform": {
       "title": "The platform console",
-      "description": "One level above the tenants, for whoever operates the install: tenant status, cross-tenant events, operators, the readers of every tenant, and the settings every tenant shares, from object storage to security policy."
+      "description": "One level above the tenants, for whoever operates the install: what the install still needs set up, tenant status, cross-tenant events, the readers of every tenant, and the settings every tenant shares, from object storage to security policy."
     },
     "mobile": {
       "title": "The mobile app",
-      "description": "The same catalog on a phone, from one Flutter codebase for Android and iOS, under the tenant's own name and theme. It calls the public API directly rather than going through the site, lets a reader sign up and manage the account without leaving it, and keeps the episodes a reader has opened or saved on the device.",
+      "description": "The same catalog on a phone, from one Flutter codebase for Android and iOS, under the tenant's own name and theme. It calls the public API directly rather than going through the site, signs a reader in with an email address, Apple, or Google, sells episodes through the store or the site's checkout, and keeps the episodes a reader has opened or saved on the device.",
       "address": "the Publira app"
+    },
+    "mail": {
+      "title": "The mail it sends",
+      "description": "Account mail and the notices staff receive, drawn as HTML from React components by a renderer of its own and sent with a plain-text part beside it. Mail to a tenant's readers and staff carries the tenant's name rather than Publira's and is written in the tenant's language; in Japanese, Korean, and Chinese the spacing between scripts is left to the mail client's text rendering, as it is on the site.",
+      "address": "a mail client"
     },
     "dialog": {
       "open": "Open the {title} screenshot of {address} at full size",
-      "close": "Close"
+      "openView": "Open {view}, a screenshot of {title} on {address}, at full size",
+      "close": "Close",
+      "previous": "Previous screenshot",
+      "next": "Next screenshot",
+      "position": "{current} of {total}",
+      "thumbnails": "Screenshots of {title}"
     }
   },
   "screenshots": {
     "host": {
       "catalog": {
         "title": "Catalog",
-        "caption": "The work the tenant is leading with, above the shelves the rest of the page is built from: the week's chart, the newest episodes, and the labels and authors it wants read. Search, the language switcher, and the reader's own account sit in the header, all under the publisher's brand rather than Publira's."
+        "caption": "The work the tenant is leading with, above the shelves the rest of the page is built from: the week's chart, the newest episodes, the day's schedule, and the labels and authors it wants read. An announcement the console pins runs across the top of every page until the reader closes it, and everything carries the publisher's brand rather than Publira's."
       },
       "browse": {
-        "title": "Browse",
-        "caption": "Genres carrying the number of series behind each one, and the week laid out a day at a time. Both are the tenant's own classification rather than a fixed list, so what a reader browses by is what the editorial console defined."
+        "title": "Genres",
+        "caption": "Each genre drawn from the covers of the series it ranks highest, or from artwork the editors upload for it, with the number of series behind it. A genre opens into its series, sorted and narrowed the way the whole list is, and the genres themselves are the tenant's own classification rather than a fixed list.",
+        "views": {
+          "genres": "Every genre",
+          "genre": "One genre's series"
+        }
       },
       "ranking": {
         "title": "Ranking",
-        "caption": "The daily chart and the weekly one, each row carrying how far the series moved since the chart before it. The positions come from what readers did — episodes opened and reacted to — aggregated by a batch job rather than arranged by hand."
+        "caption": "The daily chart and the weekly one, each row carrying how far the series moved since the chart before it. The positions come from what readers did — episodes opened and reacted to — aggregated by a batch job rather than arranged by hand, and R15 and R18 titles are ranked in charts of their own that open only to a reader who may see them.",
+        "views": {
+          "daily": "The daily chart",
+          "weekly": "The weekly chart"
+        }
       },
       "seriesList": {
         "title": "Series",
@@ -199,11 +229,16 @@
       },
       "seriesDetail": {
         "title": "Series detail",
-        "caption": "The cover, synopsis, label, genres, and tags, with Follow and Share beside them. The episodes run below in reading order, each marked free or paid, so what can be read now is clear before anyone signs in."
+        "caption": "The cover, synopsis, label, genres, and tags, with every author in the role they are credited in, and Follow and Share beside them. The episodes run below in reading order, each marked free or paid, so what can be read now is clear before anyone signs in."
       },
       "viewer": {
         "title": "Episode viewer",
-        "caption": "A page spread read right to left, drawn on a canvas rather than as images the document lays out. The viewer is the package published on npm rather than something bespoke to this screen, so the paging, the spread, and the direction are the library's behaviour."
+        "caption": "Pages drawn on a canvas and turned as spreads, right to left, from the page the editor set the spreads to start on. The toolbar's slider moves a spread at a time, and past the last page the reader reacts to the episode and is offered the next one. The viewer is the package published on npm, so the paging, the spread, and the direction are the library's behaviour.",
+        "views": {
+          "spread": "A spread",
+          "controls": "The toolbar and progress slider",
+          "end": "The end of the episode"
+        }
       },
       "search": {
         "title": "Search",
@@ -211,41 +246,108 @@
       },
       "authors": {
         "title": "Authors",
-        "caption": "The authors published on the tenant, with the number of series behind each name. An author is a profile the editorial console manages, so one name carries across every series credited to it."
+        "caption": "The authors published on the tenant, with the number of series behind each name, and each author's page with a portrait, a profile, a follow, and every series credited to them. An author is a profile the editorial console manages, so one name carries across every series it is credited on.",
+        "views": {
+          "list": "Every author",
+          "author": "One author's page"
+        }
+      },
+      "signIn": {
+        "title": "Signing in",
+        "caption": "An email address and a password, or the Apple and Google accounts a reader already has, on the sign-in and the sign-up form alike. The providers are the tenant's own: they appear once its console holds their credentials, and a new reader is asked to accept the tenant's terms when it names them.",
+        "views": {
+          "signIn": "Sign in",
+          "signUp": "Sign up"
+        }
+      },
+      "account": {
+        "title": "A reader's own pages",
+        "caption": "What is new from the series and authors the reader follows, the episodes they bought with how long each stays readable, and how they want to be told about a new episode — by mail, or by a notification from the browser.",
+        "views": {
+          "myPage": "My page",
+          "purchases": "Purchases",
+          "notifications": "Notification settings"
+        }
       }
     },
     "admin": {
       "dashboard": {
         "title": "Dashboard",
-        "caption": "Published series, draft episodes, and scheduled releases, above the queue of everything still needing attention. The queue gathers the drafts and the upcoming releases, so an editor opening the console is shown what is waiting rather than having to go looking for it."
+        "caption": "Published series, draft episodes, and scheduled releases, above the queue of everything still needing attention. The queue gathers the drafts and the upcoming releases with when each goes out, so an editor opening the console is shown what is waiting rather than having to go looking for it."
       },
       "series": {
         "title": "Series",
-        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. Editing and episode management open from every row, and new series start here too, so the whole catalog is reachable from a single screen."
-      },
-      "seriesForm": {
-        "title": "Series form",
-        "caption": "One series in detail: title, synopsis, reading period, label, and a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes are created from, and changing them leaves the episodes that already exist as they were."
+        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. A series opens into its details: a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes start from.",
+        "views": {
+          "list": "Every series",
+          "form": "One series and its credits"
+        }
       },
       "episodes": {
         "title": "Episodes",
-        "caption": "Every episode of one series in the order readers meet them, each card showing its publication status and its price. Reading order is what a reader sees, so the cards are dragged into it — or moved with an arrow key — rather than renumbered by hand, and a selection of them takes a credit added, replaced, removed, or reshared in one step."
+        "caption": "Every episode of a series in reading order, dragged into place — or moved with an arrow key — rather than renumbered by hand. An episode is scheduled for a time in the tenant's own zone, and its pages go up as images, a ZIP, or an EPUB, then are reordered the same way.",
+        "views": {
+          "list": "Episodes in reading order",
+          "schedule": "Scheduling an episode",
+          "pages": "An episode's pages"
+        }
       },
-      "authorRoles": {
-        "title": "Author roles",
-        "caption": "The roles this tenant credits authors in, renamed and moved into the priority the credits follow. The vocabulary belongs to the tenant, so a publisher that separates the artist from the writer says so here instead of living with a fixed list."
+      "authors": {
+        "title": "Authors",
+        "caption": "The roles this tenant credits authors in, renamed and moved into the priority the credits follow, and each author's own page. A tenant admin links the reader accounts that belong to an author there, so the author reads their own episodes without buying them and is not asked to rate them.",
+        "views": {
+          "roles": "Author roles",
+          "accounts": "An author's reader accounts"
+        }
       },
-      "royalties": {
-        "title": "Royalties",
-        "caption": "A month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV, and a tenant can have each month closed for it on the day it chooses."
+      "payments": {
+        "title": "Payments",
+        "caption": "The provider this tenant's web checkout runs through — Stripe or PAY.JP — with its keys, and the App Store and Google Play credentials its app sells through. A secret is write-only: coming back, an editor sees its state and a mask, never the value.",
+        "views": {
+          "checkout": "The web checkout",
+          "inApp": "In-app purchase"
+        }
+      },
+      "signIn": {
+        "title": "Sign-in and app links",
+        "caption": "The Apple and Google accounts this tenant's readers can sign in with, and the Android and iOS apps its links open in. Both are per tenant, so every publisher on one install signs its readers in under its own name and hands its links to its own app.",
+        "views": {
+          "providers": "Sign-in providers",
+          "appLinks": "App links"
+        }
       },
       "theme": {
         "title": "Theme",
-        "caption": "The brand colors, the text drawn on each of them, and the typefaces readers see first, beside the logo and the icon the public site carries. All of it is per tenant, so two publishers on one install share no part of their look."
+        "caption": "The brand colors, the text drawn on each of them, and the typefaces readers see first, beside the logo and the icon the public site carries, with a preview built from the parts the public site is made of. The preview follows every edit while the public site keeps its current colors, so nothing reaches readers until the theme is saved.",
+        "views": {
+          "edit": "Editing the theme",
+          "preview": "The preview"
+        }
       },
-      "themePreview": {
-        "title": "Theme preview",
-        "caption": "The colors being edited, shown on the parts a public site is built from — the header, the shelves, the badges, and the buttons. The preview follows every edit while the public site keeps its current colors, so nothing reaches readers until the theme is saved."
+      "site": {
+        "title": "Pages and announcements",
+        "caption": "The tenant's own pages written in Markdown, with a translation per language and every published version kept to compare and roll back to, and the announcements it delivers to everyone who opens the site — one of them pinned as a banner across the top of every page.",
+        "views": {
+          "pages": "A page and its translations",
+          "announcements": "Announcements"
+        }
+      },
+      "contact": {
+        "title": "Contact messages",
+        "caption": "What readers sent through the site's contact form, with the address to answer at and whether anyone has dealt with it yet. A new message is mailed to the staff as well, so nobody has to keep the console open to hear about it.",
+        "views": {
+          "inbox": "The inbox",
+          "message": "One message"
+        }
+      },
+      "reports": {
+        "title": "Reports and royalties",
+        "caption": "How many members finish each episode, and a month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV.",
+        "views": {
+          "readThrough": "Read-through",
+          "royalties": "An open month",
+          "statement": "A closed statement"
+        }
       },
       "auditLog": {
         "title": "Audit log",
@@ -255,45 +357,92 @@
     "platform": {
       "dashboard": {
         "title": "Dashboard",
-        "caption": "Total, active, and suspended tenants beside the users still pending, above the recent cross-tenant events — tenants created, roles granted, accounts added. The screens an operator reaches for next sit alongside them, so the status and the action it calls for are on one page."
+        "caption": "What the install still needs set up, with a way into each setting, above the count of tenants and the recent cross-tenant events — tenants created, roles granted, accounts added. An operator opening the console sees whether the install is ready before anything else.",
+        "views": {
+          "setup": "Setup status",
+          "events": "Recent events"
+        }
       },
       "tenants": {
         "title": "Tenants",
-        "caption": "Every registered tenant with its status and the day it was created, searchable by name or ID. This console manages tenant-level status alone and stays out of the catalog, which each tenant runs from its own editorial console."
+        "caption": "Every registered tenant with its status and the day it was created, searchable by name or ID, and each one's profile, domains, and members. This console manages a tenant's status and who administers it, and stays out of the catalog, which each tenant runs from its own console.",
+        "views": {
+          "list": "Every tenant",
+          "profile": "A tenant's profile",
+          "members": "A tenant's members"
+        }
       },
       "users": {
         "title": "Users",
         "caption": "The readers of every tenant in one list, with the tenant they belong to, the day they registered, and their status. This is where an operator suspends or removes an account, while what those readers may read stays with the tenant that published it."
       },
-      "storage": {
-        "title": "Object storage",
-        "caption": "The one S3-compatible bucket every tenant's uploads go to, set here rather than handed to each process at deploy time. A saved change reaches every running server without a restart, and mail, Web Push, security policy, and retention are set on the tabs beside it."
+      "settings": {
+        "title": "Install settings",
+        "caption": "The one S3-compatible bucket every tenant's uploads go to, the SMTP relay the install sends through, the limits that guard sign-in and mail, and the key pair Web Push signs with. A saved change reaches every running server without a restart.",
+        "views": {
+          "storage": "Object storage",
+          "email": "Email delivery",
+          "security": "Security policy",
+          "webPush": "Web Push"
+        }
       }
     },
     "mobile": {
       "catalog": {
         "title": "Catalog",
-        "caption": "The week's chart and the newest arrivals above the whole catalog, which asks for another page as the reader scrolls. The app bar carries the tenant's own name, the colors of its theme, and the way into its announcements, and a bar along the bottom reaches home, search, the library, notifications, and the account from every screen but the viewer."
+        "caption": "The tenant's name and theme in the app bar, the announcement the console pinned, and the episode the reader stopped at, above the genres and the week's chart. A bar along the bottom reaches home, search, the library, notifications, and the account from every screen but the viewer."
       },
-      "search": {
-        "title": "Search",
-        "caption": "One keyword answered by the series, the authors, and the labels that match it, the first few of each on one screen and a chip to open any group whole. Search is answered by the same public API the site's search is, so only what the tenant has published can be found."
+      "browse": {
+        "title": "Genres and search",
+        "caption": "The genres drawn as tiles of their covers, each opening into its series with the same sorting and filters the site offers, and one keyword answered by the series, the authors, and the labels that match it. Every list is answered by the same public API the site reads, so only what the tenant has published can be found.",
+        "views": {
+          "genres": "Every genre",
+          "genre": "One genre's series",
+          "search": "Search"
+        }
       },
       "seriesDetail": {
-        "title": "Series detail",
-        "caption": "Cover, credits in the roles the tenant defined, label, and genres, with Follow for the series and for each author and Share handing out the site's own link. Each episode can be saved for reading offline, and the ones already on the device are marked before the reader loses their connection."
+        "title": "Series and authors",
+        "caption": "Cover, credits in the roles the tenant defined, label, genres, and tags, with a follow for the series and for each author and Share handing out the site's own link. An author's page carries the same follow, and a new episode from someone the reader follows arrives as a push notification that opens straight into the viewer.",
+        "views": {
+          "series": "A series",
+          "author": "An author"
+        }
       },
       "viewer": {
         "title": "Episode viewer",
-        "caption": "The episode the site serves, laid out from the spread and the reading direction the editor set on it and turned a page at a time. A paid episode is bought through the site's Stripe Checkout in the system browser, and the app opens it again once the purchase is confirmed."
-      },
-      "author": {
-        "title": "Author",
-        "caption": "An author's portrait and profile above every published series credited to them, with the same follow the site records. A new episode from someone the reader follows arrives as a push notification that opens straight into the viewer."
+        "caption": "The episode the site serves, laid out from the spread and the reading direction the editor set on it, with a slider that moves through the pages. A paid episode is bought in the store's own sheet or through the site's checkout, whichever the tenant chose, and a screenshot of a page is met with the tenant's notice on how its pages may be used."
       },
       "library": {
-        "title": "Library",
-        "caption": "Continue reading, follows, and downloads, each a list of its own. Downloads shows what the device holds against its cap, by series, with when each episode was saved and its size; pages are kept encrypted under a key the device mints for itself, and a paid episode stays tied to the account it was bought with, closing again once the API stops confirming the purchase."
+        "title": "Library and inbox",
+        "caption": "Continue reading, follows, and the episodes saved on the device, each a list of its own; the episodes the reader bought with how long each stays readable; and the inbox of what was sent to them. Saved pages are kept encrypted under a key the device mints for itself, and reading done offline is sent once the network returns.",
+        "views": {
+          "library": "The library",
+          "purchases": "Purchases",
+          "notifications": "The inbox"
+        }
+      },
+      "account": {
+        "title": "Account",
+        "caption": "Everything a reader does with their account without leaving the app — the name, the address, the password, the linked Apple and Google accounts, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
+        "views": {
+          "account": "The account",
+          "signIn": "Sign in"
+        }
+      }
+    },
+    "mail": {
+      "verification": {
+        "title": "Confirming an address",
+        "caption": "The first mail a new reader receives: the button that confirms the address, when the link expires, and the link written out for a client that shows no buttons."
+      },
+      "passwordReset": {
+        "title": "Resetting a password",
+        "caption": "The link that sets a new password, expiring a day after it was sent, in the same layout the tenant's other mail uses."
+      },
+      "contactMessage": {
+        "title": "A message for staff",
+        "caption": "What a reader sent through the contact form, with the address to answer at and the account they were signed in as, so staff can reply from their own mail client."
       }
     }
   },
@@ -306,6 +455,12 @@
         "nodes": {
           "browser": "Browser",
           "flutter": "Flutter app"
+        }
+      },
+      "edge": {
+        "label": "Edge",
+        "nodes": {
+          "proxy": "A reverse proxy"
         }
       },
       "web": {
@@ -339,15 +494,19 @@
         }
       }
     },
-    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs; <code>publiractl</code> runs any of those jobs by hand.",
+    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs. An optional <code>email-renderer</code> draws the HTML part of each mail, and <code>publiractl</code> migrates the database, creates its roles, sets an install up, and runs any of the worker’s jobs by hand.",
     "tracing": "Every layer is instrumented with <strong>OpenTelemetry</strong>, so one browser request reads as a single trace: the Next.js root span, the Connect RPC it makes during SSR, the identically named span on the Go side, and the <code>db.query</code> children below it. Point it at whatever collector you already run, or leave tracing off — it is disabled by default."
   },
   "requirements": {
     "title": "What it needs to run",
-    "lead": "Ordinary infrastructure with no managed service behind it — bring your own, or keep the ones a checkout brings up for you.",
+    "lead": "Ordinary infrastructure with no managed service behind it — bring your own, or keep the ones the Compose file brings up for you.",
     "dependency": "Dependency",
     "purpose": "What it holds",
     "items": {
+      "proxy": {
+        "name": "A reverse proxy",
+        "purpose": "Routes each tenant's hosts to its site and console, and /api and /images to the server. The repository ships configurations for Traefik, nginx, and Caddy."
+      },
       "postgres": {
         "name": "PostgreSQL",
         "purpose": "The catalog, tenants, users, purchases, and the audit log. Each server connects as its own role."
@@ -358,15 +517,15 @@
       },
       "storage": {
         "name": "S3-compatible object storage",
-        "purpose": "Episode pages, eye-catches, and the other uploads. The bucket is set in the platform console rather than in each process's environment."
+        "purpose": "Episode pages, eye-catches, and the other uploads. The bucket is saved with the install's settings rather than in each process's environment."
       },
       "smtp": {
         "name": "An SMTP relay",
-        "purpose": "Notifications and tenant mail, configured per platform and per tenant."
+        "purpose": "Account mail, notifications, and the notices staff receive, configured per platform and per tenant."
       },
-      "stripe": {
-        "name": "A Stripe account",
-        "purpose": "One per tenant, for paid episodes only: Checkout takes the payment and a signed webhook is what confirms it."
+      "payments": {
+        "name": "A payment provider",
+        "purpose": "One account per tenant, for paid episodes only: Stripe or PAY.JP on the web, and the App Store and Google Play in the app. A signed notification from the provider is what confirms a purchase."
       },
       "firebase": {
         "name": "A Firebase project",
@@ -420,13 +579,16 @@
     }
   },
   "start": {
-    "title": "Running it locally",
-    "lead": "One command brings up local stand-ins for everything the platform depends on, and a second installs the toolchain and initializes the database.",
-    "setup": "Migrations carry the schema changes and seeds carry the initial data, so the local database is rebuilt the same way every time. Nothing here needs a cloud account: the stand-ins speak the same protocols the deployed services do, so the code takes one path in both.",
-    "secretsLabel": "Two keys, issued per environment",
-    "secrets": "<code>PUBLIRA_AUTH_SECRET</code> is the JWE key that seals the login session cookie; <code>PUBLIRA_AUTH_JWT_SECRET</code> signs the HS256 access token the Go servers verify. Different readers, different purpose — and every server refuses to start when either is unset or shorter than 32 bytes. The values written in the repository are for local development only.",
-    "status": "What the repository supports today is this local setup, and it is the honest edge of the project: the schema, the APIs, and the surfaces above are still moving, and nothing here is packaged for a deployment you can hand to readers unchanged. Getting there means doing that work yourself, on a codebase that will change under you. Issues and pull requests are the fastest way to shape where it goes next.",
-    "guide": "Read the full setup guide",
+    "title": "Running an install",
+    "lead": "An install runs from container images and one Compose file, and publiractl brings its database and its first tenant into service. The host needs Docker and nothing else.",
+    "buildLabel": "Build the images",
+    "build": "No registry publishes the images yet, so an install builds the ones it runs from a checkout of the release it wants, with the repository root as the build context. The email renderer and the platform console are optional and are built the same way when the install runs them.",
+    "secretsLabel": "The keys .env asks for",
+    "secrets": "<code>infra/deploy/.env.example</code> lists every value the Compose file reads; copied to <code>.env</code>, a required one left empty stops <code>docker compose</code> before anything starts. <code>PUBLIRA_AUTH_JWT_SECRET</code> signs the access tokens the server verifies, each web app seals its session cookie with a key of its own, and <code>PUBLIRA_SECRET_ENCRYPTION_KEYS</code> seals the stored credentials — the SMTP password, the object store's key, and each tenant's payment and push keys.",
+    "serviceLabel": "Bring it into service",
+    "service": "The first two commands apply the migrations and create the roles each process connects as, with the passwords from <code>.env</code>. <code>publiractl setup</code> then asks for the object store, the SMTP relay, the tenant, and its first administrator, and prints the addresses of the tenant site and its console. On every later release, pull or build the new images and run <code>db migrate</code> and <code>db roles</code> before <code>docker compose up -d</code>.",
+    "status": "What the repository ships today is a Compose file for a single host and the images it runs, built from source. The schema, the APIs, and the surfaces above are still moving and nothing here has been through a stable release, so an install follows changes that are still landing. Issues and pull requests are the fastest way to shape where it goes next.",
+    "guide": "Read the deployment guide",
     "contributing": "Contributing"
   },
   "documents": {
@@ -438,6 +600,6 @@
     "policies": "Policies",
     "privacy": "Privacy Policy",
     "terms": "Terms of Use",
-    "seedData": "Every screenshot on this page is the development seed data that ships with the repository."
+    "seedData": "Every screenshot on this page is the development seed data, and the scenario seeds, that ship with the repository."
   }
 }

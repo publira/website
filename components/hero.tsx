@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 
-import heroImage from "#assets/screenshots/01-host-catalog-top.png";
+import heroImage from "#assets/screenshots/host/catalog-plain.png";
 import { BrowserFrame } from "#components/browser-frame";
 
 const facts = [

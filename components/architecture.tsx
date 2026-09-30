@@ -8,6 +8,7 @@ const layers = [
     key: "clients",
     nodes: ["clients.nodes.browser", "clients.nodes.flutter"],
   },
+  { key: "edge", nodes: ["edge.nodes.proxy"] },
   {
     key: "web",
     nodes: ["web.nodes.host", "web.nodes.admin", "web.nodes.platform"],
