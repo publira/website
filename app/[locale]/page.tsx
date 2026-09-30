@@ -14,7 +14,7 @@ import { Section } from "#components/section";
 import { SiteFooter } from "#components/site-footer";
 import { SiteHeader } from "#components/site-header";
 import { TallScreenGroup } from "#components/tall-screen-group";
-import { getAlternates } from "#i18n/navigation";
+import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { getScreenshots } from "#lib/screenshots";
 
 const repositories = [
@@ -165,9 +165,17 @@ docker compose run --rm publiractl setup \\
 
 const code = (chunks: ReactNode) => <code>{chunks}</code>;
 
-export const generateMetadata = async (): Promise<Metadata> => ({
-  alternates: getAlternates("/", await getLocale()),
-});
+export const generateMetadata = async (): Promise<Metadata> => {
+  const [locale, t] = await Promise.all([getLocale(), getTranslations()]);
+
+  return {
+    alternates: getAlternates("/", locale),
+    openGraph: getOpenGraph("/", locale, {
+      siteName: t("site.name"),
+      title: t("metadata.title", { name: t("site.name") }),
+    }),
+  };
+};
 
 export const Home = async () => {
   const t = await getTranslations();

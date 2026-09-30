@@ -7,6 +7,7 @@ import { routing } from "#i18n/routing";
 export default createMiddleware(routing);
 
 export const config = {
-  // Skip Next.js internals and anything with a file extension.
-  matcher: "/((?!_next|.*\\..*).*)",
+  // Skip Next.js internals, anything with a file extension, and the icons,
+  // which live outside `[locale]`.
+  matcher: "/((?!_next|icon$|apple-icon$|.*\\..*).*)",
 };
