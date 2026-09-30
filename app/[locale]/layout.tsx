@@ -3,10 +3,9 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { routing } from "#i18n/routing";
+import { productionUrl } from "#lib/site";
 
 import "../globals.css";
-
-const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
 export const generateStaticParams = () =>
   routing.locales.map((locale) => ({ locale }));
@@ -20,11 +19,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
     // the canonical and `hreflang` URLs relative without a base. Every
     // deployment points them at production, so a preview is not indexed as
     // the site.
-    metadataBase: productionUrl ? new URL(`https://${productionUrl}`) : null,
+    metadataBase: productionUrl,
     title: {
       default: t("metadata.title", { name: t("site.name") }),
       template: `%s — ${t("site.name")}`,
     },
+    twitter: { card: "summary_large_image" },
   };
 };
 
