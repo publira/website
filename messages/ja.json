@@ -1,6 +1,7 @@
 {
   "site": {
-    "name": "Publira"
+    "name": "Publira",
+    "organization": "Publiraプロジェクト"
   },
   "metadata": {
     "description": "デジタル出版のユートピアへ通じるオープンソースの入り口。",

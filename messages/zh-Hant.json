@@ -1,6 +1,7 @@
 {
   "site": {
-    "name": "Publira"
+    "name": "Publira",
+    "organization": "Publira 專案"
   },
   "metadata": {
     "description": "通往數位出版烏托邦的開源之門。",

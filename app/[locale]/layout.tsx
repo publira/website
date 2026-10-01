@@ -2,8 +2,15 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { JsonLd } from "#components/json-ld";
 import { routing } from "#i18n/routing";
-import { productionUrl } from "#lib/site";
+import { getAbsoluteUrl, productionUrl } from "#lib/site";
+import {
+  getPageUrl,
+  getWebSiteId,
+  organizationGitHubUrl,
+  organizationId,
+} from "#lib/structured-data";
 
 import "../globals.css";
 
@@ -29,7 +36,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const RootLayout = async ({ children }: LayoutProps<"/[locale]">) => {
-  const locale = await getLocale();
+  const [locale, t] = await Promise.all([getLocale(), getTranslations()]);
+  const homeUrl = getPageUrl("/", locale);
 
   return (
     // While a dialog is open the page holds still, so restoring focus on
@@ -40,6 +48,29 @@ const RootLayout = async ({ children }: LayoutProps<"/[locale]">) => {
       lang={locale}
     >
       <body className="bg-background text-foreground antialiased">
+        <JsonLd
+          graph={[
+            {
+              "@id": organizationId,
+              "@type": "Organization",
+              description: t("footer.about"),
+              // Google wants a logo of at least 112px, which `/icon` is not.
+              logo: getAbsoluteUrl("/apple-icon"),
+              name: t("site.organization"),
+              sameAs: [organizationGitHubUrl],
+              url: homeUrl,
+            },
+            {
+              "@id": getWebSiteId(locale),
+              "@type": "WebSite",
+              description: t("metadata.description"),
+              inLanguage: locale,
+              name: t("site.name"),
+              publisher: { "@id": organizationId },
+              url: homeUrl,
+            },
+          ]}
+        />
         {/* Client Components get the locale, for `Link` and `useLocale`, but
             not the catalog: `null` keeps the messages out of the page. */}
         <NextIntlClientProvider messages={null}>

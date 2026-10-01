@@ -1,6 +1,7 @@
 {
   "site": {
-    "name": "Publira"
+    "name": "Publira",
+    "organization": "Publira project"
   },
   "metadata": {
     "description": "The Open-Source Gateway to Your Digital Publishing Utopia.",
