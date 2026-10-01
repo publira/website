@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import type { KeyboardEvent, ReactNode } from "react";
+import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 
 import type { DialogView } from "#lib/screenshots";
@@ -11,24 +11,69 @@ interface ScreenshotDialogProps {
   /** The framed first view, which opens the dialog on that view. */
   readonly children: ReactNode;
   readonly closeLabel: string;
-  readonly nextLabel: string;
-  readonly previousLabel: string;
-  /** Whether the screens are landscape or portrait, which their thumbnails follow. */
+  /**
+   * Whether the screens are landscape or portrait. The thumbnails follow it,
+   * and the dialog puts a portrait screen's title and caption beside it.
+   */
   readonly orientation: "landscape" | "portrait";
   readonly thumbnailsLabel: string;
   readonly title: string;
   readonly views: readonly DialogView[];
 }
 
-const stepButton =
-  "border-border text-foreground hover:border-primary hover:text-primary flex size-9 items-center justify-center rounded-sm border text-lg leading-none aria-disabled:pointer-events-none aria-disabled:opacity-40";
+// The picture sets the dialog's width: as wide as the screen was taken, short
+// enough to leave room for the text, and never wider than the viewport. Its
+// height follows from the width, so the picture fills the dialog with no bars
+// at its sides and holds its place while it loads.
+const layouts = {
+  landscape: {
+    body: "flex flex-col",
+    picture: "w-[min(var(--natural),92vw,70dvh*var(--ratio))]",
+    sizes: "(min-width: 1536px) 1440px, 92vw",
+    text: "border-t min-w-full w-0",
+  },
+  portrait: {
+    body: "flex flex-col sm:flex-row",
+    picture:
+      "w-[min(var(--natural),92vw,70dvh*var(--ratio))] sm:w-[min(var(--natural),88dvh*var(--ratio),92vw_-_20rem)]",
+    sizes: "(min-width: 640px) 480px, 70vw",
+    text: "border-t min-w-full w-0 sm:w-80 sm:min-w-0 sm:border-t-0 sm:border-l",
+  },
+} as const;
+
+interface ViewDotsProps {
+  readonly current: number;
+  readonly label: string;
+  readonly onShow: (index: number) => void;
+  readonly views: readonly DialogView[];
+}
+
+/** One dot per view, marking the current one; pressing a dot shows its view. */
+const ViewDots = ({ current, label, onShow, views }: ViewDotsProps) => (
+  <ul
+    aria-label={label}
+    className="border-border bg-card/90 pointer-events-auto flex rounded-full border px-1"
+  >
+    {views.map((dot, index) => (
+      <li key={dot.label}>
+        <button
+          aria-current={index === current}
+          aria-label={dot.label}
+          className="group flex size-6 items-center justify-center"
+          onClick={() => onShow(index)}
+          type="button"
+        >
+          <span className="bg-muted-foreground/50 group-hover:bg-primary group-aria-[current=true]:bg-primary block h-2 w-2 rounded-full transition-[width] group-aria-[current=true]:w-4 motion-reduce:transition-none" />
+        </button>
+      </li>
+    ))}
+  </ul>
+);
 
 export const ScreenshotDialog = ({
   caption,
   children,
   closeLabel,
-  nextLabel,
-  previousLabel,
   orientation,
   thumbnailsLabel,
   title,
@@ -43,6 +88,7 @@ export const ScreenshotDialog = ({
   const hasSeveral = views.length > 1;
   const [first] = views;
   const view = views[current] ?? first;
+  const layout = layouts[orientation];
 
   const open = (index: number) => {
     setCurrent(index);
@@ -140,99 +186,93 @@ export const ScreenshotDialog = ({
       <dialog
         aria-describedby={captionId}
         aria-labelledby={titleId}
-        className="border-border bg-popover backdrop:bg-foreground/70 open:shadow-dialog m-auto max-h-[92dvh] w-[min(90rem,92vw)] max-w-none overflow-y-auto rounded-lg border p-0"
+        className="border-border bg-popover backdrop:bg-foreground/70 open:shadow-dialog m-auto max-h-[92dvh] w-fit max-w-none overflow-y-auto rounded-lg border p-0"
         onClose={() => setOpenedAt(null)}
         onKeyDown={hasSeveral ? showOnArrowKey : undefined}
         ref={dialogRef}
+        style={
+          // SAFETY: both keys are custom properties, which React sets as they
+          // are and `CSSProperties` has no type for.
+          {
+            "--natural": `${first.image.width}px`,
+            "--ratio": `${first.image.width} / ${first.image.height}`,
+          } as CSSProperties
+        }
       >
         {openedAt === null ? null : (
-          <div className="relative flex flex-col">
-            <div
-              className="bg-muted flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth motion-reduce:scroll-auto"
-              onScroll={(event) => {
-                const track = event.currentTarget;
-                setCurrent(Math.round(track.scrollLeft / track.clientWidth));
-              }}
-              ref={trackRef}
-            >
-              {views.map((slide) => (
-                <div
-                  className="flex w-full shrink-0 snap-center justify-center"
-                  key={slide.label}
-                >
-                  <Image
-                    alt={slide.label}
-                    className="max-h-[70dvh] w-auto object-contain"
-                    placeholder="blur"
-                    sizes="(min-width: 1536px) 1440px, 92vw"
-                    src={slide.image}
-                  />
-                </div>
-              ))}
-            </div>
-            <button
-              aria-label={closeLabel}
-              className="border-border bg-card text-muted-foreground hover:text-primary absolute top-3 right-3 flex size-9 items-center justify-center rounded-sm border text-xl leading-none"
-              onClick={close}
-              type="button"
-            >
-              ×
-            </button>
-            <div className="border-border flex flex-wrap items-start justify-between gap-x-6 gap-y-4 border-t p-5">
-              <div className="min-w-0 flex-1 basis-80">
-                <span
-                  className="font-display text-foreground block text-lg"
-                  id={titleId}
-                >
-                  {title}
-                </span>
-                <span
-                  className="text-muted-foreground mt-1 block text-sm leading-relaxed"
-                  id={captionId}
-                >
-                  {caption}
-                </span>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
+          <div className={layout.body}>
+            <div className={`relative shrink-0 ${layout.picture}`}>
+              {/*
+                The overlays let a swipe through to the track around them. The
+                close button comes before the track, which can take focus as a
+                scroller, so that opening the dialog focuses the button.
+              */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start gap-3 p-3">
                 {hasSeveral ? (
-                  <>
-                    <p
-                      aria-live="polite"
-                      className="text-muted-foreground mr-1 text-right text-sm"
-                    >
-                      <span className="text-foreground block">
-                        {view.label}
-                      </span>
-                      <span className="tabular-nums">{view.position}</span>
-                    </p>
-                    <button
-                      aria-label={previousLabel}
-                      className={stepButton}
-                      aria-disabled={current === 0}
-                      onClick={() => show(current - 1)}
-                      type="button"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      aria-label={nextLabel}
-                      className={stepButton}
-                      aria-disabled={current === views.length - 1}
-                      onClick={() => show(current + 1)}
-                      type="button"
-                    >
-                      ›
-                    </button>
-                  </>
+                  <p
+                    aria-live="polite"
+                    className="border-border bg-card/90 text-foreground pointer-events-auto min-w-0 rounded-sm border px-2.5 py-1.5 text-sm leading-snug"
+                  >
+                    {view.label}
+                    <span className="sr-only"> {view.position}</span>
+                  </p>
                 ) : null}
                 <button
-                  className="border-primary text-primary hover:bg-accent shrink-0 rounded-sm border px-4 py-2 text-sm font-medium"
+                  aria-label={closeLabel}
+                  className="border-border bg-card text-muted-foreground hover:text-primary pointer-events-auto ml-auto flex size-9 shrink-0 items-center justify-center rounded-sm border text-xl leading-none"
                   onClick={close}
                   type="button"
                 >
-                  {closeLabel}
+                  ×
                 </button>
               </div>
+              <div
+                className="bg-muted flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth motion-reduce:scroll-auto"
+                onScroll={(event) => {
+                  const track = event.currentTarget;
+                  setCurrent(Math.round(track.scrollLeft / track.clientWidth));
+                }}
+                ref={trackRef}
+              >
+                {views.map((slide) => (
+                  <div
+                    className="w-full shrink-0 snap-center"
+                    key={slide.label}
+                  >
+                    <Image
+                      alt={slide.label}
+                      className="w-full"
+                      placeholder="blur"
+                      sizes={layout.sizes}
+                      src={slide.image}
+                    />
+                  </div>
+                ))}
+              </div>
+              {hasSeveral ? (
+                <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
+                  <ViewDots
+                    current={current}
+                    label={thumbnailsLabel}
+                    onShow={show}
+                    views={views}
+                  />
+                </div>
+              ) : null}
+            </div>
+            <div className={`border-border p-5 ${layout.text}`}>
+              <span
+                className="font-display text-foreground block text-lg"
+                id={titleId}
+              >
+                {title}
+              </span>
+              <span
+                className="text-muted-foreground mt-1 block text-sm leading-relaxed"
+                id={captionId}
+              >
+                {caption}
+              </span>
             </div>
           </div>
         )}

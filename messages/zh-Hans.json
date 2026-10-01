@@ -195,8 +195,6 @@
       "open": "放大查看{address}的“{title}”截图",
       "openView": "放大查看{address}上“{title}”中的“{view}”截图",
       "close": "关闭",
-      "previous": "上一张截图",
-      "next": "下一张截图",
       "position": "第 {current} 张，共 {total} 张",
       "thumbnails": "“{title}”的截图"
     }

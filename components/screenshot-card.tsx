@@ -29,8 +29,6 @@ export const ScreenshotCard = async ({
         <ScreenshotDialog
           caption={screenshot.caption}
           closeLabel={t("close")}
-          nextLabel={t("next")}
-          previousLabel={t("previous")}
           orientation="landscape"
           thumbnailsLabel={t("thumbnails", { title: screenshot.title })}
           title={screenshot.title}
