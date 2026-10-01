@@ -1,6 +1,7 @@
 {
   "site": {
-    "name": "Publira"
+    "name": "Publira",
+    "organization": "Publira 프로젝트"
   },
   "metadata": {
     "description": "디지털 출판의 유토피아로 통하는 오픈 소스 관문.",

@@ -6,6 +6,7 @@ import { Architecture } from "#components/architecture";
 import { CodeBlock } from "#components/code-block";
 import { FeatureGrid } from "#components/feature-grid";
 import { Hero } from "#components/hero";
+import { JsonLd } from "#components/json-ld";
 import { LibraryDetail } from "#components/library-detail";
 import { RepoCard } from "#components/repo-card";
 import { RequirementsTable } from "#components/requirements-table";
@@ -16,23 +17,35 @@ import { SiteHeader } from "#components/site-header";
 import { TallScreenGroup } from "#components/tall-screen-group";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { getScreenshots } from "#lib/screenshots";
+import {
+  getPageUrl,
+  getSoftwareApplicationId,
+  getSourceCodeId,
+  licenseUrl,
+  organizationId,
+} from "#lib/structured-data";
 
+// `languages` are the ones each repository's code is written in, as GitHub
+// counts them, less the build and platform glue.
 const repositories = [
   {
     href: "https://github.com/publira/publira",
     key: "publira",
+    languages: ["TypeScript", "Go", "Dart", "SQL"],
     name: "publira/publira",
   },
   {
     href: "https://github.com/publira/comic-viewer",
     install: "@publira/comic-viewer",
     key: "comicViewer",
+    languages: ["TypeScript"],
     name: "publira/comic-viewer",
   },
   {
     href: "https://github.com/publira/epub",
     install: "github.com/publira/epub",
     key: "epub",
+    languages: ["Go"],
     name: "publira/epub",
   },
 ] as const;
@@ -178,11 +191,47 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 export const Home = async () => {
-  const t = await getTranslations();
-  const screenshots = await getScreenshots();
+  const [locale, t, screenshots] = await Promise.all([
+    getLocale(),
+    getTranslations(),
+    getScreenshots(),
+  ]);
+  const softwareApplicationId = getSoftwareApplicationId(locale);
 
   return (
     <>
+      <JsonLd
+        graph={[
+          {
+            "@id": softwareApplicationId,
+            "@type": "SoftwareApplication",
+            applicationCategory: "BusinessApplication",
+            author: { "@id": organizationId },
+            description: t("hero.lead"),
+            license: licenseUrl,
+            name: t("site.name"),
+            publisher: { "@id": organizationId },
+            url: getPageUrl("/", locale),
+          },
+          ...repositories.map((repository) => ({
+            "@id": getSourceCodeId(locale, repository.key),
+            "@type": "SoftwareSourceCode",
+            author: { "@id": organizationId },
+            codeRepository: repository.href,
+            description: t(
+              `projects.repositories.${repository.key}.description`
+            ),
+            license: licenseUrl,
+            name: repository.name,
+            programmingLanguage: repository.languages,
+            targetProduct:
+              repository.key === "publira"
+                ? { "@id": softwareApplicationId }
+                : undefined,
+            url: repository.href,
+          })),
+        ]}
+      />
       <SiteHeader />
       <main>
         <Hero />
