@@ -195,8 +195,6 @@
       "open": "Open the {title} screenshot of {address} at full size",
       "openView": "Open {view}, a screenshot of {title} on {address}, at full size",
       "close": "Close",
-      "previous": "Previous screenshot",
-      "next": "Next screenshot",
       "position": "{current} of {total}",
       "thumbnails": "Screenshots of {title}"
     }

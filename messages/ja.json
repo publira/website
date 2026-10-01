@@ -195,8 +195,6 @@
       "open": "{address}の「{title}」のスクリーンショットを拡大表示",
       "openView": "{address}の「{title}」から「{view}」のスクリーンショットを拡大表示",
       "close": "閉じる",
-      "previous": "前のスクリーンショット",
-      "next": "次のスクリーンショット",
       "position": "{current} / {total}",
       "thumbnails": "「{title}」のスクリーンショット"
     }

@@ -58,8 +58,6 @@ export const TallScreenGroup = async ({
               <ScreenshotDialog
                 caption={screenshot.caption}
                 closeLabel={t("close")}
-                nextLabel={t("next")}
-                previousLabel={t("previous")}
                 orientation={frame === "mail" ? "landscape" : "portrait"}
                 thumbnailsLabel={t("thumbnails", { title: screenshot.title })}
                 title={screenshot.title}

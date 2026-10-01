@@ -195,8 +195,6 @@
       "open": "{address}의 '{title}' 스크린샷을 크게 보기",
       "openView": "{address}의 '{title}' 중 '{view}' 스크린샷을 크게 보기",
       "close": "닫기",
-      "previous": "이전 스크린샷",
-      "next": "다음 스크린샷",
       "position": "{total}장 중 {current}번째",
       "thumbnails": "'{title}' 스크린샷"
     }
