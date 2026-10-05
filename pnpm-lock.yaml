@@ -194,8 +194,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0
       sugar-high:
-        specifier: 2.5.0
-        version: 2.5.0
+        specifier: 2.5.1
+        version: 2.5.1
     devDependencies:
       '@publira/design-tokens':
         specifier: 1.1.0
@@ -3469,8 +3469,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  sugar-high@2.5.0:
-    resolution: {integrity: sha512-SPusUAqHpkpAxwGO6bVRegBq/Y6ZYkkZFR18VeH02pqk/l9hHJnc7MQf5Quyo54UQj1jU8u5zUDvj5zBJbA0rQ==}
+  sugar-high@2.5.1:
+    resolution: {integrity: sha512-Skhak2gN96Ywvkdwi8q3kmCmV4rbBTUuYOd71ilxao8wZ1G3O87zofSxl1FogNyeTT2bHC5NMfEEm6/i7Pc8SA==}
     peerDependencies:
       gpu-lexer: '>=0.0.2'
     peerDependenciesMeta:
@@ -4303,7 +4303,7 @@ snapshots:
   '@sugar-high/react@2.4.1(react@19.3.0)':
     dependencies:
       react: 19.3.0
-      sugar-high: 2.5.0
+      sugar-high: 2.5.1
     transitivePeerDependencies:
       - gpu-lexer
 
@@ -6924,7 +6924,7 @@ snapshots:
       client-only: 0.0.1
       react: 19.3.0
 
-  sugar-high@2.5.0: {}
+  sugar-high@2.5.1: {}
 
   supports-color@7.2.0:
     dependencies:
