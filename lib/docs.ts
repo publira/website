@@ -363,10 +363,9 @@ export const resolveDocsUrl = (
     return url;
   }
 
-  const page = tree.pages.find((candidate) => candidate.path === entry);
-  if (page) {
-    return `${getDocsPath(version, page.slug)}${suffix}`;
-  }
-  const image = tree.images.find((candidate) => candidate.path === entry);
-  return image ? getDocsPath(version, image.slug) : url;
+  // The query or fragment is kept: a page's heading, or an SVG's view.
+  const found =
+    tree.pages.find((candidate) => candidate.path === entry) ??
+    tree.images.find((candidate) => candidate.path === entry);
+  return found ? `${getDocsPath(version, found.slug)}${suffix}` : url;
 };
