@@ -37,6 +37,10 @@ const getCardVersion = (siteName: string, title: string) =>
     .slice(0, 16);
 
 interface OpenGraphOptions {
+  /** The card's path, when it is not `opengraph-image` beside the page. */
+  readonly image?: string;
+  /** The locales the page is served in, when it is not served in every one. */
+  readonly locales?: readonly Locale[];
   readonly siteName: string;
   /** The page's title, which the card shows and its alt text repeats. */
   readonly title: string;
@@ -47,11 +51,16 @@ interface OpenGraphOptions {
  * whole object, so every page builds its own from here.
  */
 export const getOpenGraph = (
-  href: Page,
+  href: string,
   locale: Locale,
-  { siteName, title }: OpenGraphOptions
+  {
+    image = `${href.replace(/\/$/u, "")}/opengraph-image`,
+    locales = routing.locales,
+    siteName,
+    title,
+  }: OpenGraphOptions
 ): Metadata["openGraph"] => ({
-  alternateLocale: routing.locales.flatMap((alternate) =>
+  alternateLocale: locales.flatMap((alternate) =>
     alternate === locale ? [] : [toOpenGraphLocale(alternate)]
   ),
   // Next.js would link the `opengraph-image` beside the page by its
@@ -61,10 +70,7 @@ export const getOpenGraph = (
     ...openGraphImage.size,
     alt: title,
     type: openGraphImage.contentType,
-    url: `${getPathname({
-      href: `${href.replace(/\/$/u, "")}/opengraph-image`,
-      locale,
-    })}?${new URLSearchParams({ v: getCardVersion(siteName, title) })}`,
+    url: `${getPathname({ href: image, locale })}?${new URLSearchParams({ v: getCardVersion(siteName, title) })}`,
   },
   locale: toOpenGraphLocale(locale),
   siteName,

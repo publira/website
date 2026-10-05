@@ -593,6 +593,14 @@
   "documents": {
     "referenceTranslation": "This is a reference translation. The <link>Japanese version</link> is the original, and it prevails where the two differ."
   },
+  "docs": {
+    "navigationLabel": "Documentation",
+    "versionLabel": "Version",
+    "published": "Published <time>{date}</time>",
+    "updated": "Updated <time>{date}</time>",
+    "nextNotice": "This page describes the development version on <code>main</code>, which may include changes that are not released yet. For the newest release, see <link>the documentation for {latest}</link>.",
+    "olderNotice": "This page describes {version}, which is not the newest release. See <link>the documentation for {latest}</link>."
+  },
   "footer": {
     "about": "An open-source project that values portability, ease of operation, and freedom from vendor lock-in. Every repository is licensed under Apache-2.0.",
     "repositories": "Repositories",

@@ -593,6 +593,14 @@
   "documents": {
     "referenceTranslation": "これは参考訳です。原文は<link>日本語版</link>で、内容に相違がある場合は日本語版が優先します。"
   },
+  "docs": {
+    "navigationLabel": "ドキュメント",
+    "versionLabel": "バージョン",
+    "published": "<time>{date}</time>公開",
+    "updated": "<time>{date}</time>更新",
+    "nextNotice": "このページは<code>main</code>の開発版について説明しています。まだリリースされていない変更を含むことがあります。最新のリリースについては<link>{latest}のドキュメント</link>を参照してください。",
+    "olderNotice": "このページは最新ではないリリース{version}について説明しています。最新のリリースについては<link>{latest}のドキュメント</link>を参照してください。"
+  },
   "footer": {
     "about": "ポータビリティと運用のしやすさ、ベンダーロックインからの自由を大切にするオープンソースプロジェクトです。すべてのリポジトリはApache-2.0でライセンスされています。",
     "repositories": "リポジトリ",

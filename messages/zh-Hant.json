@@ -593,6 +593,14 @@
   "documents": {
     "referenceTranslation": "本文為參考譯文。原文為<link>日文版</link>，兩者內容不一致時以日文版為準。"
   },
+  "docs": {
+    "navigationLabel": "文件",
+    "versionLabel": "版本",
+    "published": "發布於 <time>{date}</time>",
+    "updated": "更新於 <time>{date}</time>",
+    "nextNotice": "本頁說明的是 <code>main</code> 上的開發版本，可能包含尚未發布的變更。最新發布版本請參閱<link>{latest} 的文件</link>。",
+    "olderNotice": "本頁說明的是 {version}，並非最新發布版本。最新發布版本請參閱<link>{latest} 的文件</link>。"
+  },
   "footer": {
     "about": "一個重視可攜性、易於營運和免於供應商鎖定的開源專案。每個儲存庫都以 Apache-2.0 授權。",
     "repositories": "儲存庫",

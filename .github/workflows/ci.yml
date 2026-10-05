@@ -39,5 +39,9 @@ jobs:
       - name: Validate / Lint and Format
         run: pnpm check
 
+      # The build reads the documentation from publira/publira through the
+      # GitHub API, which allows too few requests without a token.
       - name: Build / Web
         run: pnpm build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

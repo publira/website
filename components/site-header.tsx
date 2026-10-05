@@ -16,7 +16,12 @@ const navigation = [
 const autonym = (locale: string) =>
   new Intl.DisplayNames(locale, { type: "language" }).of(locale) ?? locale;
 
-export const SiteHeader = async () => {
+interface SiteHeaderProps {
+  /** Where the locale menu leads, for a page served in one locale alone. */
+  readonly localeHref?: string;
+}
+
+export const SiteHeader = async ({ localeHref }: SiteHeaderProps = {}) => {
   const t = await getTranslations();
 
   return (
@@ -50,6 +55,7 @@ export const SiteHeader = async () => {
 
         <div className="ml-auto lg:ml-0">
           <LocaleMenu
+            href={localeHref}
             label={t("header.localeLabel")}
             options={routing.locales.map((locale) => ({
               locale,

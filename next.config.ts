@@ -11,7 +11,12 @@ const withMDX = createMDX({
     // translation is text rather than JSX.
     format: "detect",
     // Turbopack takes plugins by name, since functions cannot cross into Rust.
-    remarkPlugins: ["remark-frontmatter", "remark-mdx-frontmatter"],
+    // `components/docs-content.tsx` parses the documentation the same way.
+    remarkPlugins: [
+      "remark-frontmatter",
+      "remark-gfm",
+      "remark-mdx-frontmatter",
+    ],
   },
 });
 
