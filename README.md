@@ -29,14 +29,15 @@ The site is then served on `http://localhost:3000`. A Dev Container definition i
 ## Project structure
 
 ```
-app/          The global stylesheet, and the routes and layouts under app/[locale]/
+app/          The global stylesheet, the routes and layouts under app/[locale]/,
+              and the Route Handlers for docs images and the GitHub webhook
 components/   Presentational building blocks
 lib/          Data shared across components
 i18n/         The locales, the navigation helpers, and the request configuration
 messages/     Every string the site shows, one catalog per locale
 content/      Long-form documents in Markdown, one directory per locale
 assets/       Images imported by the code
-proxy.ts      Serves a path without a locale prefix in English
+proxy.ts      Serves a path without a locale prefix in English, docs included
 mdx-components.tsx  The site's styles for the elements Markdown produces
 ```
 
@@ -47,6 +48,20 @@ The site is served in English at `/`, and in Japanese, Korean, Simplified Chines
 Components read their strings with `getTranslations` from `next-intl/server`. The root layout's `NextIntlClientProvider` passes Client Components the locale, which next-intl's `Link` and `useLocale` read, but not the catalog (`messages={null}`), so the messages never reach the browser. A Client Component takes the text it shows as props from the Server Component that renders it. Links within the site use `Link` from `#i18n/navigation`, so a change of locale is a client-side navigation.
 
 [next-intl]: https://next-intl.dev/
+
+## Documentation
+
+`/docs` serves the user documentation that [publira/publira](https://github.com/publira/publira) keeps under `docs/en/`, laid out as its `docs/README.md` describes: `/docs/next/...` from `main`, and `/docs/vX.Y/...` from the highest `vX.Y.Z` tag of each minor version, with `/docs` redirecting to the newest. `lib/docs.ts` reads the tags, the trees, and the files through the GitHub API inside `"use cache"` functions, and `components/docs-content.tsx` compiles each page as plain Markdown with the styles in `mdx-components.tsx`. The documentation is in English alone, so the proxy redirects another locale's `/docs` URL (`/ja/docs/...`) to it.
+
+The cache holds until publira/publira's `push` webhook reaches `/api/webhooks/github`: a push to `main` that changes a file under `docs/` revalidates `next`, and a `v*` tag created or deleted revalidates the list of releases. A deployment reads three environment variables:
+
+| Variable | What it is for |
+| --- | --- |
+| `GITHUB_APP_ID` | The ID of the GitHub App the site reads publira/publira as, with an installation token |
+| `GITHUB_APP_PRIVATE_KEY` | A private key of that App, in PEM; line breaks may be written as `\n` |
+| `GITHUB_WEBHOOK_SECRET` | The webhook's secret, which signs each delivery. Without it every delivery is rejected |
+
+Without the App, the site reads with `GITHUB_TOKEN` instead, or without a token, which GitHub allows 60 requests an hour. CI passes the workflow's token, and locally `GITHUB_TOKEN=$(gh auth token) pnpm dev` does the same.
 
 ## Subpath imports
 

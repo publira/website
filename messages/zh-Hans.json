@@ -593,6 +593,14 @@
   "documents": {
     "referenceTranslation": "本文为参考译文。原文为<link>日文版</link>，两者内容不一致时以日文版为准。"
   },
+  "docs": {
+    "navigationLabel": "文档",
+    "versionLabel": "版本",
+    "published": "发布于 <time>{date}</time>",
+    "updated": "更新于 <time>{date}</time>",
+    "nextNotice": "本页介绍的是 <code>main</code> 上的开发版本，可能包含尚未发布的更改。最新发布版本请参阅<link>{latest} 的文档</link>。",
+    "olderNotice": "本页介绍的是 {version}，并非最新发布版本。最新发布版本请参阅<link>{latest} 的文档</link>。"
+  },
   "footer": {
     "about": "一个重视可移植性、易于运维和免于厂商锁定的开源项目。每个仓库都以 Apache-2.0 授权。",
     "repositories": "仓库",
