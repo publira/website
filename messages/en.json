@@ -17,6 +17,7 @@
       "libraries": "Libraries",
       "start": "Get started"
     },
+    "docs": "Docs",
     "localeLabel": "Language",
     "github": "GitHub"
   },
@@ -603,6 +604,7 @@
   },
   "footer": {
     "about": "An open-source project that values portability, ease of operation, and freedom from vendor lock-in. Every repository is licensed under Apache-2.0.",
+    "docs": "Documentation",
     "repositories": "Repositories",
     "policies": "Policies",
     "privacy": "Privacy Policy",

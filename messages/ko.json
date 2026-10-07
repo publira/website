@@ -17,6 +17,7 @@
       "libraries": "라이브러리",
       "start": "시작하기"
     },
+    "docs": "문서",
     "localeLabel": "언어",
     "github": "GitHub"
   },
@@ -603,6 +604,7 @@
   },
   "footer": {
     "about": "이식성, 운영의 수월함, 벤더 락인으로부터의 자유를 소중히 여기는 오픈 소스 프로젝트입니다. 모든 저장소는 Apache-2.0으로 라이선스됩니다.",
+    "docs": "문서",
     "repositories": "저장소",
     "policies": "정책",
     "privacy": "개인정보 처리방침",

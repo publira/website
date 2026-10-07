@@ -1,8 +1,10 @@
 import { getTranslations } from "next-intl/server";
+import NextLink from "next/link";
 
 import { LocaleMenu } from "#components/locale-menu";
 import { Link } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
+import { docsLocale } from "#lib/docs";
 
 const navigation = [
   "platform",
@@ -17,11 +19,16 @@ const autonym = (locale: string) =>
   new Intl.DisplayNames(locale, { type: "language" }).of(locale) ?? locale;
 
 interface SiteHeaderProps {
+  /** The page of the navigation's own that this one is part of. */
+  readonly current?: "docs";
   /** Where the locale menu leads, for a page served in one locale alone. */
   readonly localeHref?: string;
 }
 
-export const SiteHeader = async ({ localeHref }: SiteHeaderProps = {}) => {
+export const SiteHeader = async ({
+  current,
+  localeHref,
+}: SiteHeaderProps = {}) => {
   const t = await getTranslations();
 
   return (
@@ -38,7 +45,7 @@ export const SiteHeader = async ({ localeHref }: SiteHeaderProps = {}) => {
 
         <nav
           aria-label={t("header.sectionsLabel")}
-          className="ml-auto hidden items-center gap-6 lg:flex"
+          className="ml-auto hidden items-center gap-5 lg:flex"
         >
           {/* The sections live on the home page, so a document page links
               back to them there. */}
@@ -51,6 +58,16 @@ export const SiteHeader = async ({ localeHref }: SiteHeaderProps = {}) => {
               {t(`header.navigation.${section}`)}
             </Link>
           ))}
+          {/* The documentation is in English alone, so it is linked without
+              a locale prefix, which would only redirect. */}
+          <NextLink
+            aria-current={current === "docs" ? "page" : undefined}
+            className="text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground text-sm whitespace-nowrap"
+            href="/docs"
+            hrefLang={docsLocale}
+          >
+            {t("header.docs")}
+          </NextLink>
         </nav>
 
         <div className="ml-auto lg:ml-0">

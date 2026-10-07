@@ -17,6 +17,7 @@
       "libraries": "库",
       "start": "开始使用"
     },
+    "docs": "文档",
     "localeLabel": "语言",
     "github": "GitHub"
   },
@@ -603,6 +604,7 @@
   },
   "footer": {
     "about": "一个重视可移植性、易于运维和免于厂商锁定的开源项目。每个仓库都以 Apache-2.0 授权。",
+    "docs": "文档",
     "repositories": "仓库",
     "policies": "政策",
     "privacy": "隐私政策",

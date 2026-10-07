@@ -336,6 +336,16 @@ export const getDocsPath = (version: string, slug: readonly string[] = []) =>
 export const findPage = (tree: DocsTree, slug: readonly string[]) =>
   tree.pages.find((page) => page.slug.join("/") === slug.join("/"));
 
+/**
+ * The URL of a page in the newest version, or of `/docs` when that version
+ * has no page at `slug`, as after a page is renamed.
+ */
+export const getCurrentDocsPath = async (slug: readonly string[]) => {
+  const version = await getCurrentVersion();
+  const tree = await getDocsTree(version);
+  return tree && findPage(tree, slug) ? getDocsPath(version, slug) : "/docs";
+};
+
 const externalUrl = /^(?:[a-z][a-z\d+.-]*:|\/|#|\?)/iu;
 
 /**
