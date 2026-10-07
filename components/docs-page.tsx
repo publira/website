@@ -2,6 +2,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { DocsContent } from "#components/docs-content";
+import { DocsNavigation } from "#components/docs-navigation";
 import { JsonLd } from "#components/json-ld";
 import { Menu } from "#components/menu";
 import { SiteFooter } from "#components/site-footer";
@@ -42,11 +43,18 @@ const toNavigation = (pages: readonly DocsPageData[]) => {
 
 interface NavigationListProps {
   readonly current: DocsPageData;
+  /** The pages whose children are listed: the current one and those above. */
+  readonly expanded: ReadonlySet<string>;
   readonly items: readonly NavigationItem[];
   readonly version: string;
 }
 
-const NavigationList = ({ current, items, version }: NavigationListProps) => (
+const NavigationList = ({
+  current,
+  expanded,
+  items,
+  version,
+}: NavigationListProps) => (
   <ul className="in-[li]:border-border space-y-1 in-[li]:mt-1 in-[li]:ml-3 in-[li]:border-l in-[li]:pl-3">
     {items.map(({ children, page }) => (
       <li key={page.path}>
@@ -58,9 +66,10 @@ const NavigationList = ({ current, items, version }: NavigationListProps) => (
         >
           {page.title}
         </Link>
-        {children.length > 0 ? (
+        {children.length > 0 && expanded.has(page.path) ? (
           <NavigationList
             current={current}
+            expanded={expanded}
             items={children}
             version={version}
           />
@@ -247,13 +256,19 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
             slug={page.slug}
             versions={trees}
           />
-          <nav aria-label={t("docs.navigationLabel")} className="mt-6">
+          <DocsNavigation
+            label={t("docs.navigationLabel")}
+            summary={page.title}
+          >
             <NavigationList
               current={page}
+              expanded={
+                new Set([...ancestors, page].map((crumb) => crumb.path))
+              }
               items={toNavigation(tree.pages)}
               version={version}
             />
-          </nav>
+          </DocsNavigation>
         </aside>
         <main className="max-w-3xl py-12 sm:py-16 lg:py-20">
           {version === latest ? null : (
