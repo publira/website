@@ -1,5 +1,18 @@
 import { renderOpenGraphImage } from "#components/open-graph-image";
-import { docsLocale, findPage, getDocsTree } from "#lib/docs";
+import {
+  docsLocale,
+  findPage,
+  getDocsPageParams,
+  getDocsTree,
+} from "#lib/docs";
+
+// Each card is prerendered with its page, and the webhook regenerates both.
+// A Route Handler takes no `locale` from the layout, and another locale's docs
+// URL redirects to English in the proxy, so English alone is listed.
+export const generateStaticParams = async () => {
+  const pages = await getDocsPageParams();
+  return pages.map((params) => ({ ...params, locale: docsLocale }));
+};
 
 // The card of a docs page. A metadata image cannot sit below the pages'
 // catch-all segment, so it is a Route Handler of its own.
