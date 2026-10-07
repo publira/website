@@ -1,8 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import NextLink from "next/link";
 
 import { Link } from "#i18n/navigation";
-import { docsLocale } from "#lib/docs";
 
 const repositories = [
   { href: "https://github.com/publira/publira", name: "publira/publira" },
@@ -33,15 +31,12 @@ export const SiteFooter = async ({ note }: SiteFooterProps) => {
           <p className="text-muted-foreground mt-3 max-w-sm text-sm leading-relaxed">
             {t("footer.about")}
           </p>
-          {/* The documentation is in English alone, so the link has no locale
-              prefix, which would only redirect. */}
-          <NextLink
+          <Link
             className="text-primary mt-4 inline-block text-sm hover:underline"
             href="/docs"
-            hrefLang={docsLocale}
           >
             {t("footer.docs")}
-          </NextLink>
+          </Link>
         </div>
         <nav aria-label={t("footer.repositories")}>
           <p className="text-muted-foreground text-sm">
