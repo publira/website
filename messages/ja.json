@@ -596,6 +596,9 @@
   },
   "docs": {
     "navigationLabel": "ドキュメント",
+    "adjacentPagesLabel": "前後のページ",
+    "previousPage": "前へ",
+    "nextPage": "次へ",
     "versionLabel": "バージョン",
     "published": "<time>{date}</time>公開",
     "updated": "<time>{date}</time>更新",

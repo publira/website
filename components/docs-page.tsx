@@ -127,6 +127,30 @@ const VersionNotice = async ({ latest, version }: VersionNoticeProps) => {
   );
 };
 
+interface AdjacentPageLinkProps {
+  readonly label: string;
+  readonly page: DocsPageData;
+  readonly rel: "next" | "prev";
+  readonly version: string;
+}
+
+const AdjacentPageLink = ({
+  label,
+  page,
+  rel,
+  version,
+}: AdjacentPageLinkProps) => (
+  <Link
+    className={`border-border hover:bg-accent block rounded-md border px-4 py-3 ${rel === "next" ? "sm:col-start-2 sm:text-right" : ""}`}
+    href={getDocsPath(version, page.slug)}
+    prefetch
+    rel={rel}
+  >
+    <span className="text-muted-foreground block text-sm">{label}</span>
+    <span className="text-foreground mt-1 block font-medium">{page.title}</span>
+  </Link>
+);
+
 interface PageDateProps {
   readonly date: string;
   readonly kind: "published" | "updated";
@@ -178,6 +202,9 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
       findPage(tree, page.slug.slice(0, index + 1));
     return ancestor ? [ancestor] : [];
   });
+  const position = tree.pages.findIndex(({ path }) => path === page.path);
+  const previous = tree.pages[position - 1];
+  const next = tree.pages[position + 1];
 
   return (
     <>
@@ -244,6 +271,29 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
             </p>
             <DocsContent slug={page.slug} version={version} />
           </article>
+          {previous || next ? (
+            <nav
+              aria-label={t("docs.adjacentPagesLabel")}
+              className="border-border mt-12 grid gap-4 border-t pt-8 sm:grid-cols-2"
+            >
+              {previous ? (
+                <AdjacentPageLink
+                  label={t("docs.previousPage")}
+                  page={previous}
+                  rel="prev"
+                  version={version}
+                />
+              ) : null}
+              {next ? (
+                <AdjacentPageLink
+                  label={t("docs.nextPage")}
+                  page={next}
+                  rel="next"
+                  version={version}
+                />
+              ) : null}
+            </nav>
+          ) : null}
         </main>
       </div>
       <SiteFooter />

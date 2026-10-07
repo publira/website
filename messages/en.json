@@ -596,6 +596,9 @@
   },
   "docs": {
     "navigationLabel": "Documentation",
+    "adjacentPagesLabel": "Previous and next pages",
+    "previousPage": "Previous",
+    "nextPage": "Next",
     "versionLabel": "Version",
     "published": "Published <time>{date}</time>",
     "updated": "Updated <time>{date}</time>",
