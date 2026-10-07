@@ -8,6 +8,7 @@ import {
   docsLocale,
   findPage,
   getCurrentVersion,
+  getDocsPageParams,
   getDocsPath,
   getDocsTree,
   getDocsVersions,
@@ -33,17 +34,14 @@ export const generateStaticParams = async ({
     return [{ slug: [], version: nextVersion }];
   }
 
-  const versions = await getDocsVersions();
-  const trees = await Promise.all(
-    versions.map(async ({ name }) => ({ name, tree: await getDocsTree(name) }))
-  );
-  return trees.flatMap(({ name, tree }) => [
-    { slug: [], version: name },
-    ...(tree?.pages ?? []).map(({ slug }) => ({
-      slug: [...slug],
-      version: name,
-    })),
+  const [versions, pages] = await Promise.all([
+    getDocsVersions(),
+    getDocsPageParams(),
   ]);
+  return [
+    ...versions.map(({ name }) => ({ slug: [], version: name })),
+    ...pages,
+  ];
 };
 
 const loadPage = async (params: Props["params"]) => {

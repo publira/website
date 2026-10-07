@@ -329,6 +329,17 @@ export const getDocsTree = async (
   };
 };
 
+/** Every version's pages as route params. */
+export const getDocsPageParams = async () => {
+  const versions = await getDocsVersions();
+  const trees = await Promise.all(
+    versions.map(async ({ name }) => ({ name, tree: await getDocsTree(name) }))
+  );
+  return trees.flatMap(({ name, tree }) =>
+    (tree?.pages ?? []).map(({ slug }) => ({ slug: [...slug], version: name }))
+  );
+};
+
 /** The URL of a page, or of a version's root with no slug. */
 export const getDocsPath = (version: string, slug: readonly string[] = []) =>
   ["/docs", version, ...slug].join("/");

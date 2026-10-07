@@ -1,5 +1,16 @@
 import { renderOpenGraphImage } from "#components/open-graph-image";
-import { docsLocale, findPage, getDocsTree } from "#lib/docs";
+import {
+  docsLocale,
+  findPage,
+  getDocsPageParams,
+  getDocsTree,
+} from "#lib/docs";
+
+// The proxy redirects other locales' docs to English.
+export const generateStaticParams = async () => {
+  const pages = await getDocsPageParams();
+  return pages.map((params) => ({ ...params, locale: docsLocale }));
+};
 
 // The card of a docs page. A metadata image cannot sit below the pages'
 // catch-all segment, so it is a Route Handler of its own.
