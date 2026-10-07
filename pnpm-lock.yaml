@@ -181,6 +181,9 @@ importers:
       '@sugar-high/react':
         specifier: 2.4.1
         version: 2.4.1(react@19.3.0)
+      '@sugar-high/remark':
+        specifier: 1.0.3
+        version: 1.0.3
       next:
         specifier: 16.3.8
         version: 16.3.8(@types/node@24.19.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -1189,6 +1192,9 @@ packages:
     resolution: {integrity: sha512-neyeiAhHx/0pmpY97SwR/4tcpQ0Q94D36Uy0IuOb8V49B49XWdIg5kGNdQmXKH5p/Ol68srtCczhfz+andwh2g==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
+
+  '@sugar-high/remark@1.0.3':
+    resolution: {integrity: sha512-CatNsy3L3Uf7k8iWTsBXf+lUXGCvfdKsYLXQI/x//79QVsmwfFitM+BmHHl4m7uvXun2/Q1iyB4NMtkXlhFUSQ==}
 
   '@swc/core-darwin-arm64@1.16.2':
     resolution: {integrity: sha512-i/j0HNbnn79qnTVPicvay92Nark8fW8NQqn1e2mGERjUXNpBV0+SwQxlRpk2zBhn6laJ8PDI6Kn1nHZhnz3LCA==}
@@ -3745,6 +3751,9 @@ packages:
   unist-util-is@6.0.1:
     resolution: {integrity: sha512-LsiILbtBETkDz8I9p1dQ0uyRUWuaQzd/cuEeS1hoRSyW5E5XGmTzlwY1OrNzzakGowI9Dr/I8HVaw4hTtnxy8g==}
 
+  unist-util-map@4.0.0:
+    resolution: {integrity: sha512-HJs1tpkSmRJUzj6fskQrS5oYhBYlmtcvy4SepdDEEsL04FjBrgF0Mgggvxc1/qGBGgW7hRh9+UBK1aqTEnBpIA==}
+
   unist-util-mdx-define@1.1.2:
     resolution: {integrity: sha512-9ncH7i7TN5Xn7/tzX5bE3rXgz1X/u877gYVAUB3mLeTKYJmQHmqKTDBi6BTGXV7AeolBCI9ErcVsOt2qryoD0g==}
 
@@ -4508,6 +4517,13 @@ snapshots:
     dependencies:
       react: 19.3.0
       sugar-high: 2.5.1
+    transitivePeerDependencies:
+      - gpu-lexer
+
+  '@sugar-high/remark@1.0.3':
+    dependencies:
+      sugar-high: 2.5.1
+      unist-util-map: 4.0.0
     transitivePeerDependencies:
       - gpu-lexer
 
@@ -7462,6 +7478,10 @@ snapshots:
       vfile: 6.0.3
 
   unist-util-is@6.0.1:
+    dependencies:
+      '@types/unist': 3.0.3
+
+  unist-util-map@4.0.0:
     dependencies:
       '@types/unist': 3.0.3
 
