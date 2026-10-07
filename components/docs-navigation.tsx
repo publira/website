@@ -13,7 +13,9 @@ interface DocsNavigationProps {
 
 /**
  * The docs pages as a disclosure below `lg`, so the article starts right
- * under it, and as a plain list at `lg` and wider, open or not.
+ * under it, and as a plain list at `lg` and wider, open or not. A browser
+ * without `::details-content` keeps the toggle at `lg`, since it could not
+ * show the closed list.
  */
 export const DocsNavigation = ({
   children,
@@ -49,7 +51,7 @@ export const DocsNavigation = ({
         className="group lg:details-content:[content-visibility:visible]"
         ref={detailsRef}
       >
-        <summary className="border-border text-foreground hover:bg-accent flex cursor-pointer list-none items-center justify-between gap-2 rounded-md border px-3 py-1.5 text-sm lg:hidden [&::-webkit-details-marker]:hidden">
+        <summary className="border-border text-foreground hover:bg-accent flex cursor-pointer list-none items-center justify-between gap-2 rounded-md border px-3 py-1.5 text-sm supports-[selector(::details-content)]:lg:hidden [&::-webkit-details-marker]:hidden">
           <span className="truncate">{summary}</span>
           <svg
             aria-hidden="true"
@@ -62,7 +64,9 @@ export const DocsNavigation = ({
             <path d="m6 9 6 6 6-6" />
           </svg>
         </summary>
-        <div className="mt-3 lg:mt-0">{children}</div>
+        <div className="mt-3 supports-[selector(::details-content)]:lg:mt-0">
+          {children}
+        </div>
       </details>
     </nav>
   );
