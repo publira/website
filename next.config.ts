@@ -29,8 +29,8 @@ const nextConfig: NextConfig = {
   },
   partialPrefetching: true,
   reactCompiler: true,
-  // See `app/map.xml/route.ts` (vercel/next.js#99055).
-  rewrites: () => [{ destination: "/map.xml", source: "/sitemap.xml" }],
+  // See `app/api/sitemap/route.ts` (vercel/next.js#99055).
+  rewrites: () => [{ destination: "/api/sitemap", source: "/sitemap.xml" }],
 };
 
 export default withNextIntl(withMDX(nextConfig));
