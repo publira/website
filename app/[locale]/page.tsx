@@ -16,6 +16,8 @@ import { SiteFooter } from "#components/site-footer";
 import { SiteHeader } from "#components/site-header";
 import { TallScreenGroup } from "#components/tall-screen-group";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
+import { Link } from "#i18n/navigation";
+import { getCurrentDocsPath } from "#lib/docs";
 import { getScreenshots } from "#lib/screenshots";
 import {
   getPageUrl,
@@ -191,10 +193,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 export const Home = async () => {
-  const [locale, t, screenshots] = await Promise.all([
+  const [locale, t, screenshots, guideHref] = await Promise.all([
     getLocale(),
     getTranslations(),
     getScreenshots(),
+    getCurrentDocsPath(["deployments"]),
   ]);
   const softwareApplicationId = getSoftwareApplicationId(locale);
 
@@ -429,14 +432,12 @@ export const Home = async () => {
             {t("start.status")}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a
+            <Link
               className="bg-primary text-primary-foreground hover:bg-foreground rounded-sm px-5 py-2.5 text-sm font-medium"
-              href="https://github.com/publira/publira/blob/main/infra/deploy/README.md"
-              rel="noreferrer"
-              target="_blank"
+              href={guideHref}
             >
               {t("start.guide")}
-            </a>
+            </Link>
             <a
               className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
               href="https://github.com/publira/publira/blob/main/CONTRIBUTING.md"

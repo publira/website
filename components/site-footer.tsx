@@ -31,6 +31,12 @@ export const SiteFooter = async ({ note }: SiteFooterProps) => {
           <p className="text-muted-foreground mt-3 max-w-sm text-sm leading-relaxed">
             {t("footer.about")}
           </p>
+          <Link
+            className="text-primary mt-4 inline-block text-sm hover:underline"
+            href="/docs"
+          >
+            {t("footer.docs")}
+          </Link>
         </div>
         <nav aria-label={t("footer.repositories")}>
           <p className="text-muted-foreground text-sm">

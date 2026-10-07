@@ -24,6 +24,7 @@
     "title": "通往數位出版烏托邦的開源之門。",
     "lead": "Publira 是一套多租戶 SaaS，讓 IT 資源有限的出版社能以自己的品牌經營漫畫與小說的數位發行平台。編輯登錄從作者那裡收到的書籍資訊，讀者在網頁或行動裝置上閱讀。",
     "github": "publira/publira on GitHub",
+    "docs": "閱讀文件",
     "screens": "查看畫面",
     "facts": {
       "nextApps": {
@@ -603,6 +604,7 @@
   },
   "footer": {
     "about": "一個重視可攜性、易於營運和免於供應商鎖定的開源專案。每個儲存庫都以 Apache-2.0 授權。",
+    "docs": "文件",
     "repositories": "儲存庫",
     "policies": "政策",
     "privacy": "隱私權政策",

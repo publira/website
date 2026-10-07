@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import heroImage from "#assets/screenshots/host/catalog-plain.png";
 import { BrowserFrame } from "#components/browser-frame";
+import { Link } from "#i18n/navigation";
 
 const facts = [
   "nextApps",
@@ -34,6 +35,12 @@ export const Hero = async () => {
           >
             {t("github")}
           </a>
+          <Link
+            className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
+            href="/docs"
+          >
+            {t("docs")}
+          </Link>
           <a
             className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
             href="#screens"
