@@ -1,8 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
+import NextLink from "next/link";
 
 import heroImage from "#assets/screenshots/host/catalog-plain.png";
 import { BrowserFrame } from "#components/browser-frame";
+import { docsLocale } from "#lib/docs";
 
 const facts = [
   "nextApps",
@@ -34,6 +36,15 @@ export const Hero = async () => {
           >
             {t("github")}
           </a>
+          {/* The documentation is in English alone, so the link has no locale
+              prefix, which would only redirect. */}
+          <NextLink
+            className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
+            href="/docs"
+            hrefLang={docsLocale}
+          >
+            {t("docs")}
+          </NextLink>
           <a
             className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
             href="#screens"

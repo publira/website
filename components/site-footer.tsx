@@ -33,9 +33,8 @@ export const SiteFooter = async ({ note }: SiteFooterProps) => {
           <p className="text-muted-foreground mt-3 max-w-sm text-sm leading-relaxed">
             {t("footer.about")}
           </p>
-          {/* The header's navigation, which links the documentation too, is
-              hidden below `lg`. The documentation is in English alone, so
-              the link has no locale prefix, which would only redirect. */}
+          {/* The documentation is in English alone, so the link has no locale
+              prefix, which would only redirect. */}
           <NextLink
             className="text-primary mt-4 inline-block text-sm hover:underline"
             href="/docs"

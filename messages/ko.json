@@ -17,7 +17,6 @@
       "libraries": "라이브러리",
       "start": "시작하기"
     },
-    "docs": "문서",
     "localeLabel": "언어",
     "github": "GitHub"
   },
@@ -25,6 +24,7 @@
     "title": "디지털 출판의 유토피아로 통하는 오픈 소스 관문.",
     "lead": "Publira는 IT 자원이 한정된 출판사가 만화와 소설의 디지털 유통 플랫폼을 자사 브랜드로 운영할 수 있게 하는 멀티테넌트 SaaS입니다. 편집자는 작가에게 받은 도서 정보를 등록하고, 독자는 웹이나 모바일에서 읽습니다.",
     "github": "publira/publira on GitHub",
+    "docs": "문서 읽기",
     "screens": "화면 보기",
     "facts": {
       "nextApps": {

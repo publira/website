@@ -17,7 +17,6 @@
       "libraries": "Libraries",
       "start": "Get started"
     },
-    "docs": "Docs",
     "localeLabel": "Language",
     "github": "GitHub"
   },
@@ -25,6 +24,7 @@
     "title": "The open-source gateway to your digital publishing utopia.",
     "lead": "Publira is a multi-tenant SaaS that gives publishers with limited IT resources a digital distribution platform for manga and novels, run under their own brand. Editors submit the book information they receive from creators, and readers read it on the web or on mobile.",
     "github": "publira/publira on GitHub",
+    "docs": "Read the documentation",
     "screens": "See the screens",
     "facts": {
       "nextApps": {
