@@ -329,7 +329,7 @@ export const getDocsTree = async (
   };
 };
 
-/** Every version's pages, as the `version` and `slug` params of their routes. */
+/** Every version's pages as route params. */
 export const getDocsPageParams = async () => {
   const versions = await getDocsVersions();
   const trees = await Promise.all(

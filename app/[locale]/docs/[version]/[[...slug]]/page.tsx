@@ -34,7 +34,6 @@ export const generateStaticParams = async ({
     return [{ slug: [], version: nextVersion }];
   }
 
-  // A version's root is listed for its redirect, whether or not it has a page.
   const [versions, pages] = await Promise.all([
     getDocsVersions(),
     getDocsPageParams(),

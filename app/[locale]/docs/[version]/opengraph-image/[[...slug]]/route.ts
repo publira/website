@@ -6,9 +6,7 @@ import {
   getDocsTree,
 } from "#lib/docs";
 
-// Each card is prerendered with its page, and the webhook regenerates both.
-// A Route Handler takes no `locale` from the layout, and another locale's docs
-// URL redirects to English in the proxy, so English alone is listed.
+// The proxy redirects other locales' docs to English.
 export const generateStaticParams = async () => {
   const pages = await getDocsPageParams();
   return pages.map((params) => ({ ...params, locale: docsLocale }));
