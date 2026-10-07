@@ -3,17 +3,12 @@ import { routing } from "#i18n/routing";
 import { getCurrentVersion, getDocsPath, getDocsTree } from "#lib/docs";
 import { getAbsoluteUrl, pages } from "#lib/site";
 
-// The sitemap, which `next.config.ts` serves at `/sitemap.xml`. On Vercel,
-// Next.js 16.3 turns any prerendered route at `sitemap.xml` into a static file
-// that `revalidateTag` never reaches (vercel/next.js#99055), so the sitemap
-// would keep the documentation of the last deployment. At another path, the
-// route stays a prerender tagged like the documentation it reads. Once a
-// release carries vercel/next.js#99056, this goes back to `app/sitemap.ts`.
+// Served at `/sitemap.xml` through a rewrite, since a route at that path is
+// never revalidated on Vercel (vercel/next.js#99055). Back to `app/sitemap.ts`
+// once vercel/next.js#99056 is released.
 
 interface SitemapEntry {
-  /** Every locale's URL of the page, and `x-default`, by `hreflang`. */
   readonly alternates?: Readonly<Record<string, string>>;
-  /** `YYYY-MM-DD`. */
   readonly lastModified?: string;
   readonly url: string;
 }

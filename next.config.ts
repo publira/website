@@ -29,11 +29,7 @@ const nextConfig: NextConfig = {
   },
   partialPrefetching: true,
   reactCompiler: true,
-  // `app/map.xml/route.ts` serves the sitemap instead of `app/sitemap.ts`,
-  // which Vercel would keep as built (vercel/next.js#99055). The rewrite is
-  // tried after the routes, so it applies while no route answers
-  // `/sitemap.xml`. Once a release carries vercel/next.js#99056, both go back
-  // to `app/sitemap.ts`.
+  // See `app/map.xml/route.ts` (vercel/next.js#99055).
   rewrites: () => [{ destination: "/map.xml", source: "/sitemap.xml" }],
 };
 
