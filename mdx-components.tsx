@@ -12,9 +12,10 @@ export const mdxComponents = {
   blockquote: (props) => (
     <blockquote className="border-border mt-4 border-l-2 pl-4" {...props} />
   ),
-  code: (props) => (
+  // Sugar High gives its `<pre>` and `<code>` a class of their own.
+  code: ({ className = "", ...props }) => (
     <code
-      className="bg-muted text-foreground rounded-sm px-1 py-0.5 text-[0.875em] in-[pre]:bg-transparent in-[pre]:p-0 in-[pre]:text-[inherit] in-[td]:whitespace-nowrap"
+      className={`bg-muted text-foreground rounded-sm px-1 py-0.5 text-[0.875em] in-[pre]:bg-transparent in-[pre]:p-0 in-[pre]:text-[inherit] in-[td]:whitespace-nowrap ${className}`}
       {...props}
     />
   ),
@@ -50,9 +51,9 @@ export const mdxComponents = {
     />
   ),
   p: (props) => <p className="mt-4 leading-relaxed" {...props} />,
-  pre: (props) => (
+  pre: ({ className = "", ...props }) => (
     <pre
-      className="border-border bg-muted text-foreground mt-6 overflow-x-auto rounded-lg border px-4 py-4 font-mono text-[0.8rem] leading-relaxed"
+      className={`border-border bg-muted text-foreground mt-6 overflow-x-auto rounded-lg border px-4 py-4 font-mono text-[0.8rem] leading-relaxed ${className}`}
       {...props}
     />
   ),
