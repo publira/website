@@ -596,6 +596,9 @@
   },
   "docs": {
     "navigationLabel": "문서",
+    "adjacentPagesLabel": "이전 및 다음 페이지",
+    "previousPage": "이전",
+    "nextPage": "다음",
     "versionLabel": "버전",
     "published": "<time>{date}</time> 게시",
     "updated": "<time>{date}</time> 업데이트",

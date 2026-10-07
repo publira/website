@@ -596,6 +596,9 @@
   },
   "docs": {
     "navigationLabel": "文件",
+    "adjacentPagesLabel": "上一頁和下一頁",
+    "previousPage": "上一頁",
+    "nextPage": "下一頁",
     "versionLabel": "版本",
     "published": "發布於 <time>{date}</time>",
     "updated": "更新於 <time>{date}</time>",
