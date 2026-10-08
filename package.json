@@ -47,7 +47,7 @@
     "@types/react-dom": "19.3.0",
     "eslint-plugin-github": "6.1.2",
     "eslint-plugin-sonarjs": "4.2.2",
-    "lefthook": "2.1.16",
+    "lefthook": "2.1.17",
     "oxfmt": "0.71.0",
     "oxlint": "1.86.0",
     "oxlint-plugin-react-doctor": "0.9.17",
