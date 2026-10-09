@@ -512,12 +512,29 @@ const resolveEntry = (from: string, url: string) => {
 };
 
 /**
+ * The trees a page's relative URLs resolve in: its own, then the source
+ * locale's, which has what is not translated yet.
+ */
+export type DocsTrees = readonly [DocsTree, ...DocsTree[]];
+
+const findImage = (trees: DocsTrees, entry: string | undefined) => {
+  for (const { images, locale } of trees) {
+    const image = images.find((candidate) => candidate.path === entry);
+    if (image) {
+      return { image, locale };
+    }
+  }
+  return null;
+};
+
+/**
  * Where a relative URL in the page at `from` leads on the site: a `.md` file
- * to its page, an image to the URL that names its blob, both in the tree's
- * locale. Any other URL is left alone.
+ * to its page in the page's locale, which redirects while it is not
+ * translated, and an image to the URL that names its blob. Any other URL is
+ * left alone.
  */
 export const resolveDocsUrl = (
-  tree: DocsTree,
+  trees: DocsTrees,
   version: string,
   from: string,
   url: string
@@ -529,19 +546,22 @@ export const resolveDocsUrl = (
 
   // The query or fragment is kept: a page's heading, or an SVG's view.
   const { entry, suffix } = resolved;
-  const page = tree.pages.find((candidate) => candidate.path === entry);
+  const [{ locale }] = trees;
+  const page = trees
+    .flatMap((tree) => tree.pages)
+    .find((candidate) => candidate.path === entry);
   if (page) {
-    return `${getLocalizedDocsPath(tree.locale, version, page.slug)}${suffix}`;
+    return `${getLocalizedDocsPath(locale, version, page.slug)}${suffix}`;
   }
-  const image = tree.images.find((candidate) => candidate.path === entry);
-  return image ? `${getDocsImagePath(tree.locale, image)}${suffix}` : url;
+  const found = findImage(trees, entry);
+  return found
+    ? `${getDocsImagePath(found.locale, found.image)}${suffix}`
+    : url;
 };
 
-/** The image of the tree that a relative URL in the page at `from` names. */
-export const resolveDocsImage = (tree: DocsTree, from: string, url: string) => {
-  const entry = resolveEntry(from, url)?.entry;
-  return tree.images.find((candidate) => candidate.path === entry);
-};
+/** The image of the trees that a relative URL in the page at `from` names. */
+export const resolveDocsImage = (trees: DocsTrees, from: string, url: string) =>
+  findImage(trees, resolveEntry(from, url)?.entry)?.image;
 
 /** An image's intrinsic size, or `null` when its file cannot be parsed. */
 export const getDocsImageSize = async ({ sha }: DocsImage) => {
