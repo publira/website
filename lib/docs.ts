@@ -1,5 +1,7 @@
 import path from "node:path";
+import { setTimeout } from "node:timers/promises";
 
+import { imageSize } from "image-size";
 import type { Locale } from "next-intl";
 import { cacheLife, cacheTag } from "next/cache";
 import { parse } from "yaml";
@@ -77,10 +79,36 @@ export interface DocsTree {
   readonly pages: readonly DocsPage[];
 }
 
+// GitHub allows 100 concurrent requests, which parallel build workers share.
+const maxRequests = 10;
+let activeRequests = 0;
+const waitingRequests: ((value: null) => void)[] = [];
+
+const acquireRequest = async () => {
+  if (activeRequests < maxRequests) {
+    activeRequests += 1;
+    return;
+  }
+  const { promise, resolve } = Promise.withResolvers<null>();
+  waitingRequests.push(resolve);
+  await promise;
+};
+
+/** Hands the slot to the next waiting request, if any. */
+const releaseRequest = () => {
+  const next = waitingRequests.shift();
+  if (!next) {
+    activeRequests -= 1;
+    return;
+  }
+  return next(null);
+};
+
 const fetchGitHub = async (
   endpoint: string,
-  accept = "application/vnd.github+json"
-) => {
+  accept = "application/vnd.github+json",
+  attempt = 0
+): Promise<Response> => {
   const headers = new Headers({
     accept,
     "x-github-api-version": "2022-11-28",
@@ -90,9 +118,25 @@ const fetchGitHub = async (
   if (token) {
     headers.set("authorization", `Bearer ${token}`);
   }
-  return fetch(`https://api.github.com/repos/${docsRepository}/${endpoint}`, {
-    headers,
-  });
+  await acquireRequest();
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://api.github.com/repos/${docsRepository}/${endpoint}`,
+      { headers }
+    );
+  } finally {
+    releaseRequest();
+  }
+
+  // A cold build's burst of blobs meets the secondary rate limit, which names
+  // a wait. Each retry waits longer, so the burst spreads out.
+  const retryAfter = Number(response.headers.get("retry-after"));
+  if (retryAfter > 0 && attempt < 4) {
+    await setTimeout(retryAfter * 1000 * 2 ** attempt);
+    return fetchGitHub(endpoint, accept, attempt + 1);
+  }
+  return response;
 };
 
 const fetchGitHubOk = async (endpoint: string, accept?: string) => {
@@ -383,6 +427,27 @@ export const getCurrentDocsPath = async (slug: readonly string[]) => {
 const externalUrl = /^(?:[a-z][a-z\d+.-]*:|\/|#|\?)/iu;
 
 /**
+ * The path in the tree that a relative URL in the page at `from` names, and
+ * the URL's query or fragment, or `null` for any other URL.
+ */
+const resolveEntry = (from: string, url: string) => {
+  if (externalUrl.test(url)) {
+    return null;
+  }
+
+  const end = url.search(/[?#]/u);
+  const target = end === -1 ? url : url.slice(0, end);
+  try {
+    return {
+      entry: path.posix.join(path.posix.dirname(from), decodeURI(target)),
+      suffix: end === -1 ? "" : url.slice(end),
+    };
+  } catch {
+    return null;
+  }
+};
+
+/**
  * Where a relative URL in the page at `from` leads on the site: a `.md` file
  * to its page, an image to the URL that names its blob. Any other URL is
  * left alone.
@@ -393,25 +458,38 @@ export const resolveDocsUrl = (
   from: string,
   url: string
 ) => {
-  if (externalUrl.test(url)) {
-    return url;
-  }
-
-  const end = url.search(/[?#]/u);
-  const target = end === -1 ? url : url.slice(0, end);
-  const suffix = end === -1 ? "" : url.slice(end);
-  let entry: string;
-  try {
-    entry = path.posix.join(path.posix.dirname(from), decodeURI(target));
-  } catch {
+  const resolved = resolveEntry(from, url);
+  if (!resolved) {
     return url;
   }
 
   // The query or fragment is kept: a page's heading, or an SVG's view.
+  const { entry, suffix } = resolved;
   const page = tree.pages.find((candidate) => candidate.path === entry);
   if (page) {
     return `${getDocsPath(version, page.slug)}${suffix}`;
   }
   const image = tree.images.find((candidate) => candidate.path === entry);
   return image ? `${getDocsImagePath(image)}${suffix}` : url;
+};
+
+/** The image of the tree that a relative URL in the page at `from` names. */
+export const resolveDocsImage = (tree: DocsTree, from: string, url: string) => {
+  const entry = resolveEntry(from, url)?.entry;
+  return tree.images.find((candidate) => candidate.path === entry);
+};
+
+/** An image's intrinsic size, or `null` when its file cannot be parsed. */
+export const getDocsImageSize = async ({ sha }: DocsImage) => {
+  // A failed fetch throws rather than leave a cached page without the size.
+  const blob = await getBlob(sha);
+  try {
+    const { height, orientation = 1, width } = imageSize(blob);
+    // EXIF orientations 5 to 8 turn the image a quarter, as browsers show it.
+    return orientation >= 5
+      ? { height: width, width: height }
+      : { height, width };
+  } catch {
+    return null;
+  }
 };
