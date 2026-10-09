@@ -9,8 +9,10 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { lang } from "sugar-high/lang";
 
+import { getRootLocale } from "#i18n/locale";
 import {
   docsCacheTags,
+  docsSourceLocale,
   resolveDocsImage,
   findPage,
   getBlob,
@@ -19,7 +21,7 @@ import {
   nextVersion,
   resolveDocsUrl,
 } from "#lib/docs";
-import type { DocsTree } from "#lib/docs";
+import type { DocsTrees } from "#lib/docs";
 
 import { imageClassName, mdxComponents } from "../mdx-components";
 
@@ -41,21 +43,21 @@ const visit = (node: MarkdownNode, visitor: (node: MarkdownNode) => void) => {
 
 /** Points the relative links and images of the page at `from` at the site. */
 const remarkDocsUrls =
-  (tree: DocsTree, version: string, from: string) =>
+  (trees: DocsTrees, version: string, from: string) =>
   () =>
   (root: MarkdownNode) =>
     visit(root, (node) => {
       if (node.url !== undefined) {
-        node.url = resolveDocsUrl(tree, version, from, node.url);
+        node.url = resolveDocsUrl(trees, version, from, node.url);
       }
     });
 
 /**
- * Gives each image of the tree its intrinsic size, so that it takes its space
+ * Gives each image of the trees its intrinsic size, so that it takes its space
  * before it loads. Runs before `remarkDocsUrls` rewrites the URLs.
  */
 const remarkDocsImageSizes =
-  (tree: DocsTree, from: string) => () => async (root: MarkdownNode) => {
+  (trees: DocsTrees, from: string) => () => async (root: MarkdownNode) => {
     const definitions = new Map<string | undefined, string | undefined>();
     const images: MarkdownNode[] = [];
     visit(root, (node) => {
@@ -70,7 +72,7 @@ const remarkDocsImageSizes =
       images.map(async (node) => {
         const url = node.url ?? definitions.get(node.identifier);
         const image =
-          url === undefined ? null : resolveDocsImage(tree, from, url);
+          url === undefined ? null : resolveDocsImage(trees, from, url);
         const size = image && (await getDocsImageSize(image));
         if (size) {
           node.data = {
@@ -145,11 +147,16 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
     version === nextVersion ? docsCacheTags.next : docsCacheTags.releases
   );
 
-  const tree = await getDocsTree(version);
+  const locale = await getRootLocale();
+  const [tree, source] = await Promise.all([
+    getDocsTree(version, locale),
+    locale === docsSourceLocale ? null : getDocsTree(version, docsSourceLocale),
+  ]);
   const page = tree && findPage(tree, slug);
   if (!page) {
     notFound();
   }
+  const trees: DocsTrees = source ? [tree, source] : [tree];
 
   const { default: Content } = await evaluate(
     new TextDecoder().decode(await getBlob(page.sha)),
@@ -162,8 +169,8 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
       remarkPlugins: [
         remarkFrontmatter,
         remarkGfm,
-        remarkDocsImageSizes(tree, page.path),
-        remarkDocsUrls(tree, version, page.path),
+        remarkDocsImageSizes(trees, page.path),
+        remarkDocsUrls(trees, version, page.path),
         remarkPlaintextFences,
         remarkSugarHigh,
       ],

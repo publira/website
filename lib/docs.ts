@@ -6,15 +6,20 @@ import type { Locale } from "next-intl";
 import { cacheLife, cacheTag } from "next/cache";
 import { parse } from "yaml";
 
+import { getPathname } from "#i18n/navigation";
+import { routing } from "#i18n/routing";
 import { getGitHubToken } from "#lib/github-app";
 
-/** The documentation exists in English alone. */
-export const docsLocale = "en" satisfies Locale;
-
-/** The repository whose `docs/en/` the documentation is read from. */
+/** The repository whose `docs/<locale>/` the documentation is read from. */
 export const docsRepository = "publira/publira";
 
-const docsRoot = "docs/en";
+const docsRoot = "docs";
+
+/**
+ * The locale the others are translated from. A release is documented when its
+ * tree exists, and a page another locale lacks is read in it.
+ */
+export const docsSourceLocale = routing.defaultLocale;
 
 /** The branch served as the `next` version. */
 const nextBranch = "main";
@@ -46,7 +51,7 @@ interface DocsVersion {
 }
 
 interface TreeEntry {
-  /** The path below `docs/en/`. */
+  /** The path below `docs/`, or below `docs/<locale>/` once it is taken. */
   readonly path: string;
   readonly sha: string;
 }
@@ -75,6 +80,7 @@ export interface DocsImage extends TreeEntry {
 
 export interface DocsTree {
   readonly images: readonly DocsImage[];
+  readonly locale: Locale;
   /** Every page, in navigation order. */
   readonly pages: readonly DocsPage[];
 }
@@ -150,7 +156,7 @@ const fetchGitHubOk = async (endpoint: string, accept?: string) => {
 const getRefTag = (ref: string) =>
   ref === nextBranch ? docsCacheTags.next : docsCacheTags.releases;
 
-/** The files under `docs/en/` at `ref`, or `null` when it has none. */
+/** The files under `docs/` at `ref`, or `null` when it has none. */
 const getTreeEntries = async (
   ref: string
 ): Promise<readonly TreeEntry[] | null> => {
@@ -184,6 +190,19 @@ const getTreeEntries = async (
   );
 };
 
+/** The files under `docs/<locale>/` at `ref`, or `null` when it has none. */
+const getLocaleEntries = async (
+  ref: string,
+  locale: Locale
+): Promise<readonly TreeEntry[] | null> => {
+  const prefix = `${locale}/`;
+  const entries = await getTreeEntries(ref);
+  const localeEntries = entries?.flatMap(({ path: entry, sha }) =>
+    entry.startsWith(prefix) ? [{ path: entry.slice(prefix.length), sha }] : []
+  );
+  return localeEntries?.length ? localeEntries : null;
+};
+
 /** A file's content. A blob never changes, so it is cached by its hash alone. */
 export const getBlob = async (sha: string) => {
   // Not remote: the CDN keeps each image for good, and a screenshot nears the
@@ -212,12 +231,12 @@ const tagPrefix = "refs/tags/";
 const releaseTag =
   /^refs\/tags\/v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/u;
 
-/** The first of `tags` whose tree has `docs/en/`. */
+/** The first of `tags` whose tree has the source locale's docs. */
 const findDocumentedTag = async (
   tags: readonly string[]
 ): Promise<string | undefined> => {
   const [tag, ...older] = tags;
-  if (tag === undefined || (await getTreeEntries(tag))) {
+  if (tag === undefined || (await getLocaleEntries(tag, docsSourceLocale))) {
     return tag;
   }
   return findDocumentedTag(older);
@@ -225,7 +244,7 @@ const findDocumentedTag = async (
 
 /**
  * The releases, newest first: the highest `vX.Y.Z` tag of each `X.Y` whose
- * tree has `docs/en/`. A pre-release tag is not a release.
+ * tree has the source locale's docs. A pre-release tag is not a release.
  */
 const getReleases = async (): Promise<readonly DocsVersion[]> => {
   "use cache: remote";
@@ -350,13 +369,18 @@ const toImage = ({ path: entry, sha }: TreeEntry) => {
 };
 
 /**
- * The image at `slug` whose blob is `sha` in any served version. A page cached
- * from before the docs changed keeps its images while some version has them.
+ * The image of a locale at `slug` whose blob is `sha` in any served version. A
+ * page cached from before the docs changed keeps its images while some version
+ * has them.
  */
-export const findDocsImage = async (sha: string, slug: readonly string[]) => {
+export const findDocsImage = async (
+  locale: Locale,
+  sha: string,
+  slug: readonly string[]
+) => {
   const versions = await getDocsVersions();
   const trees = await Promise.all(
-    versions.map(({ ref }) => getTreeEntries(ref))
+    versions.map(({ ref }) => getLocaleEntries(ref, locale))
   );
   return trees
     .flatMap((entries) => entries?.flatMap(toImage) ?? [])
@@ -365,9 +389,13 @@ export const findDocsImage = async (sha: string, slug: readonly string[]) => {
     );
 };
 
-/** A version's pages and images, or `null` for a version that is not served. */
+/**
+ * A version's pages and images in a locale, or `null` for a version that is
+ * not served or a locale without a tree at it.
+ */
 export const getDocsTree = async (
-  version: string
+  version: string,
+  locale: Locale
 ): Promise<DocsTree | null> => {
   "use cache";
   cacheLife("max");
@@ -379,7 +407,10 @@ export const getDocsTree = async (
   }
   cacheTag(getRefTag(ref));
 
-  const entries = (await getTreeEntries(ref)) ?? [];
+  const entries = await getLocaleEntries(ref, locale);
+  if (!entries) {
+    return null;
+  }
   const pages = await Promise.all(
     entries.flatMap((entry) =>
       entry.path.endsWith(".md") ? [toPage(entry)] : []
@@ -388,34 +419,64 @@ export const getDocsTree = async (
 
   return {
     images: entries.flatMap(toImage),
+    locale,
     pages: pages.flat().toSorted((a, b) => compareNumbers(a.order, b.order)),
   };
 };
 
-/** Every version's pages as route params. */
-export const getDocsPageParams = async () => {
+/** Every version's pages in a locale as route params. */
+export const getDocsPageParams = async (locale: Locale) => {
   const versions = await getDocsVersions();
   const trees = await Promise.all(
-    versions.map(async ({ name }) => ({ name, tree: await getDocsTree(name) }))
+    versions.map(async ({ name }) => ({
+      name,
+      tree: await getDocsTree(name, locale),
+    }))
   );
   return trees.flatMap(({ name, tree }) =>
     (tree?.pages ?? []).map(({ slug }) => ({ slug: [...slug], version: name }))
   );
 };
 
-/** The URL of a page, or of a version's root with no slug. */
+/**
+ * The URL of a page, or of a version's root with no slug, without the locale
+ * that `Link` adds.
+ */
 export const getDocsPath = (version: string, slug: readonly string[] = []) =>
   ["/docs", version, ...slug].join("/");
+
+/** The URL of a page in a locale. */
+export const getLocalizedDocsPath = (
+  locale: Locale,
+  version: string,
+  slug: readonly string[] = []
+) => getPathname({ href: getDocsPath(version, slug), locale });
 
 /**
  * The URL that names an image's blob, which the browser and the CDN keep for
  * good. Every version shares it while the image is unchanged.
  */
-export const getDocsImagePath = ({ sha, slug }: DocsImage) =>
-  ["/docs/images", sha, ...slug].join("/");
+const getDocsImagePath = (locale: Locale, { sha, slug }: DocsImage) =>
+  getPathname({ href: ["/docs/images", sha, ...slug].join("/"), locale });
 
 export const findPage = (tree: DocsTree, slug: readonly string[]) =>
   tree.pages.find((page) => page.slug.join("/") === slug.join("/"));
+
+/** The locales whose tree has the page at `slug` in a version. */
+export const getDocsPageLocales = async (
+  version: string,
+  slug: readonly string[]
+) => {
+  const trees = await Promise.all(
+    routing.locales.map(async (locale) => ({
+      locale,
+      tree: await getDocsTree(version, locale),
+    }))
+  );
+  return trees.flatMap(({ locale, tree }) =>
+    tree && findPage(tree, slug) ? [locale] : []
+  );
+};
 
 /**
  * The URL of a page in the newest version, or of `/docs` when that version
@@ -423,7 +484,7 @@ export const findPage = (tree: DocsTree, slug: readonly string[]) =>
  */
 export const getCurrentDocsPath = async (slug: readonly string[]) => {
   const version = await getCurrentVersion();
-  const tree = await getDocsTree(version);
+  const tree = await getDocsTree(version, docsSourceLocale);
   return tree && findPage(tree, slug) ? getDocsPath(version, slug) : "/docs";
 };
 
@@ -451,12 +512,29 @@ const resolveEntry = (from: string, url: string) => {
 };
 
 /**
+ * The trees a page's relative URLs resolve in: its own, then the source
+ * locale's, which has what is not translated yet.
+ */
+export type DocsTrees = readonly [DocsTree, ...DocsTree[]];
+
+const findImage = (trees: DocsTrees, entry: string | undefined) => {
+  for (const { images, locale } of trees) {
+    const image = images.find((candidate) => candidate.path === entry);
+    if (image) {
+      return { image, locale };
+    }
+  }
+  return null;
+};
+
+/**
  * Where a relative URL in the page at `from` leads on the site: a `.md` file
- * to its page, an image to the URL that names its blob. Any other URL is
+ * to its page in the page's locale, which redirects while it is not
+ * translated, and an image to the URL that names its blob. Any other URL is
  * left alone.
  */
 export const resolveDocsUrl = (
-  tree: DocsTree,
+  trees: DocsTrees,
   version: string,
   from: string,
   url: string
@@ -468,19 +546,22 @@ export const resolveDocsUrl = (
 
   // The query or fragment is kept: a page's heading, or an SVG's view.
   const { entry, suffix } = resolved;
-  const page = tree.pages.find((candidate) => candidate.path === entry);
+  const [{ locale }] = trees;
+  const page = trees
+    .flatMap((tree) => tree.pages)
+    .find((candidate) => candidate.path === entry);
   if (page) {
-    return `${getDocsPath(version, page.slug)}${suffix}`;
+    return `${getLocalizedDocsPath(locale, version, page.slug)}${suffix}`;
   }
-  const image = tree.images.find((candidate) => candidate.path === entry);
-  return image ? `${getDocsImagePath(image)}${suffix}` : url;
+  const found = findImage(trees, entry);
+  return found
+    ? `${getDocsImagePath(found.locale, found.image)}${suffix}`
+    : url;
 };
 
-/** The image of the tree that a relative URL in the page at `from` names. */
-export const resolveDocsImage = (tree: DocsTree, from: string, url: string) => {
-  const entry = resolveEntry(from, url)?.entry;
-  return tree.images.find((candidate) => candidate.path === entry);
-};
+/** The image of the trees that a relative URL in the page at `from` names. */
+export const resolveDocsImage = (trees: DocsTrees, from: string, url: string) =>
+  findImage(trees, resolveEntry(from, url)?.entry)?.image;
 
 /** An image's intrinsic size, or `null` when its file cannot be parsed. */
 export const getDocsImageSize = async ({ sha }: DocsImage) => {

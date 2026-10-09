@@ -13,25 +13,24 @@ interface LocaleOption {
 }
 
 interface LocaleMenuProps {
-  /** Where each locale leads, when the page is not served in every locale. */
-  readonly href?: string;
   readonly label: string;
+  /** The locales the page is served in, when it is not served in every one. */
+  readonly locales?: readonly Locale[];
   readonly options: readonly LocaleOption[];
 }
 
 /**
  * The locales, in a menu. Switching keeps the reader on the same page in the
  * other locale, as a client-side navigation, so the scripts already loaded
- * stay.
+ * stay. A locale the page is not served in leads to its home page.
  */
-export const LocaleMenu = ({ href, label, options }: LocaleMenuProps) => {
+export const LocaleMenu = ({ label, locales, options }: LocaleMenuProps) => {
   const current = useLocale();
   // The path without its locale prefix, which `Link` prefixes again.
   const pathname = usePathname();
   const currentName = options.find(({ locale }) => locale === current)?.name;
-  // A page served in one locale alone leads every locale to its home page,
-  // so the current locale's link is not this page.
-  const currentLink = href ? "true" : "page";
+  const hasPage = (locale: Locale) => !locales || locales.includes(locale);
+  const currentLink = hasPage(current) ? "page" : "true";
 
   return (
     <Menu
@@ -59,7 +58,7 @@ export const LocaleMenu = ({ href, label, options }: LocaleMenuProps) => {
           <Link
             aria-current={locale === current ? currentLink : undefined}
             className="hover:bg-accent text-foreground [&[aria-current]]:text-primary block px-4 py-2 [&[aria-current]]:font-medium"
-            href={href ?? pathname}
+            href={hasPage(locale) ? pathname : "/"}
             lang={locale}
             locale={locale}
           >
