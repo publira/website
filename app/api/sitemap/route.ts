@@ -1,3 +1,5 @@
+import type { Locale } from "next-intl";
+
 import { getAlternates } from "#i18n/metadata";
 import { routing } from "#i18n/routing";
 import { getCurrentVersion, getDocsPath, getDocsTree } from "#lib/docs";
@@ -27,33 +29,59 @@ const escapeXml = (value: string) =>
     (character) => xmlEntities.get(character) ?? ""
   );
 
+const toAbsoluteAlternates = (languages: Readonly<Record<string, string>>) =>
+  Object.fromEntries(
+    Object.entries(languages).map(([language, path]) => [
+      language,
+      getAbsoluteUrl(path),
+    ])
+  );
+
 const getPageEntries = (): SitemapEntry[] =>
   pages.flatMap((page) =>
     routing.locales.map((locale) => {
       const { canonical, languages } = getAlternates(page, locale);
 
       return {
-        alternates: Object.fromEntries(
-          Object.entries(languages).map(([language, path]) => [
-            language,
-            getAbsoluteUrl(path),
-          ])
-        ),
+        alternates: toAbsoluteAlternates(languages),
         url: getAbsoluteUrl(canonical),
       };
     })
   );
 
 // The documentation lists only the newest version, which every other version
-// names as its canonical page.
+// names as its canonical page, in each locale that has the page.
 const getDocsEntries = async (): Promise<SitemapEntry[]> => {
   const version = await getCurrentVersion();
-  const tree = await getDocsTree(version);
+  const trees = await Promise.all(
+    routing.locales.map(async (locale) => ({
+      locale,
+      tree: await getDocsTree(version, locale),
+    }))
+  );
 
-  return (tree?.pages ?? []).map(({ published, slug, updated }) => ({
-    lastModified: updated ?? published,
-    url: getAbsoluteUrl(getDocsPath(version, slug)),
-  }));
+  const pageLocales = new Map<string, Locale[]>();
+  for (const { locale, tree } of trees) {
+    for (const { slug } of tree?.pages ?? []) {
+      const key = slug.join("/");
+      pageLocales.set(key, [...(pageLocales.get(key) ?? []), locale]);
+    }
+  }
+
+  return trees.flatMap(({ locale, tree }) =>
+    (tree?.pages ?? []).map(({ published, slug, updated }) => {
+      const { canonical, languages } = getAlternates(
+        getDocsPath(version, slug),
+        locale,
+        pageLocales.get(slug.join("/"))
+      );
+      return {
+        alternates: toAbsoluteAlternates(languages),
+        lastModified: updated ?? published,
+        url: getAbsoluteUrl(canonical),
+      };
+    })
+  );
 };
 
 const toUrlElement = ({ alternates = {}, lastModified, url }: SitemapEntry) =>

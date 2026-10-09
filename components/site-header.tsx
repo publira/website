@@ -1,3 +1,4 @@
+import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 
 import { LocaleMenu } from "#components/locale-menu";
@@ -17,11 +18,11 @@ const autonym = (locale: string) =>
   new Intl.DisplayNames(locale, { type: "language" }).of(locale) ?? locale;
 
 interface SiteHeaderProps {
-  /** Where the locale menu leads, for a page served in one locale alone. */
-  readonly localeHref?: string;
+  /** The locales the page is served in, when it is not served in every one. */
+  readonly locales?: readonly Locale[];
 }
 
-export const SiteHeader = async ({ localeHref }: SiteHeaderProps = {}) => {
+export const SiteHeader = async ({ locales }: SiteHeaderProps = {}) => {
   const t = await getTranslations();
 
   return (
@@ -55,8 +56,8 @@ export const SiteHeader = async ({ localeHref }: SiteHeaderProps = {}) => {
 
         <div className="ml-auto lg:ml-0">
           <LocaleMenu
-            href={localeHref}
             label={t("header.localeLabel")}
+            locales={locales}
             options={routing.locales.map((locale) => ({
               locale,
               name: autonym(locale),

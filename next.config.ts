@@ -27,9 +27,14 @@ const nextConfig: NextConfig = {
     useOffline: true,
     useTypeScriptCli: true,
   },
-  // The docs images, at the URL that names their blob. Next.js adds the static
-  // imports' path itself.
-  images: { localPatterns: [{ pathname: "/docs/images/**", search: "" }] },
+  // The docs images of each locale, at the URL that names their blob. Next.js
+  // adds the static imports' path itself.
+  images: {
+    localPatterns: [
+      { pathname: "/docs/images/**", search: "" },
+      { pathname: "/*/docs/images/**", search: "" },
+    ],
+  },
   partialPrefetching: true,
   reactCompiler: true,
   // See `app/api/sitemap/route.ts` (vercel/next.js#99055).

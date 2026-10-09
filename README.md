@@ -51,7 +51,7 @@ Components read their strings with `getTranslations` from `next-intl/server`. Th
 
 ## Documentation
 
-`/docs` serves the user documentation that [publira/publira](https://github.com/publira/publira) keeps under `docs/en/`, laid out as its `docs/README.md` describes: `/docs/next/...` from `main`, and `/docs/vX.Y/...` from the highest `vX.Y.Z` tag of each minor version, with `/docs` redirecting to the newest. `lib/docs.ts` reads the tags, the trees, and the files through the GitHub API inside `"use cache"` functions, and `components/docs-content.tsx` compiles each page as plain Markdown with the styles in `mdx-components.tsx`. The documentation is in English alone, so the proxy redirects another locale's `/docs` URL (`/ja/docs/...`) to it.
+`/docs` serves the user documentation that [publira/publira](https://github.com/publira/publira) keeps under `docs/<locale>/`, laid out as its `docs/README.md` describes: `/docs/next/...` from `main`, and `/docs/vX.Y/...` from the highest `vX.Y.Z` tag of each minor version whose tree has `docs/en/`, with `/docs` redirecting to the newest. Each locale with a tree at a version is served under its prefix (`/ja/docs/...`), and a page its tree lacks redirects to the English one. `lib/docs.ts` reads the tags, the trees, and the files through the GitHub API inside `"use cache"` functions, and `components/docs-content.tsx` compiles each page as plain Markdown with the styles in `mdx-components.tsx`.
 
 The cache holds until publira/publira's `push` webhook reaches `/api/webhooks/github`: a push to `main` that changes a file under `docs/` revalidates `next`, and a `v*` tag created or deleted revalidates the list of releases. A deployment reads three environment variables:
 

@@ -1,5 +1,6 @@
 import { evaluate } from "@mdx-js/mdx";
 import remarkSugarHigh from "@sugar-high/remark";
+import type { Locale } from "next-intl";
 import { cacheLife, cacheTag } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -41,12 +42,12 @@ const visit = (node: MarkdownNode, visitor: (node: MarkdownNode) => void) => {
 
 /** Points the relative links and images of the page at `from` at the site. */
 const remarkDocsUrls =
-  (tree: DocsTree, version: string, from: string) =>
+  (tree: DocsTree, locale: Locale, version: string, from: string) =>
   () =>
   (root: MarkdownNode) =>
     visit(root, (node) => {
       if (node.url !== undefined) {
-        node.url = resolveDocsUrl(tree, version, from, node.url);
+        node.url = resolveDocsUrl(tree, locale, version, from, node.url);
       }
     });
 
@@ -133,19 +134,24 @@ const DocsImage = (props: MarkdownImageProps) => {
 const docsComponents = { ...mdxComponents, img: DocsImage };
 
 interface DocsContentProps {
+  readonly locale: Locale;
   readonly slug: readonly string[];
   readonly version: string;
 }
 
 /** A page's body, compiled as the site compiles `content/<locale>/*.md`. */
-export const DocsContent = async ({ slug, version }: DocsContentProps) => {
+export const DocsContent = async ({
+  locale,
+  slug,
+  version,
+}: DocsContentProps) => {
   "use cache";
   cacheLife("max");
   cacheTag(
     version === nextVersion ? docsCacheTags.next : docsCacheTags.releases
   );
 
-  const tree = await getDocsTree(version);
+  const tree = await getDocsTree(version, locale);
   const page = tree && findPage(tree, slug);
   if (!page) {
     notFound();
@@ -163,7 +169,7 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
         remarkFrontmatter,
         remarkGfm,
         remarkDocsImageSizes(tree, page.path),
-        remarkDocsUrls(tree, version, page.path),
+        remarkDocsUrls(tree, locale, version, page.path),
         remarkPlaintextFences,
         remarkSugarHigh,
       ],

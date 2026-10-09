@@ -6,20 +6,28 @@ import type { Locale } from "next-intl";
 import { openGraphImage } from "#components/open-graph-image";
 import { getPathname } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
-import type { Page } from "#lib/site";
 
-/** The canonical URL of a page and the `hreflang` alternates of every locale. */
-export const getAlternates = (href: Page, locale: Locale) => ({
+/**
+ * The canonical URL of a page and the `hreflang` alternates of the locales it
+ * is served in, every one unless named.
+ */
+export const getAlternates = (
+  href: string,
+  locale: Locale,
+  locales: readonly Locale[] = routing.locales
+) => ({
   canonical: getPathname({ href, locale }),
   languages: {
     ...Object.fromEntries(
-      routing.locales.map((alternate) => [
+      locales.map((alternate) => [
         alternate,
         getPathname({ href, locale: alternate }),
       ])
     ),
     // A reader whose language the site does not have gets the default locale.
-    "x-default": getPathname({ href, locale: routing.defaultLocale }),
+    ...(locales.includes(routing.defaultLocale) && {
+      "x-default": getPathname({ href, locale: routing.defaultLocale }),
+    }),
   },
 });
 

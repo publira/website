@@ -1,3 +1,4 @@
+import type { Locale } from "next-intl";
 import { getFormatter, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
@@ -9,12 +10,13 @@ import { SiteFooter } from "#components/site-footer";
 import { SiteHeader } from "#components/site-header";
 import { Link } from "#i18n/navigation";
 import {
-  docsLocale,
+  docsSourceLocale,
   findPage,
   getCurrentVersion,
+  getDocsPageLocales,
   getDocsPath,
-  getDocsTree,
   getDocsVersions,
+  getLocalizedDocsPath,
   nextVersion,
 } from "#lib/docs";
 import type { DocsPage as DocsPageData, DocsTree } from "#lib/docs";
@@ -83,7 +85,7 @@ interface VersionMenuProps {
   readonly current: string;
   readonly label: string;
   readonly slug: readonly string[];
-  readonly versions: readonly { name: string; tree: DocsTree | null }[];
+  readonly versions: readonly { hasPage: boolean; name: string }[];
 }
 
 /** Every version, each leading to this page, or to its root without one. */
@@ -94,12 +96,12 @@ const VersionMenu = ({ current, label, slug, versions }: VersionMenuProps) => (
     summary={<span className="font-mono">{current}</span>}
     summaryClassName="border-border text-foreground hover:bg-accent w-fit rounded-md border px-3 py-1.5"
   >
-    {versions.map(({ name, tree }) => (
+    {versions.map(({ hasPage, name }) => (
       <li key={name}>
         <Link
           aria-current={name === current ? "page" : undefined}
           className="hover:bg-accent text-foreground aria-[current=page]:text-primary block px-4 py-2 font-mono aria-[current=page]:font-medium"
-          href={getDocsPath(name, tree && findPage(tree, slug) ? slug : [])}
+          href={getDocsPath(name, hasPage ? slug : [])}
         >
           {name}
         </Link>
@@ -186,24 +188,38 @@ const PageDate = async ({ date, kind }: PageDateProps) => {
 };
 
 interface DocsPageProps {
+  readonly locale: Locale;
   readonly page: DocsPageData;
   readonly tree: DocsTree;
   readonly version: string;
 }
 
-export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
+export const DocsPage = async ({
+  locale,
+  page,
+  tree,
+  version,
+}: DocsPageProps) => {
   const [t, latest, versions] = await Promise.all([
     getTranslations(),
     getCurrentVersion(),
     getDocsVersions(),
   ]);
-  const trees = await Promise.all(
+  const pageLocales = await Promise.all(
     versions.map(async ({ name }) => ({
+      locales: await getDocsPageLocales(name, page.slug),
       name,
-      tree: name === version ? tree : await getDocsTree(name),
     }))
   );
-  const url = getAbsoluteUrl(getDocsPath(version, page.slug));
+  // A version has the page when the source locale does, which a locale
+  // without it falls back to.
+  const versionsWithPage = pageLocales.map(({ locales, name }) => ({
+    hasPage: locales.includes(locale) || locales.includes(docsSourceLocale),
+    name,
+  }));
+  const locales =
+    pageLocales.find(({ name }) => name === version)?.locales ?? [];
+  const url = getAbsoluteUrl(getLocalizedDocsPath(locale, version, page.slug));
   // The directories' pages above this one.
   const ancestors = page.slug.flatMap((_, index) => {
     const ancestor =
@@ -226,17 +242,19 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
             datePublished: page.published,
             description: page.description,
             headline: page.title,
-            inLanguage: docsLocale,
-            isPartOf: { "@id": getWebSiteId(docsLocale) },
+            inLanguage: locale,
+            isPartOf: { "@id": getWebSiteId(locale) },
             publisher: { "@id": organizationId },
             url,
           },
           {
             "@type": "BreadcrumbList",
             itemListElement: [
-              { item: getPageUrl("/", docsLocale), name: t("site.name") },
+              { item: getPageUrl("/", locale), name: t("site.name") },
               ...[...ancestors, page].map((crumb) => ({
-                item: getAbsoluteUrl(getDocsPath(version, crumb.slug)),
+                item: getAbsoluteUrl(
+                  getLocalizedDocsPath(locale, version, crumb.slug)
+                ),
                 name: crumb.title,
               })),
             ].map((crumb, index) => ({
@@ -247,14 +265,14 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
           },
         ]}
       />
-      <SiteHeader localeHref="/" />
+      <SiteHeader locales={locales} />
       <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
         <aside className="border-border border-b py-8 lg:border-b-0 lg:py-20">
           <VersionMenu
             current={version}
             label={t("docs.versionLabel")}
             slug={page.slug}
-            versions={trees}
+            versions={versionsWithPage}
           />
           <DocsNavigation
             label={t("docs.navigationLabel")}
@@ -284,7 +302,7 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
                 <PageDate date={page.updated} kind="updated" />
               ) : null}
             </p>
-            <DocsContent slug={page.slug} version={version} />
+            <DocsContent locale={locale} slug={page.slug} version={version} />
           </article>
           {previous || next ? (
             <nav

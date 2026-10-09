@@ -1,4 +1,7 @@
-import { docsLocale, findDocsImage, getBlob } from "#lib/docs";
+import { hasLocale } from "next-intl";
+
+import { routing } from "#i18n/routing";
+import { findDocsImage, getBlob } from "#lib/docs";
 
 // A year, the usual `max-age` of a file whose URL names its content.
 const oneYearInSeconds = 365 * 24 * 60 * 60;
@@ -11,8 +14,9 @@ const serveImage = async (
   { params }: RouteContext<"/[locale]/docs/images/[sha]/[...path]">
 ) => {
   const { locale, path, sha } = await params;
-  const image =
-    locale === docsLocale ? await findDocsImage(sha, path) : undefined;
+  const image = hasLocale(routing.locales, locale)
+    ? await findDocsImage(locale, sha, path)
+    : undefined;
   if (!image) {
     return new Response(null, { status: 404 });
   }
