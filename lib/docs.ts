@@ -160,7 +160,8 @@ const getRefTag = (ref: string) =>
 const getTreeEntries = async (
   ref: string
 ): Promise<readonly TreeEntry[] | null> => {
-  "use cache";
+  // Remote, so the image route's lookup does not ask GitHub on every instance.
+  "use cache: remote";
   cacheLife("max");
   cacheTag(getRefTag(ref));
 
@@ -204,6 +205,8 @@ const getLocaleEntries = async (
 
 /** A file's content. A blob never changes, so it is cached by its hash alone. */
 export const getBlob = async (sha: string) => {
+  // Not remote: the CDN keeps each image for good, and a screenshot nears the
+  // 2 MB a Vercel runtime cache entry may hold.
   "use cache";
   cacheLife("max");
 
@@ -244,7 +247,7 @@ const findDocumentedTag = async (
  * tree has the source locale's docs. A pre-release tag is not a release.
  */
 const getReleases = async (): Promise<readonly DocsVersion[]> => {
-  "use cache";
+  "use cache: remote";
   cacheLife("max");
   cacheTag(docsCacheTags.releases);
 
