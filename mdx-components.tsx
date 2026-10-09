@@ -1,5 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 
+export const imageClassName = "border-border mt-6 rounded-md border";
+
 // The documents under `content/`, and the documentation read from
 // publira/publira, are plain Markdown, so each element they can produce takes
 // the site's type styles here.
@@ -34,14 +36,9 @@ export const mdxComponents = {
   ),
   hr: (props) => <hr className="border-border my-10" {...props} />,
   img: ({ alt, ...props }) => (
-    // A docs image is served as it is, and an external one has no known size.
+    // An image without a known size, which `next/image` cannot take.
     // oxlint-disable-next-line nextjs/no-img-element, react-doctor/nextjs-no-img-element
-    <img
-      alt={alt}
-      className="border-border mt-6 rounded-md border"
-      loading="lazy"
-      {...props}
-    />
+    <img alt={alt} className={imageClassName} loading="lazy" {...props} />
   ),
   li: (props) => <li className="pl-1" {...props} />,
   ol: (props) => (
