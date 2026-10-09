@@ -28,7 +28,7 @@ export const config = {
     // a file extension, and the icons, which live outside `[locale]`.
     "/((?!_next|api/|icon$|apple-icon$|.*\\..*).*)",
     // A docs version has a dot (`/docs/v1.2/...`), but a docs image, a file
-    // below the version, is served outside `[locale]`.
+    // below the version or below `/docs/images/`, is served outside `[locale]`.
     "/docs/:path((?![^/]+/.*\\.[^/]*$).*)",
     // A locale's docs URL redirects, dots and all.
     "/:locale/docs/:path*",
