@@ -68,11 +68,11 @@ Without the App, the site reads with `GITHUB_TOKEN` instead, or without a token,
 Modules are addressed through the `imports` field of `package.json` rather than by relative path:
 
 ```ts
+import cover from "#assets/screenshots/host/catalog.png";
 import { CodeBlock } from "#components/code-block";
 import { routing } from "#i18n/routing";
 import { getScreenshots } from "#lib/screenshots";
 import messages from "#messages/en.json";
-import cover from "#assets/screenshots/host/catalog.png";
 ```
 
 `#components/*`, `#i18n/*`, and `#lib/*` map to targets that carry an explicit extension. TypeScript does not probe for extensions when it resolves a subpath import, so leaving them off resolves under Turbopack but fails type-checking with `TS2307`. `#assets/*`, `#content/*`, and `#messages/*` need none, because the importing side already writes one.
