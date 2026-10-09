@@ -80,6 +80,7 @@ export interface DocsImage extends TreeEntry {
 
 export interface DocsTree {
   readonly images: readonly DocsImage[];
+  readonly locale: Locale;
   /** Every page, in navigation order. */
   readonly pages: readonly DocsPage[];
 }
@@ -415,6 +416,7 @@ export const getDocsTree = async (
 
   return {
     images: entries.flatMap(toImage),
+    locale,
     pages: pages.flat().toSorted((a, b) => compareNumbers(a.order, b.order)),
   };
 };
@@ -507,13 +509,12 @@ const resolveEntry = (from: string, url: string) => {
 };
 
 /**
- * Where a relative URL in the page at `from` of a locale's tree leads on the
- * site: a `.md` file to its page, an image to the URL that names its blob,
- * both in that locale. Any other URL is left alone.
+ * Where a relative URL in the page at `from` leads on the site: a `.md` file
+ * to its page, an image to the URL that names its blob, both in the tree's
+ * locale. Any other URL is left alone.
  */
 export const resolveDocsUrl = (
   tree: DocsTree,
-  locale: Locale,
   version: string,
   from: string,
   url: string
@@ -527,10 +528,10 @@ export const resolveDocsUrl = (
   const { entry, suffix } = resolved;
   const page = tree.pages.find((candidate) => candidate.path === entry);
   if (page) {
-    return `${getLocalizedDocsPath(locale, version, page.slug)}${suffix}`;
+    return `${getLocalizedDocsPath(tree.locale, version, page.slug)}${suffix}`;
   }
   const image = tree.images.find((candidate) => candidate.path === entry);
-  return image ? `${getDocsImagePath(locale, image)}${suffix}` : url;
+  return image ? `${getDocsImagePath(tree.locale, image)}${suffix}` : url;
 };
 
 /** The image of the tree that a relative URL in the page at `from` names. */

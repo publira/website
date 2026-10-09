@@ -1,4 +1,3 @@
-import type { Locale } from "next-intl";
 import { getFormatter, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
@@ -8,6 +7,7 @@ import { JsonLd } from "#components/json-ld";
 import { Menu } from "#components/menu";
 import { SiteFooter } from "#components/site-footer";
 import { SiteHeader } from "#components/site-header";
+import { getRootLocale } from "#i18n/locale";
 import { Link } from "#i18n/navigation";
 import {
   docsSourceLocale,
@@ -188,19 +188,14 @@ const PageDate = async ({ date, kind }: PageDateProps) => {
 };
 
 interface DocsPageProps {
-  readonly locale: Locale;
   readonly page: DocsPageData;
   readonly tree: DocsTree;
   readonly version: string;
 }
 
-export const DocsPage = async ({
-  locale,
-  page,
-  tree,
-  version,
-}: DocsPageProps) => {
-  const [t, latest, versions] = await Promise.all([
+export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
+  const [locale, t, latest, versions] = await Promise.all([
+    getRootLocale(),
     getTranslations(),
     getCurrentVersion(),
     getDocsVersions(),
@@ -302,7 +297,7 @@ export const DocsPage = async ({
                 <PageDate date={page.updated} kind="updated" />
               ) : null}
             </p>
-            <DocsContent locale={locale} slug={page.slug} version={version} />
+            <DocsContent slug={page.slug} version={version} />
           </article>
           {previous || next ? (
             <nav

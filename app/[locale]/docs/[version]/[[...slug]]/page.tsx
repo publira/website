@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { hasLocale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { notFound, redirect } from "next/navigation";
 
 import { DocsPage } from "#components/docs-page";
+import { getRootLocale } from "#i18n/locale";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { getPathname } from "#i18n/navigation";
-import { routing } from "#i18n/routing";
 import {
   docsSourceLocale,
   findPage,
@@ -28,14 +27,10 @@ export const instant = false;
 
 // Each version's root is given in every locale, which Cache Components wants
 // a param for, and redirects where the locale has no tree.
-export const generateStaticParams = async ({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) => {
+export const generateStaticParams = async () => {
   const [versions, pages] = await Promise.all([
     getDocsVersions(),
-    hasLocale(routing.locales, locale) ? getDocsPageParams(locale) : [],
+    getDocsPageParams(await getRootLocale()),
   ]);
   return [
     ...versions.map(({ name }) => ({ slug: [], version: name })),
@@ -44,10 +39,10 @@ export const generateStaticParams = async ({
 };
 
 const loadPage = async (params: Props["params"]) => {
-  const { locale, slug = [], version } = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
+  const [{ slug = [], version }, locale] = await Promise.all([
+    params,
+    getRootLocale(),
+  ]);
   const tree = await getDocsTree(version, locale);
   return { locale, page: tree && findPage(tree, slug), slug, tree, version };
 };
@@ -99,9 +94,7 @@ export const generateMetadata = async ({
 const Docs = async ({ params }: Props) => {
   const { locale, page, slug, tree, version } = await loadPage(params);
   if (page && tree) {
-    return (
-      <DocsPage locale={locale} page={page} tree={tree} version={version} />
-    );
+    return <DocsPage page={page} tree={tree} version={version} />;
   }
 
   // A version without a root `index.md` opens at its first page.
