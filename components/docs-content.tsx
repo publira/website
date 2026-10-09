@@ -118,7 +118,8 @@ const DocsImage = (props: MarkdownImageProps) => {
   return (
     <Image
       alt={alt}
-      className={imageClassName}
+      // Shows where the image will be until it loads, then lies under it.
+      className={`${imageClassName} bg-muted`}
       height={height}
       sizes="(min-width: 48rem) 48rem, 100vw"
       src={src}
