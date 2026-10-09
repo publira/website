@@ -302,6 +302,22 @@ const toImage = ({ path: entry, sha }: TreeEntry) => {
   ];
 };
 
+/**
+ * The image at `slug` whose blob is `sha` in any served version. A page cached
+ * from before the docs changed keeps its images while some version has them.
+ */
+export const findDocsImage = async (sha: string, slug: readonly string[]) => {
+  const versions = await getDocsVersions();
+  const trees = await Promise.all(
+    versions.map(({ ref }) => getTreeEntries(ref))
+  );
+  return trees
+    .flatMap((entries) => entries?.flatMap(toImage) ?? [])
+    .find(
+      (image) => image.sha === sha && image.slug.join("/") === slug.join("/")
+    );
+};
+
 /** A version's pages and images, or `null` for a version that is not served. */
 export const getDocsTree = async (
   version: string
@@ -344,6 +360,13 @@ export const getDocsPageParams = async () => {
 export const getDocsPath = (version: string, slug: readonly string[] = []) =>
   ["/docs", version, ...slug].join("/");
 
+/**
+ * The URL that names an image's blob, which the browser and the CDN keep for
+ * good. Every version shares it while the image is unchanged.
+ */
+export const getDocsImagePath = ({ sha, slug }: DocsImage) =>
+  ["/docs/images", sha, ...slug].join("/");
+
 export const findPage = (tree: DocsTree, slug: readonly string[]) =>
   tree.pages.find((page) => page.slug.join("/") === slug.join("/"));
 
@@ -361,7 +384,7 @@ const externalUrl = /^(?:[a-z][a-z\d+.-]*:|\/|#|\?)/iu;
 
 /**
  * Where a relative URL in the page at `from` leads on the site: a `.md` file
- * to its page, an image to its copy in the same version. Any other URL is
+ * to its page, an image to the URL that names its blob. Any other URL is
  * left alone.
  */
 export const resolveDocsUrl = (
@@ -385,8 +408,10 @@ export const resolveDocsUrl = (
   }
 
   // The query or fragment is kept: a page's heading, or an SVG's view.
-  const found =
-    tree.pages.find((candidate) => candidate.path === entry) ??
-    tree.images.find((candidate) => candidate.path === entry);
-  return found ? `${getDocsPath(version, found.slug)}${suffix}` : url;
+  const page = tree.pages.find((candidate) => candidate.path === entry);
+  if (page) {
+    return `${getDocsPath(version, page.slug)}${suffix}`;
+  }
+  const image = tree.images.find((candidate) => candidate.path === entry);
+  return image ? `${getDocsImagePath(image)}${suffix}` : url;
 };
