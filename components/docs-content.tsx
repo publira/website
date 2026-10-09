@@ -1,6 +1,7 @@
 import { evaluate } from "@mdx-js/mdx";
 import remarkSugarHigh from "@sugar-high/remark";
 import { cacheLife, cacheTag } from "next/cache";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import rehypeSlug from "rehype-slug";
@@ -20,7 +21,7 @@ import {
 } from "#lib/docs";
 import type { DocsTree } from "#lib/docs";
 
-import { mdxComponents } from "../mdx-components";
+import { imageClassName, mdxComponents } from "../mdx-components";
 
 interface MarkdownNode {
   children?: MarkdownNode[];
@@ -89,6 +90,47 @@ const remarkPlaintextFences = () => (root: MarkdownNode) =>
     }
   });
 
+/** The properties of a Markdown image, which MDX hands over as strings. */
+interface MarkdownImageProps {
+  readonly alt?: string;
+  readonly height?: string;
+  readonly src?: string;
+  readonly title?: string;
+  readonly width?: string;
+}
+
+/**
+ * An image of the tree at the width the text column (`max-w-3xl`) shows it.
+ * Only those get a size from `remarkDocsImageSizes`, and with it a URL that
+ * `images.localPatterns` allows.
+ */
+const DocsImage = (props: MarkdownImageProps) => {
+  const { alt = "", src, title } = props;
+  const height = Number(props.height);
+  const width = Number(props.width);
+  if (!(src && height > 0 && width > 0)) {
+    return mdxComponents.img(props);
+  }
+
+  // `next/image` serves an SVG as it is only when `src` ends in `.svg`, and
+  // `localPatterns` allows no query.
+  const [file] = src.split(/[?#]/u, 1);
+  return (
+    <Image
+      alt={alt}
+      className={imageClassName}
+      height={height}
+      sizes="(min-width: 48rem) 48rem, 100vw"
+      src={src}
+      title={title}
+      unoptimized={file !== src || file.endsWith(".svg")}
+      width={width}
+    />
+  );
+};
+
+const docsComponents = { ...mdxComponents, img: DocsImage };
+
 interface DocsContentProps {
   readonly slug: readonly string[];
   readonly version: string;
@@ -127,5 +169,5 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
     }
   );
 
-  return <Content components={mdxComponents} />;
+  return <Content components={docsComponents} />;
 };
