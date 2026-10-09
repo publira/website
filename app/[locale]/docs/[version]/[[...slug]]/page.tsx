@@ -97,17 +97,24 @@ const Docs = async ({ params }: Props) => {
     return <DocsPage page={page} tree={tree} version={version} />;
   }
 
-  // A version without a root `index.md` opens at its first page.
-  const [first] = tree?.pages ?? [];
-  if (slug.length === 0 && first) {
-    redirect(getLocalizedDocsPath(locale, version, first.slug));
+  // A page the locale has no translation of, its root included, is read in
+  // the source locale until it has one.
+  const source =
+    locale === docsSourceLocale
+      ? null
+      : await getDocsTree(version, docsSourceLocale);
+  if (source && findPage(source, slug)) {
+    redirect(getLocalizedDocsPath(docsSourceLocale, version, slug));
   }
-  // A page the locale has no translation of, at this version or at all, is
-  // read in the source locale until it has one.
-  if (locale !== docsSourceLocale) {
-    const source = await getDocsTree(version, docsSourceLocale);
-    if (source && (slug.length === 0 || findPage(source, slug))) {
-      redirect(getLocalizedDocsPath(docsSourceLocale, version, slug));
+  if (slug.length === 0) {
+    // A version without a root `index.md` opens at its first page, or at the
+    // source locale's root when the locale has no tree.
+    const [first] = tree?.pages ?? [];
+    if (first) {
+      redirect(getLocalizedDocsPath(locale, version, first.slug));
+    }
+    if (source) {
+      redirect(getLocalizedDocsPath(docsSourceLocale, version));
     }
   }
   notFound();
