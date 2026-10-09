@@ -367,22 +367,6 @@ export const getDocsPath = (version: string, slug: readonly string[] = []) =>
 export const getDocsImagePath = ({ sha, slug }: DocsImage) =>
   ["/docs/images", sha, ...slug].join("/");
 
-/** An image's body, with the headers it is served with at any URL. */
-export const createDocsImageResponse = async (
-  image: DocsImage,
-  headers: Record<string, string>
-) =>
-  new Response(await getBlob(image.sha), {
-    headers: {
-      ...headers,
-      // An SVG opened on its own runs no script and loads nothing.
-      "content-security-policy":
-        "default-src 'none'; style-src 'unsafe-inline'; sandbox",
-      "content-type": image.type,
-      "x-content-type-options": "nosniff",
-    },
-  });
-
 export const findPage = (tree: DocsTree, slug: readonly string[]) =>
   tree.pages.find((page) => page.slug.join("/") === slug.join("/"));
 
