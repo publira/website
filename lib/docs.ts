@@ -79,6 +79,31 @@ export interface DocsTree {
   readonly pages: readonly DocsPage[];
 }
 
+// GitHub allows 100 concurrent requests, which parallel build workers share.
+const maxRequests = 10;
+let activeRequests = 0;
+const waitingRequests: ((value: null) => void)[] = [];
+
+const acquireRequest = async () => {
+  if (activeRequests < maxRequests) {
+    activeRequests += 1;
+    return;
+  }
+  const { promise, resolve } = Promise.withResolvers<null>();
+  waitingRequests.push(resolve);
+  await promise;
+};
+
+/** Hands the slot to the next waiting request, if any. */
+const releaseRequest = () => {
+  const next = waitingRequests.shift();
+  if (!next) {
+    activeRequests -= 1;
+    return;
+  }
+  return next(null);
+};
+
 const fetchGitHub = async (
   endpoint: string,
   accept = "application/vnd.github+json",
@@ -93,10 +118,16 @@ const fetchGitHub = async (
   if (token) {
     headers.set("authorization", `Bearer ${token}`);
   }
-  const response = await fetch(
-    `https://api.github.com/repos/${docsRepository}/${endpoint}`,
-    { headers }
-  );
+  await acquireRequest();
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://api.github.com/repos/${docsRepository}/${endpoint}`,
+      { headers }
+    );
+  } finally {
+    releaseRequest();
+  }
 
   // A cold build's burst of blobs meets the secondary rate limit, which names
   // a wait. Each retry waits longer, so the burst spreads out.
