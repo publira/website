@@ -34,7 +34,7 @@ export const mdxComponents = {
   ),
   hr: (props) => <hr className="border-border my-10" {...props} />,
   img: ({ alt, ...props }) => (
-    // The size of an image in a document is not known ahead of time.
+    // A docs image is served as it is, and an external one has no known size.
     // oxlint-disable-next-line nextjs/no-img-element, react-doctor/nextjs-no-img-element
     <img
       alt={alt}
