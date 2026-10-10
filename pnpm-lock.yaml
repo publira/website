@@ -212,8 +212,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0
       sugar-high:
-        specifier: 2.5.1
-        version: 2.5.1
+        specifier: 2.5.2
+        version: 2.5.2
       yaml:
         specifier: 2.9.1
         version: 2.9.1
@@ -3610,8 +3610,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  sugar-high@2.5.1:
-    resolution: {integrity: sha512-Skhak2gN96Ywvkdwi8q3kmCmV4rbBTUuYOd71ilxao8wZ1G3O87zofSxl1FogNyeTT2bHC5NMfEEm6/i7Pc8SA==}
+  sugar-high@2.5.2:
+    resolution: {integrity: sha512-6bWenmZIfwfSaTWr4NYOdlJvJ92zVMLY6duRY8zxdoDbJ9++Y4rkZq1PvzwVmuSx4gBHj2ne9wFA6T09watbkg==}
     peerDependencies:
       gpu-lexer: '>=0.0.2'
     peerDependenciesMeta:
@@ -4524,13 +4524,13 @@ snapshots:
   '@sugar-high/react@2.4.1(react@19.3.0)':
     dependencies:
       react: 19.3.0
-      sugar-high: 2.5.1
+      sugar-high: 2.5.2
     transitivePeerDependencies:
       - gpu-lexer
 
   '@sugar-high/remark@1.0.3':
     dependencies:
-      sugar-high: 2.5.1
+      sugar-high: 2.5.2
       unist-util-map: 4.0.0
     transitivePeerDependencies:
       - gpu-lexer
@@ -7317,7 +7317,7 @@ snapshots:
       client-only: 0.0.1
       react: 19.3.0
 
-  sugar-high@2.5.1: {}
+  sugar-high@2.5.2: {}
 
   supports-color@7.2.0:
     dependencies:
