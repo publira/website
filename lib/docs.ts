@@ -424,18 +424,61 @@ export const getDocsTree = async (
   };
 };
 
-/** Every version's pages in a locale as route params. */
+export const findPage = (
+  { pages }: Pick<DocsTree, "pages">,
+  slug: readonly string[]
+) => pages.find((page) => page.slug.join("/") === slug.join("/"));
+
+/**
+ * The page a locale serves at `slug` in a version, and the locale it is
+ * written in: its own, or the source locale's while it has no translation.
+ */
+export const getDocsPage = async (
+  version: string,
+  locale: Locale,
+  slug: readonly string[]
+) => {
+  const trees = await Promise.all(
+    [locale, docsSourceLocale].map((candidate) =>
+      getDocsTree(version, candidate)
+    )
+  );
+  for (const tree of trees) {
+    const page = tree && findPage(tree, slug);
+    if (page) {
+      return { language: tree.locale, page };
+    }
+  }
+  return null;
+};
+
+/**
+ * The pages a locale lists in a version: the source locale's, each in its
+ * translation where the locale has one, so the list keeps its shape.
+ */
+export const getDocsNavigation = async (version: string, locale: Locale) => {
+  const [tree, source] = await Promise.all([
+    getDocsTree(version, locale),
+    getDocsTree(version, docsSourceLocale),
+  ]);
+  if (!source) {
+    return tree?.pages ?? [];
+  }
+  return source.pages.map(
+    (page) => (tree && findPage(tree, page.slug)) ?? page
+  );
+};
+
+/** Every version's pages that a locale lists, as route params. */
 export const getDocsPageParams = async (locale: Locale) => {
   const versions = await getDocsVersions();
-  const trees = await Promise.all(
-    versions.map(async ({ name }) => ({
-      name,
-      tree: await getDocsTree(name, locale),
-    }))
+  const params = await Promise.all(
+    versions.map(async ({ name }) => {
+      const pages = await getDocsNavigation(name, locale);
+      return pages.map(({ slug }) => ({ slug: [...slug], version: name }));
+    })
   );
-  return trees.flatMap(({ name, tree }) =>
-    (tree?.pages ?? []).map(({ slug }) => ({ slug: [...slug], version: name }))
-  );
+  return params.flat();
 };
 
 /**
@@ -458,9 +501,6 @@ export const getLocalizedDocsPath = (
  */
 const getDocsImagePath = (locale: Locale, { sha, slug }: DocsImage) =>
   getPathname({ href: ["/docs/images", sha, ...slug].join("/"), locale });
-
-export const findPage = (tree: DocsTree, slug: readonly string[]) =>
-  tree.pages.find((page) => page.slug.join("/") === slug.join("/"));
 
 /** The locales whose tree has the page at `slug` in a version. */
 export const getDocsPageLocales = async (
@@ -515,7 +555,7 @@ const resolveEntry = (from: string, url: string) => {
  * The trees a page's relative URLs resolve in: its own, then the source
  * locale's, which has what is not translated yet.
  */
-export type DocsTrees = readonly [DocsTree, ...DocsTree[]];
+export type DocsTrees = readonly DocsTree[];
 
 const findImage = (trees: DocsTrees, entry: string | undefined) => {
   for (const { images, locale } of trees) {
@@ -529,11 +569,11 @@ const findImage = (trees: DocsTrees, entry: string | undefined) => {
 
 /**
  * Where a relative URL in the page at `from` leads on the site: a `.md` file
- * to its page in the page's locale, which redirects while it is not
- * translated, and an image to the URL that names its blob. Any other URL is
- * left alone.
+ * to its page in `locale`, translated or not, and an image to the URL that
+ * names its blob. Any other URL is left alone.
  */
 export const resolveDocsUrl = (
+  locale: Locale,
   trees: DocsTrees,
   version: string,
   from: string,
@@ -546,7 +586,6 @@ export const resolveDocsUrl = (
 
   // The query or fragment is kept: a page's heading, or an SVG's view.
   const { entry, suffix } = resolved;
-  const [{ locale }] = trees;
   const page = trees
     .flatMap((tree) => tree.pages)
     .find((candidate) => candidate.path === entry);

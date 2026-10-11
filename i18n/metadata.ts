@@ -47,6 +47,8 @@ const getCardVersion = (siteName: string, title: string) =>
 interface OpenGraphOptions {
   /** The card's path, when it is not `opengraph-image` beside the page. */
   readonly image?: string;
+  /** The language the page is written in, when it is not the locale's. */
+  readonly language?: Locale;
   /** The locales the page is served in, when it is not served in every one. */
   readonly locales?: readonly Locale[];
   readonly siteName: string;
@@ -63,13 +65,14 @@ export const getOpenGraph = (
   locale: Locale,
   {
     image = `${href.replace(/\/$/u, "")}/opengraph-image`,
+    language = locale,
     locales = routing.locales,
     siteName,
     title,
   }: OpenGraphOptions
 ): Metadata["openGraph"] => ({
   alternateLocale: locales.flatMap((alternate) =>
-    alternate === locale ? [] : [toOpenGraphLocale(alternate)]
+    alternate === language ? [] : [toOpenGraphLocale(alternate)]
   ),
   // Next.js would link the `opengraph-image` beside the page by its
   // `[locale]` path, which sends an English card through a redirect, give
@@ -80,7 +83,7 @@ export const getOpenGraph = (
     type: openGraphImage.contentType,
     url: `${getPathname({ href: image, locale })}?${new URLSearchParams({ v: getCardVersion(siteName, title) })}`,
   },
-  locale: toOpenGraphLocale(locale),
+  locale: toOpenGraphLocale(language),
   siteName,
   type: "website",
   url: getPathname({ href, locale }),

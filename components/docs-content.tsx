@@ -1,5 +1,6 @@
 import { evaluate } from "@mdx-js/mdx";
 import remarkSugarHigh from "@sugar-high/remark";
+import type { Locale } from "next-intl";
 import { cacheLife, cacheTag } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -43,12 +44,12 @@ const visit = (node: MarkdownNode, visitor: (node: MarkdownNode) => void) => {
 
 /** Points the relative links and images of the page at `from` at the site. */
 const remarkDocsUrls =
-  (trees: DocsTrees, version: string, from: string) =>
+  (locale: Locale, trees: DocsTrees, version: string, from: string) =>
   () =>
   (root: MarkdownNode) =>
     visit(root, (node) => {
       if (node.url !== undefined) {
-        node.url = resolveDocsUrl(trees, version, from, node.url);
+        node.url = resolveDocsUrl(locale, trees, version, from, node.url);
       }
     });
 
@@ -152,11 +153,15 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
     getDocsTree(version, locale),
     locale === docsSourceLocale ? null : getDocsTree(version, docsSourceLocale),
   ]);
-  const page = tree && findPage(tree, slug);
+  const translation = tree && findPage(tree, slug);
+  const page = translation ?? (source && findPage(source, slug));
   if (!page) {
     notFound();
   }
-  const trees: DocsTrees = source ? [tree, source] : [tree];
+  // An untranslated page's URLs resolve in its own tree, the source locale's.
+  const trees = (translation ? [tree, source] : [source]).filter(
+    (candidate) => candidate !== null
+  );
 
   const { default: Content } = await evaluate(
     new TextDecoder().decode(await getBlob(page.sha)),
@@ -170,7 +175,7 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
         remarkFrontmatter,
         remarkGfm,
         remarkDocsImageSizes(trees, page.path),
-        remarkDocsUrls(trees, version, page.path),
+        remarkDocsUrls(locale, trees, version, page.path),
         remarkPlaintextFences,
         remarkSugarHigh,
       ],

@@ -7,9 +7,10 @@ import { getRootLocale } from "#i18n/locale";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { getPathname } from "#i18n/navigation";
 import {
-  docsSourceLocale,
   findPage,
   getCurrentVersion,
+  getDocsNavigation,
+  getDocsPage,
   getDocsPageLocales,
   getDocsPageParams,
   getDocsPath,
@@ -25,8 +26,8 @@ type Props = PageProps<"/[locale]/docs/[version]/[[...slug]]">;
 // fallback. The sidebar prefetches each page in full instead.
 export const instant = false;
 
-// Each version's root is given in every locale, which Cache Components wants
-// a param for, and redirects where the locale has no tree.
+// Every locale serves the source locale's pages, translated or not. Each
+// version's root is given too, which redirects without an `index.md`.
 export const generateStaticParams = async () => {
   const [versions, pages] = await Promise.all([
     getDocsVersions(),
@@ -43,27 +44,33 @@ const loadPage = async (params: Props["params"]) => {
     params,
     getRootLocale(),
   ]);
-  const tree = await getDocsTree(version, locale);
-  return { locale, page: tree && findPage(tree, slug), slug, tree, version };
+  return {
+    found: await getDocsPage(version, locale, slug),
+    locale,
+    slug,
+    version,
+  };
 };
 
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const [{ locale, page, slug, version }, latest, t] = await Promise.all([
+  const [{ found, locale, slug, version }, latest, t] = await Promise.all([
     loadPage(params),
     getCurrentVersion(),
     getTranslations(),
   ]);
-  if (!page) {
+  if (!found) {
     return {};
   }
 
+  const { language, page } = found;
   const path = getDocsPath(version, slug);
   // Every version but the newest is left out of search, and points at the
-  // same page in the newest version when it has one.
+  // same page in the newest version when it has one. An untranslated page
+  // points at the source locale's, which alone is indexed.
   const [latestTree, locales] = await Promise.all([
-    version === latest ? null : getDocsTree(latest, locale),
+    version === latest ? null : getDocsTree(latest, language),
     getDocsPageLocales(version, slug),
   ]);
   const canonical =
@@ -71,13 +78,14 @@ export const generateMetadata = async ({
 
   return {
     alternates: {
-      canonical: getPathname({ href: canonical, locale }),
+      canonical: getPathname({ href: canonical, locale: language }),
       languages: getAlternates(path, locale, locales).languages,
     },
     description: page.description,
     openGraph: {
       ...getOpenGraph(path, locale, {
         image: getDocsPath(version, ["opengraph-image", ...slug]),
+        language,
         locales,
         siteName: t("site.name"),
         title: page.title,
@@ -92,30 +100,18 @@ export const generateMetadata = async ({
 };
 
 const Docs = async ({ params }: Props) => {
-  const { locale, page, slug, tree, version } = await loadPage(params);
-  if (page && tree) {
-    return <DocsPage page={page} tree={tree} version={version} />;
+  const { found, locale, slug, version } = await loadPage(params);
+  if (found) {
+    return (
+      <DocsPage language={found.language} page={found.page} version={version} />
+    );
   }
 
-  // A page the locale has no translation of, its root included, is read in
-  // the source locale until it has one.
-  const source =
-    locale === docsSourceLocale
-      ? null
-      : await getDocsTree(version, docsSourceLocale);
-  if (source && findPage(source, slug)) {
-    redirect(getLocalizedDocsPath(docsSourceLocale, version, slug));
-  }
-  if (slug.length === 0) {
-    // A version without a root `index.md` opens at its first page, or at the
-    // source locale's root when the locale has no tree.
-    const [first] = tree?.pages ?? [];
-    if (first) {
-      redirect(getLocalizedDocsPath(locale, version, first.slug));
-    }
-    if (source) {
-      redirect(getLocalizedDocsPath(docsSourceLocale, version));
-    }
+  // A version without a root `index.md` opens at its first page.
+  const [first] =
+    slug.length === 0 ? await getDocsNavigation(version, locale) : [];
+  if (first) {
+    redirect(getLocalizedDocsPath(locale, version, first.slug));
   }
   notFound();
 };

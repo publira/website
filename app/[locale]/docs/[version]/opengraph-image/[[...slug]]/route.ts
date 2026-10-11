@@ -2,10 +2,9 @@ import { hasLocale } from "next-intl";
 
 import { renderOpenGraphImage } from "#components/open-graph-image";
 import { routing } from "#i18n/routing";
-import { findPage, getDocsPageParams, getDocsTree } from "#lib/docs";
+import { getDocsPage, getDocsPageParams } from "#lib/docs";
 
-// The cards of the pages each locale has. Cache Components wants at least one
-// param, which the source locale's pages give.
+// The cards of the pages each locale serves, translated or not.
 export const generateStaticParams = async () => {
   const pages = await Promise.all(
     routing.locales.map(async (locale) => {
@@ -28,12 +27,11 @@ const renderCard = async (
   if (!hasLocale(routing.locales, locale)) {
     return new Response(null, { status: 404 });
   }
-  const tree = await getDocsTree(version, locale);
-  const page = tree && findPage(tree, slug);
-  if (!page) {
+  const found = await getDocsPage(version, locale, slug);
+  if (!found) {
     return new Response(null, { status: 404 });
   }
-  return renderOpenGraphImage(locale, page.title);
+  return renderOpenGraphImage(locale, found.page.title);
 };
 
 export { renderCard as GET };
