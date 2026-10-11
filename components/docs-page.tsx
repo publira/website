@@ -21,17 +21,17 @@ import {
   getLocalizedDocsPath,
   nextVersion,
 } from "#lib/docs";
-import type { DocsPage as DocsPageData } from "#lib/docs";
+import type { DocsNavigationPage, DocsPage as DocsPageData } from "#lib/docs";
 import { getAbsoluteUrl } from "#lib/site";
 import { getPageUrl, getWebSiteId, organizationId } from "#lib/structured-data";
 
 interface NavigationItem {
   readonly children: NavigationItem[];
-  readonly page: DocsPageData;
+  readonly page: DocsNavigationPage;
 }
 
 /** The pages as a tree: a directory's pages under its `index.md`. */
-const toNavigation = (pages: readonly DocsPageData[]) => {
+const toNavigation = (pages: readonly DocsNavigationPage[]) => {
   const items = new Map<string, NavigationItem>();
   const roots: NavigationItem[] = [];
   // A directory's page sorts before the pages inside it.
@@ -66,6 +66,7 @@ const NavigationList = ({
           aria-current={page.path === current.path ? "page" : undefined}
           className="text-muted-foreground hover:text-foreground aria-[current=page]:text-primary block py-1 text-sm aria-[current=page]:font-medium"
           href={getDocsPath(version, page.slug)}
+          lang={page.language}
           prefetch
         >
           {page.title}
@@ -153,7 +154,7 @@ const TranslationNotice = async () => {
 
 interface AdjacentPageLinkProps {
   readonly label: string;
-  readonly page: DocsPageData;
+  readonly page: DocsNavigationPage;
   readonly rel: "next" | "prev";
   readonly version: string;
 }
@@ -171,7 +172,12 @@ const AdjacentPageLink = ({
     rel={rel}
   >
     <span className="text-muted-foreground block text-sm">{label}</span>
-    <span className="text-foreground mt-1 block font-medium">{page.title}</span>
+    <span
+      className="text-foreground mt-1 block font-medium"
+      lang={page.language}
+    >
+      {page.title}
+    </span>
   </Link>
 );
 
@@ -293,7 +299,9 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
           />
           <DocsNavigation
             label={t("docs.navigationLabel")}
-            summary={page.title}
+            summary={
+              <span lang={translated ? undefined : language}>{page.title}</span>
+            }
           >
             <NavigationList
               current={page}

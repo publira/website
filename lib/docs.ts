@@ -452,11 +452,19 @@ export const getDocsPage = async (
   return null;
 };
 
+export interface DocsNavigationPage extends DocsPage {
+  /** The source locale, on a page the locale has no translation of. */
+  readonly language?: Locale;
+}
+
 /**
  * The pages a locale lists in a version: the source locale's, each in its
  * translation where the locale has one, so the list keeps its shape.
  */
-export const getDocsNavigation = async (version: string, locale: Locale) => {
+export const getDocsNavigation = async (
+  version: string,
+  locale: Locale
+): Promise<readonly DocsNavigationPage[]> => {
   const [tree, source] = await Promise.all([
     getDocsTree(version, locale),
     getDocsTree(version, docsSourceLocale),
@@ -465,7 +473,11 @@ export const getDocsNavigation = async (version: string, locale: Locale) => {
     return tree?.pages ?? [];
   }
   return source.pages.map(
-    (page) => (tree && findPage(tree, page.slug)) ?? page
+    (page) =>
+      (tree && findPage(tree, page.slug)) ?? {
+        ...page,
+        language: source.locale,
+      }
   );
 };
 

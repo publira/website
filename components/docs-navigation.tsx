@@ -8,7 +8,7 @@ interface DocsNavigationProps {
   readonly children: ReactNode;
   readonly label: string;
   /** The current page's title, which the closed list shows below `lg`. */
-  readonly summary: string;
+  readonly summary: ReactNode;
 }
 
 /**
