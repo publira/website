@@ -7,7 +7,6 @@ import { CodeBlock } from "#components/code-block";
 import { FeatureGrid } from "#components/feature-grid";
 import { Hero } from "#components/hero";
 import { JsonLd } from "#components/json-ld";
-import { LibraryDetail } from "#components/library-detail";
 import { RepoCard } from "#components/repo-card";
 import { RequirementsTable } from "#components/requirements-table";
 import { ScreenGroup } from "#components/screen-group";
@@ -28,7 +27,8 @@ import {
 } from "#lib/structured-data";
 
 // `languages` are the ones each repository's code is written in, as GitHub
-// counts them, less the build and platform glue.
+// counts them, less the build and platform glue. A library's card leads to its
+// section of `/libraries`, which links its repository in turn.
 const repositories = [
   {
     href: "https://github.com/publira/publira",
@@ -41,6 +41,7 @@ const repositories = [
     install: "@publira/comic-viewer",
     key: "comicViewer",
     languages: ["TypeScript"],
+    library: "comic-viewer",
     name: "publira/comic-viewer",
   },
   {
@@ -48,6 +49,7 @@ const repositories = [
     install: "github.com/publira/epub",
     key: "epub",
     languages: ["Go"],
+    library: "epub",
     name: "publira/epub",
   },
 ] as const;
@@ -75,61 +77,6 @@ const platformFeatures = [
   "mobile",
   "portability",
 ] as const;
-
-const comicViewerPoints = [
-  "headless",
-  "spreads",
-  "virtualization",
-  "plugins",
-  "direction",
-  "resolvePage",
-] as const;
-
-const epubPoints = [
-  "filesystem",
-  "failFast",
-  "memory",
-  "naming",
-  "fixedLayout",
-  "landmarks",
-] as const;
-
-const comicViewerCode = `import * as ComicViewer from "@publira/comic-viewer";
-import "@publira/comic-viewer/core.css";
-
-export function Reader({ pages }: ReaderProps) {
-  return (
-    <ComicViewer.Root
-      initialReadingDirection="rtl"
-      pages={pages}
-    >
-      <ComicViewer.Viewport />
-      <ComicViewer.Toolbar />
-      <ComicViewer.PageNavigation />
-    </ComicViewer.Root>
-  );
-}`;
-
-const epubCode = `f, err := os.Open("book.epub")
-if err != nil {
-	log.Fatal(err)
-}
-defer f.Close()
-
-st, err := f.Stat()
-if err != nil {
-	log.Fatal(err)
-}
-
-opt := epub.WithCompliance(epub.LevelEBPAJ)
-doc, err := epub.Decode(f, st.Size(), opt)
-if err != nil {
-	log.Fatal(err)
-}
-
-if err := epub.Encode(out, doc); err != nil {
-	log.Fatal(err)
-}`;
 
 const buildCode = `git clone https://github.com/publira/publira.git
 cd publira
@@ -258,6 +205,11 @@ export const Home = async () => {
                 key={repository.key}
                 language={t(`projects.repositories.${repository.key}.language`)}
                 name={repository.name}
+                page={
+                  "library" in repository
+                    ? { hash: repository.library, pathname: "/libraries" }
+                    : undefined
+                }
                 role={t(`projects.repositories.${repository.key}.role`)}
               />
             ))}
@@ -336,66 +288,11 @@ export const Home = async () => {
         </Section>
 
         <Section
-          id="libraries"
-          lead={t("libraries.lead")}
-          title={t("libraries.title")}
+          id="start"
+          lead={t("start.lead")}
+          title={t("start.title")}
           tone="surface"
         >
-          <div className="space-y-8">
-            <LibraryDetail
-              code={comicViewerCode}
-              codeLabel="app/reader.tsx"
-              codeLang="typescript"
-              href="https://github.com/publira/comic-viewer"
-              install="npm install @publira/comic-viewer"
-              links={[
-                {
-                  href: "https://www.npmjs.com/package/@publira/comic-viewer",
-                  label: t("libraries.comicViewer.links.npm"),
-                },
-                {
-                  href: "https://demo.comic-viewer.publira.dev/",
-                  label: t("libraries.comicViewer.links.demo"),
-                },
-                {
-                  href: "https://demo-tw.comic-viewer.publira.dev/",
-                  label: t("libraries.comicViewer.links.demoTailwind"),
-                },
-              ]}
-              name="@publira/comic-viewer"
-              note={t("libraries.comicViewer.note")}
-              points={comicViewerPoints.map((point) =>
-                t(`libraries.comicViewer.points.${point}`)
-              )}
-              tagline={t("libraries.comicViewer.tagline")}
-            />
-            <LibraryDetail
-              code={epubCode}
-              codeLabel="main.go"
-              codeLang="go"
-              href="https://github.com/publira/epub"
-              install="go get github.com/publira/epub"
-              links={[
-                {
-                  href: "https://pkg.go.dev/github.com/publira/epub",
-                  label: t("libraries.epub.links.pkgGoDev"),
-                },
-                {
-                  href: "https://epub.publira.dev/",
-                  label: t("libraries.epub.links.demo"),
-                },
-              ]}
-              name="publira/epub"
-              note={t("libraries.epub.note")}
-              points={epubPoints.map((point) =>
-                t(`libraries.epub.points.${point}`)
-              )}
-              tagline={t("libraries.epub.tagline")}
-            />
-          </div>
-        </Section>
-
-        <Section id="start" lead={t("start.lead")} title={t("start.title")}>
           <div className="grid gap-8 lg:grid-cols-2">
             <div className="min-w-0 space-y-4">
               <CodeBlock

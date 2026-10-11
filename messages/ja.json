@@ -540,6 +540,10 @@
     "optional": "任意"
   },
   "libraries": {
+    "metadata": {
+      "title": "ライブラリ",
+      "description": "Publiraから生まれ、プラットフォームなしでも使えるライブラリです。ヘッドレスなReact製コミックビューアーとEPUB 3を扱うGoライブラリがあります。"
+    },
     "title": "単体で使える二つの部品",
     "lead": "どちらもApache-2.0で、Publiraの本番でも使われています。使うためにプラットフォームを導入する必要はありません。",
     "documentation": "ドキュメント",

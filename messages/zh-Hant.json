@@ -540,6 +540,10 @@
     "optional": "選用"
   },
   "libraries": {
+    "metadata": {
+      "title": "函式庫",
+      "description": "從 Publira 中成長出來、無需平台即可使用的函式庫：一個 headless 的 React 漫畫閱讀器，以及一個處理 EPUB 3 的 Go 函式庫。"
+    },
     "title": "可以單獨取用的兩個零件",
     "lead": "兩者都是 Apache-2.0，都在 Publira 的正式路徑中使用，使用任何一個都不要求你採用整個平台。",
     "documentation": "閱讀文件",

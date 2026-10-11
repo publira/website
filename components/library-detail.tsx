@@ -13,6 +13,8 @@ interface LibraryDetailProps {
   readonly codeLabel: string;
   readonly codeLang: CodeBlockProps["lang"];
   readonly href: string;
+  /** The fragment that links to it. */
+  readonly id: string;
   readonly install: string;
   readonly links: readonly LibraryLink[];
   readonly name: string;
@@ -26,6 +28,7 @@ export const LibraryDetail = async ({
   codeLabel,
   codeLang,
   href,
+  id,
   install,
   links,
   name,
@@ -36,9 +39,12 @@ export const LibraryDetail = async ({
   const t = await getTranslations("libraries");
 
   return (
-    <article className="border-border grid gap-8 border-l pl-5 lg:grid-cols-2 lg:gap-12">
+    <article
+      className="border-border grid gap-8 border-l pl-5 lg:grid-cols-2 lg:gap-12"
+      id={id}
+    >
       <div className="min-w-0">
-        <h3 className="font-display text-foreground text-2xl">{name}</h3>
+        <h2 className="font-display text-foreground text-2xl">{name}</h2>
         <p className="text-muted-foreground mt-3 leading-relaxed">{tagline}</p>
         <ul className="text-muted-foreground marker:text-border mt-6 list-disc space-y-3 pl-5 text-sm leading-relaxed">
           {points.map((point) => (

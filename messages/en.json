@@ -540,6 +540,10 @@
     "optional": "Optional"
   },
   "libraries": {
+    "metadata": {
+      "title": "Libraries",
+      "description": "The libraries Publira grew and publishes for use without the platform: a headless React comic viewer and a Go library for EPUB 3."
+    },
     "title": "Two pieces you can take on their own",
     "lead": "Both are Apache-2.0, both are used by Publira in production paths, and neither asks you to adopt the platform to use it.",
     "documentation": "Read the documentation",

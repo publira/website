@@ -540,6 +540,10 @@
     "optional": "선택"
   },
   "libraries": {
+    "metadata": {
+      "title": "라이브러리",
+      "description": "Publira에서 자라나 플랫폼 없이도 쓸 수 있도록 공개한 라이브러리입니다. 헤드리스 React 만화 뷰어와 EPUB 3를 다루는 Go 라이브러리가 있습니다."
+    },
     "title": "따로 가져다 쓸 수 있는 두 부품",
     "lead": "둘 다 Apache-2.0이고 둘 다 Publira의 프로덕션 경로에서 쓰이며, 어느 쪽도 쓰기 위해 플랫폼을 도입하라고 요구하지 않습니다.",
     "documentation": "문서 읽기",

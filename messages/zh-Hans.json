@@ -540,6 +540,10 @@
     "optional": "可选"
   },
   "libraries": {
+    "metadata": {
+      "title": "库",
+      "description": "从 Publira 中成长出来、无需平台即可使用的库：一个无头的 React 漫画阅读器，以及一个处理 EPUB 3 的 Go 库。"
+    },
     "title": "可以单独取用的两个部件",
     "lead": "两者都是 Apache-2.0，都在 Publira 的生产路径中使用，使用任何一个都不要求你采用整个平台。",
     "documentation": "阅读文档",

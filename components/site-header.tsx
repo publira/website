@@ -4,13 +4,16 @@ import { getTranslations } from "next-intl/server";
 import { LocaleMenu } from "#components/locale-menu";
 import { Link } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
+import type { Page } from "#lib/site";
 
+// The sections live on the home page, so every other page links back to them
+// there.
 const navigation = [
-  "platform",
-  "screens",
-  "architecture",
-  "libraries",
-  "start",
+  { href: { hash: "platform", pathname: "/" }, key: "platform" },
+  { href: { hash: "screens", pathname: "/" }, key: "screens" },
+  { href: { hash: "architecture", pathname: "/" }, key: "architecture" },
+  { href: "/libraries", key: "libraries" },
+  { href: { hash: "start", pathname: "/" }, key: "start" },
 ] as const;
 
 /** A locale's name in its own language. */
@@ -20,9 +23,11 @@ const autonym = (locale: string) =>
 interface SiteHeaderProps {
   /** The locales the page is served in, when it is not served in every one. */
   readonly locales?: readonly Locale[];
+  /** The page shown, which its navigation item marks as the current one. */
+  readonly page?: Page;
 }
 
-export const SiteHeader = async ({ locales }: SiteHeaderProps = {}) => {
+export const SiteHeader = async ({ locales, page }: SiteHeaderProps = {}) => {
   const t = await getTranslations();
 
   return (
@@ -41,15 +46,14 @@ export const SiteHeader = async ({ locales }: SiteHeaderProps = {}) => {
           aria-label={t("header.sectionsLabel")}
           className="ml-auto hidden items-center gap-6 lg:flex"
         >
-          {/* The sections live on the home page, so a document page links
-              back to them there. */}
-          {navigation.map((section) => (
+          {navigation.map(({ href, key }) => (
             <Link
-              className="text-muted-foreground hover:text-foreground text-sm whitespace-nowrap"
-              href={{ hash: section, pathname: "/" }}
-              key={section}
+              aria-current={href === page ? "page" : undefined}
+              className="text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground text-sm whitespace-nowrap"
+              href={href}
+              key={key}
             >
-              {t(`header.navigation.${section}`)}
+              {t(`header.navigation.${key}`)}
             </Link>
           ))}
         </nav>
