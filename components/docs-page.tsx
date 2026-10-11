@@ -260,7 +260,7 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
           },
         ]}
       />
-      <SiteHeader locales={locales} />
+      <SiteHeader locales={locales} section="docs" />
       <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
         <aside className="border-border border-b py-8 lg:border-b-0 lg:py-20">
           <VersionMenu

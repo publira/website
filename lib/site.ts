@@ -20,7 +20,7 @@ export const getAbsoluteUrl = (path: string) => {
 };
 
 /** Every page the site serves, by its path in the default locale. */
-export const pages = ["/", "/privacy", "/terms"] as const;
+export const pages = ["/", "/libraries", "/privacy", "/terms"] as const;
 
 export type Page = (typeof pages)[number];
 

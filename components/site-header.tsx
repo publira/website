@@ -5,13 +5,14 @@ import { LocaleMenu } from "#components/locale-menu";
 import { Link } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
 
+// A docs page is one of many under its link, which opens the newest version's
+// root, so the link is current without being the page.
 const navigation = [
-  "platform",
-  "screens",
-  "architecture",
-  "libraries",
-  "start",
+  { current: "true", href: "/docs", key: "docs" },
+  { current: "page", href: "/libraries", key: "libraries" },
 ] as const;
+
+type NavigationKey = (typeof navigation)[number]["key"];
 
 /** A locale's name in its own language. */
 const autonym = (locale: string) =>
@@ -20,9 +21,14 @@ const autonym = (locale: string) =>
 interface SiteHeaderProps {
   /** The locales the page is served in, when it is not served in every one. */
   readonly locales?: readonly Locale[];
+  /** The navigation item the page is, or falls under. */
+  readonly section?: NavigationKey;
 }
 
-export const SiteHeader = async ({ locales }: SiteHeaderProps = {}) => {
+export const SiteHeader = async ({
+  locales,
+  section,
+}: SiteHeaderProps = {}) => {
   const t = await getTranslations();
 
   return (
@@ -32,29 +38,28 @@ export const SiteHeader = async ({ locales }: SiteHeaderProps = {}) => {
           <span className="font-display text-foreground text-xl">
             {t("site.name")}
           </span>
-          <span className="text-muted-foreground hidden text-sm whitespace-nowrap sm:inline lg:hidden xl:inline">
+          <span className="text-muted-foreground hidden text-sm whitespace-nowrap lg:inline">
             {t("header.tagline")}
           </span>
         </Link>
 
         <nav
-          aria-label={t("header.sectionsLabel")}
-          className="ml-auto hidden items-center gap-6 lg:flex"
+          aria-label={t("header.navigationLabel")}
+          className="ml-auto hidden items-center gap-6 sm:flex"
         >
-          {/* The sections live on the home page, so a document page links
-              back to them there. */}
-          {navigation.map((section) => (
+          {navigation.map(({ current, href, key }) => (
             <Link
-              className="text-muted-foreground hover:text-foreground text-sm whitespace-nowrap"
-              href={{ hash: section, pathname: "/" }}
-              key={section}
+              aria-current={key === section ? current : undefined}
+              className="text-muted-foreground hover:text-foreground [&[aria-current]]:text-foreground text-sm whitespace-nowrap"
+              href={href}
+              key={key}
             >
-              {t(`header.navigation.${section}`)}
+              {t(`header.navigation.${key}`)}
             </Link>
           ))}
         </nav>
 
-        <div className="ml-auto lg:ml-0">
+        <div className="ml-auto sm:ml-0">
           <LocaleMenu
             label={t("header.localeLabel")}
             locales={locales}

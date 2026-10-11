@@ -9,13 +9,10 @@
   },
   "header": {
     "tagline": "Open source, still in development",
-    "sectionsLabel": "章节",
+    "navigationLabel": "主要",
     "navigation": {
-      "platform": "平台",
-      "screens": "界面",
-      "architecture": "架构",
-      "libraries": "库",
-      "start": "开始使用"
+      "docs": "文档",
+      "libraries": "库"
     },
     "localeLabel": "语言",
     "github": "GitHub"
@@ -60,6 +57,7 @@
   "projects": {
     "title": "一个平台，以及从中长出的两个库",
     "lead": "Publira 是平台。它需要的部件中有两个长成了独立的库，两者都已公开，任何人无需引入其余部分即可使用。",
+    "libraries": "查看库的详细介绍",
     "repositories": {
       "publira": {
         "role": "平台",
@@ -540,6 +538,10 @@
     "optional": "可选"
   },
   "libraries": {
+    "metadata": {
+      "title": "库",
+      "description": "从 Publira 中成长出来、无需平台即可使用的库：一个无头的 React 漫画阅读器，以及一个处理 EPUB 3 的 Go 库。"
+    },
     "title": "可以单独取用的两个部件",
     "lead": "两者都是 Apache-2.0，都在 Publira 的生产路径中使用，使用任何一个都不要求你采用整个平台。",
     "documentation": "阅读文档",
