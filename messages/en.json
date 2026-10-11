@@ -55,8 +55,8 @@
     }
   },
   "projects": {
-    "title": "One platform, and the two libraries it grew",
-    "lead": "Publira is the platform. Two of the pieces it needed grew into libraries of their own, and both are published for anyone to use without the rest of it.",
+    "title": "One platform, and the libraries it grew",
+    "lead": "Publira is the platform. Some of the pieces it needed grew into libraries of their own, each published for anyone to use without the rest of it.",
     "libraries": "More about the libraries",
     "repositories": {
       "publira": {
@@ -73,6 +73,11 @@
         "role": "The format",
         "language": "Go",
         "description": "A Go library for decoding, encoding, and validating EPUB 3, built around io.ReaderAt so a publication never has to touch the filesystem."
+      },
+      "messageFormat": {
+        "role": "The messages",
+        "language": "Dart",
+        "description": "Unicode MessageFormat 2.0 in pure Dart, conformant to LDML 48.2. The mobile client formats its messages with it, and without Flutter it runs just as well on a server or the command line."
       }
     }
   },
@@ -540,10 +545,10 @@
   "libraries": {
     "metadata": {
       "title": "Libraries",
-      "description": "The libraries Publira grew and publishes for use without the platform: a headless React comic viewer and a Go library for EPUB 3."
+      "description": "The libraries Publira grew and publishes for use without the platform: a headless React comic viewer, a Go library for EPUB 3, and Unicode MessageFormat 2.0 in pure Dart."
     },
-    "title": "Two pieces you can take on their own",
-    "lead": "Both are Apache-2.0, both are used by Publira in production paths, and neither asks you to adopt the platform to use it.",
+    "title": "Pieces you can take on their own",
+    "lead": "Each is Apache-2.0, each is used by Publira in production paths, and none asks you to adopt the platform to use it.",
     "documentation": "Read the documentation",
     "install": "Install",
     "comicViewer": {
@@ -577,6 +582,22 @@
       "links": {
         "pkgGoDev": "pkg.go.dev",
         "demo": "Demo"
+      }
+    },
+    "messageFormat": {
+      "tagline": "A pure-Dart implementation of Unicode MessageFormat 2.0, conformant to LDML 48.2, that formats the messages of the mobile client.",
+      "points": {
+        "pureDart": "Pure Dart with no dependency on Flutter, so it runs on a server, on the command line, and in a Flutter app alike.",
+        "conformance": "All 461 cases of the MessageFormat Working Group's conformance suite at LDML48.2 pass, none skipped, on every change in CI.",
+        "functions": "Every function the specification marks Stable — :string, :number, :integer, :offset, :currency, and :percent — with numbers formatted in every CLDR locale.",
+        "dateTime": "The Draft date and time functions live in messageformat_datetime, so an app that formats no dates does not ship their CLDR data.",
+        "parts": "formatToParts returns a sealed hierarchy of parts, for output such as styled text.",
+        "errors": "Formatting reports errors to a callback and falls back instead of throwing, and custom functions can be registered alongside the defaults."
+      },
+      "note": "Pre-1.0. It follows LDML 48.2 (UTS #35 Part 9, tr35-78) with Unicode CLDR 48.2 data, and a move to a later version of the specification is a release of its own.",
+      "links": {
+        "pubDev": "pub.dev",
+        "dateTime": "messageformat_datetime on pub.dev"
       }
     }
   },

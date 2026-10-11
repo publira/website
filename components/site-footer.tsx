@@ -9,6 +9,10 @@ const repositories = [
     name: "publira/comic-viewer",
   },
   { href: "https://github.com/publira/epub", name: "publira/epub" },
+  {
+    href: "https://github.com/publira/messageformat-dart",
+    name: "publira/messageformat-dart",
+  },
 ];
 
 const policies = ["privacy", "terms"] as const;

@@ -55,8 +55,8 @@
     }
   },
   "projects": {
-    "title": "一个平台，以及从中长出的两个库",
-    "lead": "Publira 是平台。它需要的部件中有两个长成了独立的库，两者都已公开，任何人无需引入其余部分即可使用。",
+    "title": "一个平台，以及从中长出的库",
+    "lead": "Publira 是平台。它需要的部件中有几个长成了独立的库，都已公开，任何人无需引入其余部分即可使用。",
     "libraries": "查看库的详细介绍",
     "repositories": {
       "publira": {
@@ -73,6 +73,11 @@
         "role": "格式",
         "language": "Go",
         "description": "用于解码、编码和校验 EPUB 3 的 Go 库，围绕 io.ReaderAt 构建，出版物无需触及文件系统。"
+      },
+      "messageFormat": {
+        "role": "消息",
+        "language": "Dart",
+        "description": "以纯 Dart 实现的 Unicode MessageFormat 2.0，符合 LDML 48.2。移动客户端用它格式化消息，而它不依赖 Flutter，在服务器和命令行上同样可以运行。"
       }
     }
   },
@@ -540,10 +545,10 @@
   "libraries": {
     "metadata": {
       "title": "库",
-      "description": "从 Publira 中成长出来、无需平台即可使用的库：一个无头的 React 漫画阅读器，以及一个处理 EPUB 3 的 Go 库。"
+      "description": "从 Publira 中成长出来、无需平台即可使用的库：一个无头的 React 漫画阅读器、一个处理 EPUB 3 的 Go 库，以及纯 Dart 实现的 Unicode MessageFormat 2.0。"
     },
-    "title": "可以单独取用的两个部件",
-    "lead": "两者都是 Apache-2.0，都在 Publira 的生产路径中使用，使用任何一个都不要求你采用整个平台。",
+    "title": "可以单独取用的部件",
+    "lead": "每一个都是 Apache-2.0，都在 Publira 的生产路径中使用，使用任何一个都不要求你采用整个平台。",
     "documentation": "阅读文档",
     "install": "安装",
     "comicViewer": {
@@ -577,6 +582,22 @@
       "links": {
         "pkgGoDev": "pkg.go.dev",
         "demo": "Demo"
+      }
+    },
+    "messageFormat": {
+      "tagline": "符合 LDML 48.2 的 Unicode MessageFormat 2.0 纯 Dart 实现，负责格式化移动客户端的消息。",
+      "points": {
+        "pureDart": "纯 Dart，不依赖 Flutter，在服务器、命令行和 Flutter 应用中都能同样运行。",
+        "conformance": "MessageFormat 工作组一致性测试套件在 LDML48.2 下的全部 461 个用例均通过，没有跳过任何一个，并在 CI 中随每次变更运行。",
+        "functions": "提供规范标为 Stable 的全部函数 (:string、:number、:integer、:offset、:currency、:percent)，可按所有 CLDR 区域设置格式化数字。",
+        "dateTime": "处于 Draft 阶段的日期和时间函数位于 messageformat_datetime，不格式化日期的应用就不必携带它们的 CLDR 数据。",
+        "parts": "formatToParts 返回 sealed 层次结构的片段，可用于带样式文本之类的输出。",
+        "errors": "格式化时的错误不会抛出异常，而是报告给回调并回退为后备值；也可以注册自定义函数。"
+      },
+      "note": "尚未到 1.0。遵循 LDML 48.2 (UTS #35 Part 9, tr35-78) 和 Unicode CLDR 48.2 数据，迁移到更新版本的规范会单独发布。",
+      "links": {
+        "pubDev": "pub.dev",
+        "dateTime": "pub.dev 上的 messageformat_datetime"
       }
     }
   },

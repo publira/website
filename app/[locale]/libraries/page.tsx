@@ -30,6 +30,15 @@ const epubPoints = [
   "landmarks",
 ] as const;
 
+const messageFormatPoints = [
+  "pureDart",
+  "conformance",
+  "functions",
+  "dateTime",
+  "parts",
+  "errors",
+] as const;
+
 const comicViewerCode = `import * as ComicViewer from "@publira/comic-viewer";
 import "@publira/comic-viewer/core.css";
 
@@ -66,6 +75,26 @@ if err != nil {
 if err := epub.Encode(out, doc); err != nil {
 	log.Fatal(err)
 }`;
+
+const messageFormatCode = `import 'package:messageformat/messageformat.dart';
+
+final mf = MessageFormat(
+  'en',
+  r'''
+.input {$count :number}
+.match $count
+0   {{No episodes}}
+one {{{$count} episode}}
+*   {{{$count} episodes}}
+''',
+  options: const MessageFormatOptions(
+    bidiIsolation: BidiIsolation.none,
+  ),
+);
+
+mf.format({'count': 0}); // 'No episodes'
+mf.format({'count': 1}); // '1 episode'
+mf.format({'count': 1000}); // '1,000 episodes'`;
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const [locale, t] = await Promise.all([getRootLocale(), getTranslations()]);
@@ -165,6 +194,30 @@ const Libraries = async () => {
               t(`libraries.epub.points.${point}`)
             )}
             tagline={t("libraries.epub.tagline")}
+          />
+          <LibraryDetail
+            code={messageFormatCode}
+            codeLabel="main.dart"
+            codeLang="dart"
+            href="https://github.com/publira/messageformat-dart"
+            id="messageformat"
+            install="dart pub add messageformat"
+            links={[
+              {
+                href: "https://pub.dev/packages/messageformat",
+                label: t("libraries.messageFormat.links.pubDev"),
+              },
+              {
+                href: "https://pub.dev/packages/messageformat_datetime",
+                label: t("libraries.messageFormat.links.dateTime"),
+              },
+            ]}
+            name="publira/messageformat-dart"
+            note={t("libraries.messageFormat.note")}
+            points={messageFormatPoints.map((point) =>
+              t(`libraries.messageFormat.points.${point}`)
+            )}
+            tagline={t("libraries.messageFormat.tagline")}
           />
         </div>
       </main>
