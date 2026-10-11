@@ -9,13 +9,10 @@
   },
   "header": {
     "tagline": "Open source, still in development",
-    "sectionsLabel": "區段",
+    "navigationLabel": "主要",
     "navigation": {
-      "platform": "平台",
-      "screens": "畫面",
-      "architecture": "架構",
-      "libraries": "函式庫",
-      "start": "開始使用"
+      "docs": "文件",
+      "libraries": "函式庫"
     },
     "localeLabel": "語言",
     "github": "GitHub"
@@ -60,6 +57,7 @@
   "projects": {
     "title": "一個平台，以及從中長出的兩個函式庫",
     "lead": "Publira 是平台。它需要的零件中有兩個長成了獨立的函式庫，兩者都已公開，任何人不必引入其餘部分就能使用。",
+    "libraries": "查看函式庫的詳細介紹",
     "repositories": {
       "publira": {
         "role": "平台",

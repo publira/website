@@ -105,7 +105,7 @@ const Libraries = async () => {
           },
         ]}
       />
-      <SiteHeader page={page} />
+      <SiteHeader section="libraries" />
       <main className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-24">
         <h1 className="font-display text-foreground break-phrase max-w-3xl text-4xl text-balance sm:text-5xl">
           {t("libraries.title")}

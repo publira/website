@@ -9,13 +9,10 @@
   },
   "header": {
     "tagline": "Open source, still in development",
-    "sectionsLabel": "章节",
+    "navigationLabel": "主要",
     "navigation": {
-      "platform": "平台",
-      "screens": "界面",
-      "architecture": "架构",
-      "libraries": "库",
-      "start": "开始使用"
+      "docs": "文档",
+      "libraries": "库"
     },
     "localeLabel": "语言",
     "github": "GitHub"
@@ -60,6 +57,7 @@
   "projects": {
     "title": "一个平台，以及从中长出的两个库",
     "lead": "Publira 是平台。它需要的部件中有两个长成了独立的库，两者都已公开，任何人无需引入其余部分即可使用。",
+    "libraries": "查看库的详细介绍",
     "repositories": {
       "publira": {
         "role": "平台",

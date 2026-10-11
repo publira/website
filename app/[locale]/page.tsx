@@ -27,8 +27,7 @@ import {
 } from "#lib/structured-data";
 
 // `languages` are the ones each repository's code is written in, as GitHub
-// counts them, less the build and platform glue. A library's card leads to its
-// section of `/libraries`, which links its repository in turn.
+// counts them, less the build and platform glue.
 const repositories = [
   {
     href: "https://github.com/publira/publira",
@@ -41,7 +40,6 @@ const repositories = [
     install: "@publira/comic-viewer",
     key: "comicViewer",
     languages: ["TypeScript"],
-    library: "comic-viewer",
     name: "publira/comic-viewer",
   },
   {
@@ -49,7 +47,6 @@ const repositories = [
     install: "github.com/publira/epub",
     key: "epub",
     languages: ["Go"],
-    library: "epub",
     name: "publira/epub",
   },
 ] as const;
@@ -205,15 +202,16 @@ export const Home = async () => {
                 key={repository.key}
                 language={t(`projects.repositories.${repository.key}.language`)}
                 name={repository.name}
-                page={
-                  "library" in repository
-                    ? { hash: repository.library, pathname: "/libraries" }
-                    : undefined
-                }
                 role={t(`projects.repositories.${repository.key}.role`)}
               />
             ))}
           </div>
+          <Link
+            className="border-primary text-primary hover:bg-accent mt-10 inline-block rounded-sm border px-5 py-2.5 text-sm font-medium"
+            href="/libraries"
+          >
+            {t("projects.libraries")}
+          </Link>
         </Section>
 
         <Section

@@ -9,13 +9,10 @@
   },
   "header": {
     "tagline": "Open source, still in development",
-    "sectionsLabel": "セクション",
+    "navigationLabel": "メイン",
     "navigation": {
-      "platform": "プラットフォーム",
-      "screens": "画面",
-      "architecture": "アーキテクチャ",
-      "libraries": "ライブラリ",
-      "start": "セットアップ"
+      "docs": "ドキュメント",
+      "libraries": "ライブラリ"
     },
     "localeLabel": "言語",
     "github": "GitHub"
@@ -60,6 +57,7 @@
   "projects": {
     "title": "ひとつのプラットフォームとそこから育った二つのライブラリ",
     "lead": "Publiraはプラットフォームです。開発に必要だった部品のうち二つは独立したライブラリに育ち、プラットフォームがなくても誰でも使えるよう公開しています。",
+    "libraries": "ライブラリの詳細を見る",
     "repositories": {
       "publira": {
         "role": "プラットフォーム",
