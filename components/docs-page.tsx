@@ -1,3 +1,4 @@
+import type { Locale } from "next-intl";
 import { getFormatter, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
@@ -13,23 +14,24 @@ import {
   docsSourceLocale,
   findPage,
   getCurrentVersion,
+  getDocsNavigation,
   getDocsPageLocales,
   getDocsPath,
   getDocsVersions,
   getLocalizedDocsPath,
   nextVersion,
 } from "#lib/docs";
-import type { DocsPage as DocsPageData, DocsTree } from "#lib/docs";
+import type { DocsNavigationPage, DocsPage as DocsPageData } from "#lib/docs";
 import { getAbsoluteUrl } from "#lib/site";
 import { getPageUrl, getWebSiteId, organizationId } from "#lib/structured-data";
 
 interface NavigationItem {
   readonly children: NavigationItem[];
-  readonly page: DocsPageData;
+  readonly page: DocsNavigationPage;
 }
 
 /** The pages as a tree: a directory's pages under its `index.md`. */
-const toNavigation = (pages: readonly DocsPageData[]) => {
+const toNavigation = (pages: readonly DocsNavigationPage[]) => {
   const items = new Map<string, NavigationItem>();
   const roots: NavigationItem[] = [];
   // A directory's page sorts before the pages inside it.
@@ -64,6 +66,7 @@ const NavigationList = ({
           aria-current={page.path === current.path ? "page" : undefined}
           className="text-muted-foreground hover:text-foreground aria-[current=page]:text-primary block py-1 text-sm aria-[current=page]:font-medium"
           href={getDocsPath(version, page.slug)}
+          lang={page.language}
           prefetch
         >
           {page.title}
@@ -127,7 +130,7 @@ const VersionNotice = async ({ latest, version }: VersionNoticeProps) => {
   );
 
   return (
-    <p className="border-border mb-8 rounded-md border px-4 py-3 text-sm leading-relaxed">
+    <p className="border-border rounded-md border px-4 py-3 text-sm leading-relaxed">
       {t.rich(version === nextVersion ? "nextNotice" : "olderNotice", {
         code,
         latest,
@@ -138,9 +141,20 @@ const VersionNotice = async ({ latest, version }: VersionNoticeProps) => {
   );
 };
 
+/** That the page is shown in the source locale until it is translated. */
+const TranslationNotice = async () => {
+  const t = await getTranslations("docs");
+
+  return (
+    <p className="border-border rounded-md border px-4 py-3 text-sm leading-relaxed">
+      {t("untranslatedNotice")}
+    </p>
+  );
+};
+
 interface AdjacentPageLinkProps {
   readonly label: string;
-  readonly page: DocsPageData;
+  readonly page: DocsNavigationPage;
   readonly rel: "next" | "prev";
   readonly version: string;
 }
@@ -158,7 +172,12 @@ const AdjacentPageLink = ({
     rel={rel}
   >
     <span className="text-muted-foreground block text-sm">{label}</span>
-    <span className="text-foreground mt-1 block font-medium">{page.title}</span>
+    <span
+      className="text-foreground mt-1 block font-medium"
+      lang={page.language}
+    >
+      {page.title}
+    </span>
   </Link>
 );
 
@@ -188,24 +207,28 @@ const PageDate = async ({ date, kind }: PageDateProps) => {
 };
 
 interface DocsPageProps {
+  /** The locale the page is written in: the source locale's until translated. */
+  readonly language: Locale;
   readonly page: DocsPageData;
-  readonly tree: DocsTree;
   readonly version: string;
 }
 
-export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
+export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
   const [locale, t, latest, versions] = await Promise.all([
     getRootLocale(),
     getTranslations(),
     getCurrentVersion(),
     getDocsVersions(),
   ]);
-  const pageLocales = await Promise.all(
-    versions.map(async ({ name }) => ({
-      locales: await getDocsPageLocales(name, page.slug),
-      name,
-    }))
-  );
+  const [pageLocales, pages] = await Promise.all([
+    Promise.all(
+      versions.map(async ({ name }) => ({
+        locales: await getDocsPageLocales(name, page.slug),
+        name,
+      }))
+    ),
+    getDocsNavigation(version, locale),
+  ]);
   // A version has the page when the source locale does, which a locale
   // without it falls back to.
   const versionsWithPage = pageLocales.map(({ locales, name }) => ({
@@ -214,17 +237,22 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
   }));
   const locales =
     pageLocales.find(({ name }) => name === version)?.locales ?? [];
+  // Every locale serves the source locale's pages.
+  const servedLocales = locales.includes(docsSourceLocale)
+    ? undefined
+    : locales;
+  const translated = language === locale;
   const url = getAbsoluteUrl(getLocalizedDocsPath(locale, version, page.slug));
   // The directories' pages above this one.
   const ancestors = page.slug.flatMap((_, index) => {
     const ancestor =
       index < page.slug.length - 1 &&
-      findPage(tree, page.slug.slice(0, index + 1));
+      findPage({ pages }, page.slug.slice(0, index + 1));
     return ancestor ? [ancestor] : [];
   });
-  const position = tree.pages.findIndex(({ path }) => path === page.path);
-  const previous = tree.pages[position - 1];
-  const next = tree.pages[position + 1];
+  const position = pages.findIndex(({ path }) => path === page.path);
+  const previous = pages[position - 1];
+  const next = pages[position + 1];
 
   return (
     <>
@@ -237,7 +265,7 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
             datePublished: page.published,
             description: page.description,
             headline: page.title,
-            inLanguage: locale,
+            inLanguage: language,
             isPartOf: { "@id": getWebSiteId(locale) },
             publisher: { "@id": organizationId },
             url,
@@ -260,7 +288,7 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
           },
         ]}
       />
-      <SiteHeader locales={locales} section="docs" />
+      <SiteHeader locales={servedLocales} section="docs" />
       <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
         <aside className="border-border border-b py-8 lg:border-b-0 lg:py-20">
           <VersionMenu
@@ -271,27 +299,42 @@ export const DocsPage = async ({ page, tree, version }: DocsPageProps) => {
           />
           <DocsNavigation
             label={t("docs.navigationLabel")}
-            summary={page.title}
+            summary={
+              <span lang={translated ? undefined : language}>{page.title}</span>
+            }
           >
             <NavigationList
               current={page}
               expanded={
                 new Set([...ancestors, page].map((crumb) => crumb.path))
               }
-              items={toNavigation(tree.pages)}
+              items={toNavigation(pages)}
               version={version}
             />
           </DocsNavigation>
         </aside>
         <main className="max-w-3xl py-12 sm:py-16 lg:py-20">
-          {version === latest ? null : (
-            <VersionNotice latest={latest} version={version} />
+          {version === latest && translated ? null : (
+            <div className="mb-8 space-y-3">
+              {version === latest ? null : (
+                <VersionNotice latest={latest} version={version} />
+              )}
+              {translated ? null : <TranslationNotice />}
+            </div>
           )}
-          <article className="text-muted-foreground">
+          {/* An untranslated article is marked as the source locale's, all
+              but the dates, which are the reader's. */}
+          <article
+            className="text-muted-foreground"
+            lang={translated ? undefined : language}
+          >
             <h1 className="font-display text-foreground text-3xl text-balance sm:text-4xl">
               {page.title}
             </h1>
-            <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <p
+              className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm"
+              lang={translated ? undefined : locale}
+            >
               <PageDate date={page.published} kind="published" />
               {page.updated ? (
                 <PageDate date={page.updated} kind="updated" />

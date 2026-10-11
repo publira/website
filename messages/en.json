@@ -626,7 +626,8 @@
     "published": "Published <time>{date}</time>",
     "updated": "Updated <time>{date}</time>",
     "nextNotice": "This page describes the development version on <code>main</code>, which may include changes that are not released yet. For the newest release, see <link>the documentation for {latest}</link>.",
-    "olderNotice": "This page describes {version}, which is not the newest release. See <link>the documentation for {latest}</link>."
+    "olderNotice": "This page describes {version}, which is not the newest release. See <link>the documentation for {latest}</link>.",
+    "untranslatedNotice": "This page is not translated into your language yet, so it is shown in English."
   },
   "footer": {
     "about": "An open-source project that values portability, ease of operation, and freedom from vendor lock-in. Every repository is licensed under Apache-2.0.",
