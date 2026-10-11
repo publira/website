@@ -55,8 +55,8 @@
     }
   },
   "projects": {
-    "title": "하나의 플랫폼과 거기서 자라난 두 라이브러리",
-    "lead": "Publira는 플랫폼입니다. 개발에 필요했던 부품 가운데 둘은 독립된 라이브러리로 자라났고, 둘 다 플랫폼 없이도 누구나 쓸 수 있도록 공개되어 있습니다.",
+    "title": "하나의 플랫폼과 거기서 자라난 라이브러리",
+    "lead": "Publira는 플랫폼입니다. 개발에 필요했던 부품 가운데 몇몇은 독립된 라이브러리로 자라났고, 모두 플랫폼 없이도 누구나 쓸 수 있도록 공개되어 있습니다.",
     "libraries": "라이브러리 자세히 보기",
     "repositories": {
       "publira": {
@@ -73,6 +73,11 @@
         "role": "포맷",
         "language": "Go",
         "description": "EPUB 3를 디코드하고 인코드하고 검증하는 Go 라이브러리입니다. io.ReaderAt을 중심으로 설계되어 출판물이 파일 시스템에 닿을 필요가 없습니다."
+      },
+      "messageFormat": {
+        "role": "메시지",
+        "language": "Dart",
+        "description": "Unicode MessageFormat 2.0을 순수 Dart로 구현한 것으로, LDML 48.2를 준수합니다. 모바일 클라이언트의 메시지를 포맷하며, Flutter에 의존하지 않아 서버나 명령줄에서도 똑같이 동작합니다."
       }
     }
   },
@@ -540,10 +545,10 @@
   "libraries": {
     "metadata": {
       "title": "라이브러리",
-      "description": "Publira에서 자라나 플랫폼 없이도 쓸 수 있도록 공개한 라이브러리입니다. 헤드리스 React 만화 뷰어와 EPUB 3를 다루는 Go 라이브러리가 있습니다."
+      "description": "Publira에서 자라나 플랫폼 없이도 쓸 수 있도록 공개한 라이브러리입니다. 헤드리스 React 만화 뷰어, EPUB 3를 다루는 Go 라이브러리, 순수 Dart로 구현한 Unicode MessageFormat 2.0이 있습니다."
     },
-    "title": "따로 가져다 쓸 수 있는 두 부품",
-    "lead": "둘 다 Apache-2.0이고 둘 다 Publira의 프로덕션 경로에서 쓰이며, 어느 쪽도 쓰기 위해 플랫폼을 도입하라고 요구하지 않습니다.",
+    "title": "따로 가져다 쓸 수 있는 부품",
+    "lead": "모두 Apache-2.0이고 모두 Publira의 프로덕션 경로에서 쓰이며, 어느 것도 쓰기 위해 플랫폼을 도입하라고 요구하지 않습니다.",
     "documentation": "문서 읽기",
     "install": "설치",
     "comicViewer": {
@@ -577,6 +582,22 @@
       "links": {
         "pkgGoDev": "pkg.go.dev",
         "demo": "Demo"
+      }
+    },
+    "messageFormat": {
+      "tagline": "LDML 48.2를 준수하는 Unicode MessageFormat 2.0의 순수 Dart 구현으로, 모바일 클라이언트의 메시지를 포맷합니다.",
+      "points": {
+        "pureDart": "Flutter에 의존하지 않는 순수 Dart라서 서버, 명령줄, Flutter 앱 어디서나 똑같이 동작합니다.",
+        "conformance": "MessageFormat 워킹 그룹 적합성 테스트 스위트의 LDML48.2 기준 461개 사례를 하나도 건너뛰지 않고 모두 통과하며, CI에서 변경마다 실행합니다.",
+        "functions": "명세가 Stable로 정한 함수(:string, :number, :integer, :offset, :currency, :percent)를 모두 제공하고, 모든 CLDR 로캘에서 숫자를 포맷합니다.",
+        "dateTime": "Draft 단계의 날짜와 시간 함수는 messageformat_datetime에 따로 있어, 날짜를 포맷하지 않는 앱은 그 CLDR 데이터를 싣지 않습니다.",
+        "parts": "formatToParts는 sealed 계층의 파트를 돌려주므로 스타일을 입힌 텍스트 같은 출력을 만들 수 있습니다.",
+        "errors": "포맷 중 오류는 예외를 던지지 않고 콜백으로 알린 뒤 대체 값으로 바꾸며, 사용자 정의 함수도 등록할 수 있습니다."
+      },
+      "note": "1.0 이전입니다. LDML 48.2(UTS #35 Part 9, tr35-78)와 Unicode CLDR 48.2 데이터를 따르며, 이후 버전의 명세로 옮기는 것은 별도의 릴리스로 합니다.",
+      "links": {
+        "pubDev": "pub.dev",
+        "dateTime": "pub.dev의 messageformat_datetime"
       }
     }
   },

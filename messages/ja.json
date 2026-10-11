@@ -55,8 +55,8 @@
     }
   },
   "projects": {
-    "title": "ひとつのプラットフォームとそこから育った二つのライブラリ",
-    "lead": "Publiraはプラットフォームです。開発に必要だった部品のうち二つは独立したライブラリに育ち、プラットフォームがなくても誰でも使えるよう公開しています。",
+    "title": "ひとつのプラットフォームとそこから育ったライブラリ",
+    "lead": "Publiraはプラットフォームです。開発に必要だった部品のいくつかは独立したライブラリに育ち、プラットフォームがなくても誰でも使えるよう公開しています。",
     "libraries": "ライブラリの詳細を見る",
     "repositories": {
       "publira": {
@@ -73,6 +73,11 @@
         "role": "フォーマット",
         "language": "Go",
         "description": "EPUB 3をデコードしてエンコードし、検証するGoライブラリです。io.ReaderAtを中心に設計されており、出版物がファイルシステムに触れる必要はありません。"
+      },
+      "messageFormat": {
+        "role": "メッセージ",
+        "language": "Dart",
+        "description": "Unicode MessageFormat 2.0をピュアDartで実装したもので、LDML 48.2に準拠しています。モバイルクライアントのメッセージを整形していますが、Flutterに依存しないのでサーバーやコマンドラインでも動きます。"
       }
     }
   },
@@ -540,10 +545,10 @@
   "libraries": {
     "metadata": {
       "title": "ライブラリ",
-      "description": "Publiraから生まれ、プラットフォームなしでも使えるライブラリです。ヘッドレスなReact製コミックビューアーとEPUB 3を扱うGoライブラリがあります。"
+      "description": "Publiraから生まれ、プラットフォームなしでも使えるライブラリです。ヘッドレスなReact製コミックビューアーとEPUB 3を扱うGoライブラリ、ピュアDartによるUnicode MessageFormat 2.0があります。"
     },
-    "title": "単体で使える二つの部品",
-    "lead": "どちらもApache-2.0で、Publiraの本番でも使われています。使うためにプラットフォームを導入する必要はありません。",
+    "title": "単体で使える部品",
+    "lead": "いずれもApache-2.0で、Publiraの本番でも使われています。使うためにプラットフォームを導入する必要はありません。",
     "documentation": "ドキュメント",
     "install": "インストール",
     "comicViewer": {
@@ -577,6 +582,22 @@
       "links": {
         "pkgGoDev": "pkg.go.dev",
         "demo": "Demo"
+      }
+    },
+    "messageFormat": {
+      "tagline": "Unicode MessageFormat 2.0をピュアDartで実装した、LDML 48.2準拠のライブラリです。モバイルクライアントのメッセージを整形しています。",
+      "points": {
+        "pureDart": "ピュアDartでFlutterに依存しません。サーバーでもコマンドラインでもFlutterアプリでも同じように動きます。",
+        "conformance": "MessageFormatワーキンググループの適合性テストスイート (LDML48.2) の461件すべてにスキップなしで合格します。CIで変更のたびに実行しています。",
+        "functions": "仕様がStableとする関数 (:string, :number, :integer, :offset, :currency, :percent) をすべて備え、数値はCLDRのすべてのロケールで整形できます。",
+        "dateTime": "Draftの日付と時刻の関数はmessageformat_datetimeに分けてあるので、日付を整形しないアプリにそのCLDRデータは含まれません。",
+        "parts": "formatToPartsはsealedな階層のパーツを返すので、装飾付きテキストのような出力も組み立てられます。",
+        "errors": "整形中のエラーは例外にせずコールバックへ報告し、フォールバック値で置き換えます。独自の関数も登録できます。"
+      },
+      "note": "1.0未満です。LDML 48.2 (UTS #35 Part 9, tr35-78) とUnicode CLDR 48.2のデータに従い、仕様の新しいバージョンへの移行は単独のリリースで行います。",
+      "links": {
+        "pubDev": "pub.dev",
+        "dateTime": "pub.devのmessageformat_datetime"
       }
     }
   },

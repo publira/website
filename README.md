@@ -1,6 +1,6 @@
 # Publira Website
 
-The public site for [Publira](https://github.com/publira/publira), the open-source multi-tenant publishing platform. It introduces the platform and the two libraries that grew out of it, [`publira/comic-viewer`](https://github.com/publira/comic-viewer) and [`publira/epub`](https://github.com/publira/epub).
+The public site for [Publira](https://github.com/publira/publira), the open-source multi-tenant publishing platform. It introduces the platform and the libraries that grew out of it, [`publira/comic-viewer`](https://github.com/publira/comic-viewer), [`publira/epub`](https://github.com/publira/epub), and [`publira/messageformat-dart`](https://github.com/publira/messageformat-dart).
 
 Built with Next.js (App Router), React, and Tailwind CSS.
 

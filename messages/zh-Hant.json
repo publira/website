@@ -55,8 +55,8 @@
     }
   },
   "projects": {
-    "title": "一個平台，以及從中長出的兩個函式庫",
-    "lead": "Publira 是平台。它需要的零件中有兩個長成了獨立的函式庫，兩者都已公開，任何人不必引入其餘部分就能使用。",
+    "title": "一個平台，以及從中長出的函式庫",
+    "lead": "Publira 是平台。它需要的零件中有幾個長成了獨立的函式庫，都已公開，任何人不必引入其餘部分就能使用。",
     "libraries": "查看函式庫的詳細介紹",
     "repositories": {
       "publira": {
@@ -73,6 +73,11 @@
         "role": "格式",
         "language": "Go",
         "description": "用於解碼、編碼與驗證 EPUB 3 的 Go 函式庫，以 io.ReaderAt 為核心設計，出版品不必觸及檔案系統。"
+      },
+      "messageFormat": {
+        "role": "訊息",
+        "language": "Dart",
+        "description": "以純 Dart 實作的 Unicode MessageFormat 2.0，符合 LDML 48.2。行動客戶端用它格式化訊息，而它不依賴 Flutter，在伺服器和命令列上同樣可以執行。"
       }
     }
   },
@@ -540,10 +545,10 @@
   "libraries": {
     "metadata": {
       "title": "函式庫",
-      "description": "從 Publira 中成長出來、無需平台即可使用的函式庫：一個 headless 的 React 漫畫閱讀器，以及一個處理 EPUB 3 的 Go 函式庫。"
+      "description": "從 Publira 中成長出來、無需平台即可使用的函式庫：一個 headless 的 React 漫畫閱讀器、一個處理 EPUB 3 的 Go 函式庫，以及純 Dart 實作的 Unicode MessageFormat 2.0。"
     },
-    "title": "可以單獨取用的兩個零件",
-    "lead": "兩者都是 Apache-2.0，都在 Publira 的正式路徑中使用，使用任何一個都不要求你採用整個平台。",
+    "title": "可以單獨取用的零件",
+    "lead": "每一個都是 Apache-2.0，都在 Publira 的正式路徑中使用，使用任何一個都不要求你採用整個平台。",
     "documentation": "閱讀文件",
     "install": "安裝",
     "comicViewer": {
@@ -577,6 +582,22 @@
       "links": {
         "pkgGoDev": "pkg.go.dev",
         "demo": "Demo"
+      }
+    },
+    "messageFormat": {
+      "tagline": "符合 LDML 48.2 的 Unicode MessageFormat 2.0 純 Dart 實作，負責格式化行動客戶端的訊息。",
+      "points": {
+        "pureDart": "純 Dart，不依賴 Flutter，在伺服器、命令列和 Flutter 應用程式中都能同樣執行。",
+        "conformance": "MessageFormat 工作小組一致性測試套件在 LDML48.2 下的全部 461 個案例皆通過，沒有略過任何一個，並在 CI 中隨每次變更執行。",
+        "functions": "提供規範標為 Stable 的全部函式 (:string、:number、:integer、:offset、:currency、:percent)，可依所有 CLDR 地區設定格式化數字。",
+        "dateTime": "處於 Draft 階段的日期與時間函式位於 messageformat_datetime，不格式化日期的應用程式就不必攜帶它們的 CLDR 資料。",
+        "parts": "formatToParts 傳回 sealed 階層結構的片段，可用於帶樣式文字之類的輸出。",
+        "errors": "格式化時的錯誤不會擲出例外，而是回報給回呼並退回為備用值；也可以註冊自訂函式。"
+      },
+      "note": "尚未到 1.0。遵循 LDML 48.2 (UTS #35 Part 9, tr35-78) 與 Unicode CLDR 48.2 資料，遷移到更新版本的規範會單獨發布。",
+      "links": {
+        "pubDev": "pub.dev",
+        "dateTime": "pub.dev 上的 messageformat_datetime"
       }
     }
   },

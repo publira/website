@@ -49,6 +49,13 @@ const repositories = [
     languages: ["Go"],
     name: "publira/epub",
   },
+  {
+    href: "https://github.com/publira/messageformat-dart",
+    install: "messageformat",
+    key: "messageFormat",
+    languages: ["Dart"],
+    name: "publira/messageformat-dart",
+  },
 ] as const;
 
 const platformFeatures = [
@@ -189,7 +196,7 @@ export const Home = async () => {
           title={t("projects.title")}
           tone="surface"
         >
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-10 md:grid-cols-2">
             {repositories.map((repository) => (
               <RepoCard
                 description={t(
