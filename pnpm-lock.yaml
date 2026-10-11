@@ -179,8 +179,8 @@ importers:
         specifier: 8.3.1
         version: 8.3.1
       '@sugar-high/react':
-        specifier: 2.4.1
-        version: 2.4.1(react@19.3.0)
+        specifier: 2.5.0
+        version: 2.5.0(react@19.3.0)
       '@sugar-high/remark':
         specifier: 1.0.3
         version: 1.0.3
@@ -212,8 +212,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0
       sugar-high:
-        specifier: 2.5.2
-        version: 2.5.2
+        specifier: 2.6.0
+        version: 2.6.0
       yaml:
         specifier: 2.9.1
         version: 2.9.1
@@ -1191,8 +1191,8 @@ packages:
   '@sonarsource/analyzer-commons-configurations@2.31.0-5284':
     resolution: {integrity: sha512-ruk3blMs9BE9RNSp9LPpWZAIjxJmq4Cp00E3cELIHz7Kym3WxdWGRlKOMYLRQ5tJg/de7jN5AtEElY3bGIfTcw==}
 
-  '@sugar-high/react@2.4.1':
-    resolution: {integrity: sha512-neyeiAhHx/0pmpY97SwR/4tcpQ0Q94D36Uy0IuOb8V49B49XWdIg5kGNdQmXKH5p/Ol68srtCczhfz+andwh2g==}
+  '@sugar-high/react@2.5.0':
+    resolution: {integrity: sha512-F1DYkfVMvXRDXIz86JXnvZENqwWrWAF0qfFWILuFMeZmYaxqwiSIb/mw88RbixxVQRQacm7Z0F/fE4dgOS2aSQ==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -3610,13 +3610,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  sugar-high@2.5.2:
-    resolution: {integrity: sha512-6bWenmZIfwfSaTWr4NYOdlJvJ92zVMLY6duRY8zxdoDbJ9++Y4rkZq1PvzwVmuSx4gBHj2ne9wFA6T09watbkg==}
-    peerDependencies:
-      gpu-lexer: '>=0.0.2'
-    peerDependenciesMeta:
-      gpu-lexer:
-        optional: true
+  sugar-high@2.6.0:
+    resolution: {integrity: sha512-G2xyakJ3Zk7Ja6Cw6mnWlkekllsgHrz14T/QXWYF4qmo64Ca96qt3YHAGIjgjLoCjhs1ZjjAGcrFjwmAxFlbXA==}
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -4521,19 +4516,15 @@ snapshots:
 
   '@sonarsource/analyzer-commons-configurations@2.31.0-5284': {}
 
-  '@sugar-high/react@2.4.1(react@19.3.0)':
+  '@sugar-high/react@2.5.0(react@19.3.0)':
     dependencies:
       react: 19.3.0
-      sugar-high: 2.5.2
-    transitivePeerDependencies:
-      - gpu-lexer
+      sugar-high: 2.6.0
 
   '@sugar-high/remark@1.0.3':
     dependencies:
-      sugar-high: 2.5.2
+      sugar-high: 2.6.0
       unist-util-map: 4.0.0
-    transitivePeerDependencies:
-      - gpu-lexer
 
   '@swc/core-darwin-arm64@1.16.2':
     optional: true
@@ -7317,7 +7308,7 @@ snapshots:
       client-only: 0.0.1
       react: 19.3.0
 
-  sugar-high@2.5.2: {}
+  sugar-high@2.6.0: {}
 
   supports-color@7.2.0:
     dependencies:
