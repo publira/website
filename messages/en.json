@@ -47,7 +47,7 @@
     },
     "status": {
       "title": "Still being built",
-      "body": "Publira is under active development and has not reached a stable release. Everything shown on this page runs today, and an install can be brought up from its images with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and following changes that are still landing. Take it as something to evaluate, build on, and contribute to — not as a finished product."
+      "body": "Publira is under active development, and its newest release, v{version}, is not ready for production use yet. Everything shown on this page runs today, and an install can be brought up from the images each release publishes with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and taking the changes each 0.x minor release may bring. Take it as something to evaluate, build on, and contribute to — not as a finished product."
     },
     "screenshot": {
       "alt": "The Publira reader-facing catalog, led by the work the tenant is featuring",
@@ -87,11 +87,11 @@
     "features": {
       "multiTenant": {
         "title": "Multi-tenant from the ground up",
-        "body": "Every publisher runs under its own brand and domain. Above them, the platform console — or publiractl, for an install that runs without it — manages tenant status, the operators, the readers of every tenant, and the settings the whole install shares: object storage, mail, Web Push, and security policy."
+        "body": "Every publisher runs under its own brand and domain. Above them, the platform console — or publiractl, for an install that runs without it — manages tenant status, the operators, the readers of every tenant, and the settings the whole install shares: object storage, mail, search, Web Push, and security policy."
       },
       "console": {
         "title": "One console for the whole catalog",
-        "body": "Series, episodes, labels, authors and the roles they are credited in, genres, tags, pages, announcements, access tickets, comments, and the messages readers send through the contact form, all from one console with a queue of everything awaiting release. A tenant admin invites the rest of the staff from it too."
+        "body": "Series, episodes, labels, authors and the roles they are credited in, genres, tags, pages, announcements, access tickets, and comments, all from one console with a queue of everything awaiting release. The messages readers send through the contact form are answered there too, and once the tenant receives mail through SendGrid or Resend, a reader's emailed reply comes back under the message. A tenant admin invites the rest of the staff as Tenant admins, Editors, or Auditors, and each sees only the controls their role may use."
       },
       "themes": {
         "title": "Themes with a real preview",
@@ -99,11 +99,15 @@
       },
       "payments": {
         "title": "Paid episodes, through the provider you choose",
-        "body": "A tenant sells episodes through Stripe or PAY.JP Checkout on the web, and through the App Store and Google Play in its app. The redirect unlocks nothing: a purchase is written when the provider's signed notification arrives, and a refund is recorded against the purchase it reverses."
+        "body": "A tenant sells episodes through Stripe or PAY.JP Checkout on the web, and through the App Store and Google Play in its app, in the currency the tenant chooses, which every price is entered and shown in. The redirect unlocks nothing: a purchase is written when the provider's signed notification arrives, and a refund is recorded against the purchase it reverses."
+      },
+      "freeReading": {
+        "title": "Free to read, on the tenant's schedule",
+        "body": "A paid episode opens to every reader for a free reading period, scheduled on one episode or across many episodes of a series at once. A series can also offer free if you wait: signed-in readers open its paid episodes free, one at a time, with a ticket that comes back after a wait."
       },
       "signIn": {
         "title": "Sign in with Apple and Google",
-        "body": "Each tenant registers its own Apple and Google credentials, and its readers sign in with them on the site and in the app as well as with an email address. Tenant staff can turn on two-step verification, and the platform can require it of every tenant administrator."
+        "body": "Each tenant registers its own Apple and Google credentials, and its readers sign in with them on the site and in the app as well as with an email address. Tenant staff and the platform's operators can turn on two-step verification, and the platform can require it of every tenant administrator and every operator."
       },
       "surfaces": {
         "title": "The site, the app, or both",
@@ -157,17 +161,21 @@
         "title": "Localized end to end",
         "body": "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, in the app, and in the mail. A tenant's own pages — its terms and its privacy policy among them — carry a translation per language, and its time zone governs how its records are read."
       },
+      "search": {
+        "title": "A search that grows with the catalog",
+        "body": "The search on every tenant's site finds series, authors, and labels in PostgreSQL, with nothing more to run. An install that wants results ranked by relevance moves it to OpenSearch or Elasticsearch, which forgive a mistyped letter and, with the default text analysis, find a title written in kanji from its reading typed in kana. Whichever engine finds the results, what the site shows of them is read from the database, so nothing it shows is stale."
+      },
       "searchEngines": {
         "title": "Found by search engines",
         "body": "Every tenant site serves its own robots.txt and sitemap, and every public page names its canonical address and the same page in each of the other languages, so a search engine indexes each publisher as the site it is."
       },
       "mobile": {
         "title": "A reader app in the same repository",
-        "body": "A Flutter client for Android and iOS under the tenant's own name and theme, calling the same public API as the site: accounts from sign-up to deletion, Sign in with Apple and Google, search, genres and tags, follows, an inbox, purchases in the store or through the site's checkout, and episodes saved encrypted on the device to read with no network. Each tenant builds its own app from one manifest."
+        "body": "A Flutter client for Android and iOS, laid out for phones and tablets alike, under the tenant's own name and theme, calling the same public API as the site: accounts from sign-up to deletion, Sign in with Apple and Google, search, genres and tags, follows, an inbox, purchases in the store or through the site's checkout, and episodes saved encrypted on the device to read with no network. Each tenant builds its own app from one manifest."
       },
       "portability": {
         "title": "Yours to run anywhere",
-        "body": "Apache-2.0, an image for every process, one Compose file that runs an install on a single host, and publiractl to migrate the database and set the install up. Ordinary infrastructure underneath and no managed service in the way — portability and freedom from lock-in are the point, not a side effect."
+        "body": "Apache-2.0, an image for every process that each release publishes for linux/amd64 and linux/arm64, one Compose file that runs an install on a single host, and publiractl to migrate the database and set the install up. Ordinary infrastructure underneath and no managed service in the way — portability and freedom from lock-in are the point, not a side effect."
       }
     }
   },
@@ -469,7 +477,7 @@
       "web": {
         "label": "Web (Next.js)",
         "nodes": {
-          "host": "web-host",
+          "storefront": "web-storefront",
           "admin": "web-admin",
           "platform": "web-platform"
         }
@@ -497,8 +505,8 @@
         }
       }
     },
-    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs. An optional <code>email-renderer</code> draws the HTML part of each mail, and <code>publiractl</code> migrates the database, creates its roles, sets an install up, and runs any of the worker’s jobs by hand.",
-    "tracing": "Every layer is instrumented with <strong>OpenTelemetry</strong>, so one browser request reads as a single trace: the Next.js root span, the Connect RPC it makes during SSR, the identically named span on the Go side, and the <code>db.query</code> children below it. Point it at whatever collector you already run, or leave tracing off — it is disabled by default."
+    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs, and on a single host the two can run as one process, <code>publira server --with-worker</code>. An optional <code>email-renderer</code> draws the HTML part of each mail, and <code>publiractl</code> migrates the database, creates its roles, sets an install up, and runs any of the worker’s jobs by hand.",
+    "tracing": "Every layer is instrumented with <strong>OpenTelemetry</strong>, so one browser request reads as a single trace: the Next.js root span, the Connect RPC it makes during SSR, the identically named span on the Go side, and the <code>db.query</code> children below it. Point it at whatever collector you already run, or leave tracing off — it is disabled by default. The two Go processes export OpenTelemetry metrics as well, which stay off until enabled in the same way."
   },
   "requirements": {
     "title": "What it needs to run",
@@ -526,9 +534,17 @@
         "name": "An SMTP relay",
         "purpose": "Account mail, notifications, and the notices staff receive, configured per platform and per tenant."
       },
+      "search": {
+        "name": "OpenSearch or Elasticsearch",
+        "purpose": "A catalog search ranked by relevance, for an install that wants one; every node needs the analysis-kuromoji and analysis-icu plugins. Without it, the search runs on PostgreSQL."
+      },
       "payments": {
         "name": "A payment provider",
         "purpose": "One account per tenant, for paid episodes only: Stripe or PAY.JP on the web, and the App Store and Google Play in the app. A signed notification from the provider is what confirms a purchase."
+      },
+      "inboundEmail": {
+        "name": "An inbound email provider",
+        "purpose": "SendGrid or Resend, per tenant, for a tenant that wants readers' replies to its answers filed under their contact messages in the console."
       },
       "firebase": {
         "name": "A Firebase project",
@@ -536,7 +552,7 @@
       },
       "openTelemetry": {
         "name": "An OpenTelemetry collector",
-        "purpose": "Traces from the Next.js apps and the Go servers; off unless enabled."
+        "purpose": "Traces from the Next.js apps and the Go servers, and metrics from the Go servers; off unless enabled."
       }
     },
     "required": "Required",
@@ -604,14 +620,15 @@
   "start": {
     "title": "Running an install",
     "lead": "An install runs from container images and one Compose file, and publiractl brings its database and its first tenant into service. The host needs Docker and nothing else.",
-    "buildLabel": "Build the images",
-    "build": "No registry publishes the images yet, so an install builds the ones it runs from a checkout of the release it wants, with the repository root as the build context. The email renderer and the platform console are optional and are built the same way when the install runs them.",
+    "releaseLabel": "Check out the release",
+    "release": "Every release publishes its images to the GitHub Container Registry under its version, such as <code>ghcr.io/publira/publiractl:{version}</code>, for linux/amd64 and linux/arm64, and a host pulls them without signing in, so nothing is built. Keep the whole checkout at the release's tag, since the Compose file mounts the proxy's routing from it, and set <code>PUBLIRA_IMAGE_TAG</code> to the same version: <code>publiractl</code> carries the migrations of its release, and the processes expect the schema of theirs. An install that changes the code, or runs on another platform, builds its own images and names them instead.",
     "secretsLabel": "The keys .env asks for",
     "secrets": "<code>infra/deploy/.env.example</code> lists every value the Compose file reads; copied to <code>.env</code>, a required one left empty stops <code>docker compose</code> before anything starts. <code>PUBLIRA_AUTH_JWT_SECRET</code> signs the access tokens the server verifies, each web app seals its session cookie with a key of its own, and <code>PUBLIRA_SECRET_ENCRYPTION_KEYS</code> seals the stored credentials — the SMTP password, the object store's key, and each tenant's payment and push keys.",
     "serviceLabel": "Bring it into service",
-    "service": "The first two commands apply the migrations and create the roles each process connects as, with the passwords from <code>.env</code>. <code>publiractl setup</code> then asks for the object store, the SMTP relay, the tenant, and its first administrator, and prints the addresses of the tenant site and its console. On every later release, pull or build the new images and run <code>db migrate</code> and <code>db roles</code> before <code>docker compose up -d</code>.",
-    "status": "What the repository ships today is a Compose file for a single host and the images it runs, built from source. The schema, the APIs, and the surfaces above are still moving and nothing here has been through a stable release, so an install follows changes that are still landing. Issues and pull requests are the fastest way to shape where it goes next.",
+    "service": "The first two commands apply the migrations and create the roles each process connects as, with the passwords from <code>.env</code>. <code>publiractl setup</code> then asks for the object store, the SMTP relay, the tenant, and its first administrator, and prints the addresses of the tenant site and its console. The email renderer and the platform console, both optional, start with the rest once <code>COMPOSE_PROFILES</code> in <code>.env</code> names them. On every later release, check out its tag, set <code>PUBLIRA_IMAGE_TAG</code> to its version, pull the new images, back up the database, and run <code>db migrate</code> and <code>db roles</code> before <code>docker compose up -d</code>.",
+    "status": "Publira stays at 0.x while the schema, the APIs, and the surfaces above are still moving. A minor release may change any of them and names what it asks of an install in its upgrade notes; a patch release only fixes the minor release it belongs to, and asks nothing beyond replacing the images. Only the newest minor release receives fixes. Issues and pull requests are the fastest way to shape where it goes next.",
     "guide": "Read the deployment guide",
+    "releaseNotes": "Release notes for v{version}",
     "contributing": "Contributing"
   },
   "documents": {

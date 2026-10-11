@@ -6,7 +6,9 @@ const requirements = [
   { key: "cache", required: true },
   { key: "storage", required: true },
   { key: "smtp", required: true },
+  { key: "search", required: false },
   { key: "payments", required: false },
+  { key: "inboundEmail", required: false },
   { key: "firebase", required: false },
   { key: "openTelemetry", required: false },
 ] as const;

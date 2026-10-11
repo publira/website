@@ -47,7 +47,7 @@
     },
     "status": {
       "title": "仍在建置中",
-      "body": "Publira 仍在積極開發中，尚未發布穩定版本。本頁展示的一切現在都能運作，也可以用映像檔和一個 Compose 檔案架起一套安裝環境，但要為真實的出版社運作它，仍需要閱讀程式碼、配合自己的環境調整，並跟上仍在持續合併的變更。請把它當作可以評估、在其上開發並參與貢獻的專案，而不是成品。"
+      "body": "Publira 仍在積極開發中，最新版本 v{version} 也尚不適合用於正式環境。本頁展示的一切現在都能運作，也可以用每個版本發布的映像檔和一個 Compose 檔案架起一套安裝環境，但要為真實的出版社運作它，仍需要閱讀程式碼、配合自己的環境調整，並跟上每個 0.x 次要版本可能帶來的變更。請把它當作可以評估、在其上開發並參與貢獻的專案，而不是成品。"
     },
     "screenshot": {
       "alt": "Publira 面向讀者的作品目錄，以租戶主打的作品開頭",
@@ -87,11 +87,11 @@
     "features": {
       "multiTenant": {
         "title": "從根基起就是多租戶",
-        "body": "每家出版社都以自己的品牌和網域經營。在它們之上，平台主控台 (不執行它的安裝環境則使用 publiractl) 管理租戶狀態、營運者和所有租戶的讀者，以及整個安裝環境共用的設定：物件儲存、郵件、Web Push 和安全性政策。"
+        "body": "每家出版社都以自己的品牌和網域經營。在它們之上，平台主控台 (不執行它的安裝環境則使用 publiractl) 管理租戶狀態、營運者和所有租戶的讀者，以及整個安裝環境共用的設定：物件儲存、郵件、搜尋、Web Push 和安全性政策。"
       },
       "console": {
         "title": "一個主控台管理全部作品",
-        "body": "系列、章節、品牌、作者及其署名角色、類型、標籤、頁面、公告、閱讀券、留言，以及讀者透過聯絡表單送來的訊息，都在一個主控台裡處理，等待發布的內容匯集在一個佇列中。租戶管理員也從這裡邀請其他人員。"
+        "body": "系列、章節、品牌、作者及其署名角色、類型、標籤、頁面、公告、閱讀券和留言，都在一個主控台裡處理，等待發布的內容匯集在一個佇列中。讀者透過聯絡表單送來的訊息也在這裡回覆；租戶透過 SendGrid 或 Resend 接收郵件後，讀者以郵件寄來的回信也會記錄在訊息下方。租戶管理員以租戶管理員、編輯或稽核員的身分邀請其他人員，每個人只會看到自己的角色可用的操作。"
       },
       "themes": {
         "title": "有真實預覽的主題",
@@ -99,11 +99,15 @@
       },
       "payments": {
         "title": "透過自選的金流服務販售付費章節",
-        "body": "租戶在網頁上透過 Stripe 或 PAY.JP Checkout 販售章節，在應用程式中透過 App Store 和 Google Play 販售。重新導向本身不會解鎖任何內容：只有金流服務的簽章通知送達時才會記錄購買，退款則連結到被撤銷的那筆購買紀錄。"
+        "body": "租戶在網頁上透過 Stripe 或 PAY.JP Checkout 販售章節，在應用程式中透過 App Store 和 Google Play 販售。貨幣由租戶選擇，所有價格皆以該貨幣輸入與顯示。重新導向本身不會解鎖任何內容：只有金流服務的簽章通知送達時才會記錄購買，退款則連結到被撤銷的那筆購買紀錄。"
+      },
+      "freeReading": {
+        "title": "免費閱讀，依租戶的安排",
+        "body": "付費章節在免費閱讀期間內向所有讀者開放。期間可以設在單一章節上，也可以一次設在系列的多個章節上。系列還可以提供等待即可免費：已登入的讀者用等待後恢復的免費券，一次一話免費閱讀付費章節。"
       },
       "signIn": {
         "title": "使用 Apple 和 Google 登入",
-        "body": "每個租戶登錄自己的 Apple 和 Google 憑證，讀者除了電子郵件地址之外，也能用這些帳號登入網站和應用程式。租戶的工作人員可以開啟兩步驟驗證，平台也可以要求所有租戶管理員必須開啟。"
+        "body": "每個租戶登錄自己的 Apple 和 Google 憑證，讀者除了電子郵件地址之外，也能用這些帳號登入網站和應用程式。租戶的工作人員和平台的營運者可以開啟兩步驟驗證，平台也可以要求所有租戶管理員和營運者必須開啟。"
       },
       "surfaces": {
         "title": "網站、應用程式，或兩者兼有",
@@ -157,17 +161,21 @@
         "title": "端到端的在地化",
         "body": "英文、日文、韓文以及簡體和繁體中文，涵蓋讀者網站、兩個主控台、應用程式和郵件。租戶自己的頁面 (包括使用條款和隱私權政策) 依語言分別保存譯文，紀錄則依租戶自己的時區來解讀。"
       },
+      "search": {
+        "title": "隨目錄一同成長的搜尋",
+        "body": "每個租戶網站的搜尋不需額外執行任何服務，即可在 PostgreSQL 中找到系列、作者和品牌。希望依相關度排序結果的安裝環境可以改用 OpenSearch 或 Elasticsearch，它們能容忍一個字母的拼寫錯誤，並在預設文字分析下透過假名輸入的讀音找到漢字書寫的標題。無論由哪個引擎找到，網站顯示的內容都從資料庫讀取，因此不會顯示過時的資訊。"
+      },
       "searchEngines": {
         "title": "讓搜尋引擎找得到",
         "body": "每個租戶網站都提供自己的 robots.txt 和網站地圖，每個公開頁面都會標示其標準網址以及其他語言的同一頁面，讓搜尋引擎把每家出版社當作各自獨立的網站來建立索引。"
       },
       "mobile": {
         "title": "同一儲存庫中的讀者應用程式",
-        "body": "支援 Android 和 iOS 的 Flutter 用戶端，使用租戶自己的名稱和主題，呼叫與網站相同的公開 API：從註冊到刪除的帳號管理、使用 Apple 和 Google 登入、搜尋、類型和標籤、追蹤、收件匣、透過商店或網站結帳購買，以及在裝置上加密儲存章節以便離線閱讀。每個租戶都從一份資訊清單建置自己的應用程式。"
+        "body": "支援 Android 和 iOS 的 Flutter 用戶端，版面同時適合手機和平板，使用租戶自己的名稱和主題，呼叫與網站相同的公開 API：從註冊到刪除的帳號管理、使用 Apple 和 Google 登入、搜尋、類型和標籤、追蹤、收件匣、透過商店或網站結帳購買，以及在裝置上加密儲存章節以便離線閱讀。每個租戶都從一份資訊清單建置自己的應用程式。"
       },
       "portability": {
         "title": "在任何地方由你自己執行",
-        "body": "Apache-2.0，每個程序都有映像檔，一個 Compose 檔案就能在單台主機上執行安裝環境，publiractl 負責資料庫遷移和初始設定。底層是一般的基礎設施，中間沒有代管服務。可攜性和免於綁定不是副產品，而是目的本身。"
+        "body": "Apache-2.0，每個程序都有映像檔，隨每個版本發布 linux/amd64 和 linux/arm64 版本，一個 Compose 檔案就能在單台主機上執行安裝環境，publiractl 負責資料庫遷移和初始設定。底層是一般的基礎設施，中間沒有代管服務。可攜性和免於綁定不是副產品，而是目的本身。"
       }
     }
   },
@@ -469,7 +477,7 @@
       "web": {
         "label": "Web (Next.js)",
         "nodes": {
-          "host": "web-host",
+          "storefront": "web-storefront",
           "admin": "web-admin",
           "platform": "web-platform"
         }
@@ -497,8 +505,8 @@
         }
       }
     },
-    "processes": "一個 <code>publira server</code> 程序承載公開、管理和平台三個命名空間，並為讀者的來源和主控台的來源傳送圖片。由同一個執行檔執行的 <code>publira worker</code> 負責寄送郵件和推播通知，並執行所有排程作業：發布到期的章節、套用免費期的邊界、切換每個租戶的日曆日、重建排行榜、結算版稅月份，以及清除超過保留期限的資料。執行它就是部署所需的全部排程。選用的 <code>email-renderer</code> 負責繪製每封郵件的 HTML 部分，<code>publiractl</code> 負責資料庫遷移、建立角色和初始化安裝環境，也可以手動執行 worker 的任何作業。",
-    "tracing": "每一層都以 <strong>OpenTelemetry</strong> 做了檢測，一次瀏覽器請求就是一條完整的追蹤：Next.js 的根 span、SSR 期間發出的 Connect RPC、Go 端同名的 span，以及其下的 <code>db.query</code> 子 span。把它指向你已經在執行的任何 collector，或者不開啟追蹤，預設為關閉。"
+    "processes": "一個 <code>publira server</code> 程序承載公開、管理和平台三個命名空間，並為讀者的來源和主控台的來源傳送圖片。由同一個執行檔執行的 <code>publira worker</code> 負責寄送郵件和推播通知，並執行所有排程作業：發布到期的章節、套用免費期的邊界、切換每個租戶的日曆日、重建排行榜、結算版稅月份，以及清除超過保留期限的資料。執行它就是部署所需的全部排程；在單台主機上，也可以用 <code>publira server --with-worker</code> 將兩者作為一個程序執行。選用的 <code>email-renderer</code> 負責繪製每封郵件的 HTML 部分，<code>publiractl</code> 負責資料庫遷移、建立角色和初始化安裝環境，也可以手動執行 worker 的任何作業。",
+    "tracing": "每一層都以 <strong>OpenTelemetry</strong> 做了檢測，一次瀏覽器請求就是一條完整的追蹤：Next.js 的根 span、SSR 期間發出的 Connect RPC、Go 端同名的 span，以及其下的 <code>db.query</code> 子 span。把它指向你已經在執行的任何 collector，或者不開啟追蹤，預設為關閉。兩個 Go 程序還會匯出 OpenTelemetry 指標，同樣在啟用前保持關閉。"
   },
   "requirements": {
     "title": "執行所需",
@@ -526,9 +534,17 @@
         "name": "SMTP 中繼",
         "purpose": "帳號郵件、通知以及工作人員收到的通知，依平台和依租戶分別設定。"
       },
+      "search": {
+        "name": "OpenSearch 或 Elasticsearch",
+        "purpose": "供希望依相關度排序目錄搜尋結果的安裝環境使用，每個節點都需要 analysis-kuromoji 和 analysis-icu 外掛程式。沒有它時，搜尋在 PostgreSQL 上執行。"
+      },
       "payments": {
         "name": "金流服務",
         "purpose": "每個租戶一個帳號，僅付費章節需要：網頁使用 Stripe 或 PAY.JP，應用程式使用 App Store 和 Google Play。確認購買的是來自金流服務的簽章通知。"
+      },
+      "inboundEmail": {
+        "name": "郵件接收服務",
+        "purpose": "每個租戶使用 SendGrid 或 Resend，僅在租戶希望將讀者對回覆的回信記錄在主控台的聯絡訊息下方時需要。"
       },
       "firebase": {
         "name": "Firebase 專案",
@@ -536,7 +552,7 @@
       },
       "openTelemetry": {
         "name": "OpenTelemetry collector",
-        "purpose": "來自 Next.js 應用程式和 Go 伺服器的追蹤；除非啟用，否則關閉。"
+        "purpose": "來自 Next.js 應用程式和 Go 伺服器的追蹤，以及來自 Go 伺服器的指標；除非啟用，否則關閉。"
       }
     },
     "required": "必要",
@@ -604,14 +620,15 @@
   "start": {
     "title": "執行安裝環境",
     "lead": "安裝環境由容器映像檔和一個 Compose 檔案執行，publiractl 讓資料庫和第一個租戶進入可用狀態。主機只需要 Docker。",
-    "buildLabel": "建置映像檔",
-    "build": "映像檔尚未發布到任何映像檔登錄庫，因此請簽出要安裝的版本，以儲存庫根目錄作為建置內容來建置。郵件算繪器和平台主控台是選用的，需要執行時以同樣的方式建置。",
+    "releaseLabel": "簽出版本",
+    "release": "每個版本都會以其版本號將映像檔發布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支援 linux/amd64 和 linux/arm64，不需登入即可下載，因此主機上不必建置任何東西。Compose 檔案會從簽出的程式碼掛載代理的路由設定，所以請讓整個簽出保持在該版本的標籤上，並將 <code>PUBLIRA_IMAGE_TAG</code> 設為同一版本：<code>publiractl</code> 帶有該版本的遷移，各程序也以該版本的資料庫結構為前提。修改了程式碼或在其他平台上執行的安裝環境，則自行建置映像檔並指定它們。",
     "secretsLabel": ".env 需要的金鑰",
     "secrets": "<code>infra/deploy/.env.example</code> 列出了 Compose 檔案讀取的所有值；複製為 <code>.env</code> 後，如果必填值留空，<code>docker compose</code> 會在啟動任何服務之前停止。<code>PUBLIRA_AUTH_JWT_SECRET</code> 為伺服器驗證的存取權杖簽章，每個網頁應用程式用自己的金鑰加密工作階段 Cookie，<code>PUBLIRA_SECRET_ENCRYPTION_KEYS</code> 則加密已儲存的憑證：SMTP 密碼、物件儲存的金鑰，以及每個租戶的金流和推播金鑰。",
     "serviceLabel": "投入使用",
-    "service": "前兩道指令套用遷移，並用 <code>.env</code> 中的密碼建立各程序連線所用的角色。接著 <code>publiractl setup</code> 會詢問物件儲存、SMTP 中繼、租戶及其第一位管理員，並顯示租戶網站和主控台的網址。之後每次發布新版本時，下載或建置新映像檔，並在 <code>docker compose up -d</code> 之前執行 <code>db migrate</code> 和 <code>db roles</code>。",
-    "status": "儲存庫目前提供的是適用於單台主機的 Compose 檔案，以及它所執行、從原始碼建置的映像檔。資料庫結構、API 和上面介紹的畫面仍在變動，還沒有經過任何穩定版本，因此安裝環境需要跟上仍在持續合併的變更。Issue 和提取要求是影響它未來方向最快的途徑。",
+    "service": "前兩道指令套用遷移，並用 <code>.env</code> 中的密碼建立各程序連線所用的角色。接著 <code>publiractl setup</code> 會詢問物件儲存、SMTP 中繼、租戶及其第一位管理員，並顯示租戶網站和主控台的網址。選用的郵件算繪器和平台主控台，只要在 <code>.env</code> 的 <code>COMPOSE_PROFILES</code> 中指定，就會與其他服務一起啟動。之後每次發布新版本時，簽出其標籤，將 <code>PUBLIRA_IMAGE_TAG</code> 設為其版本號並下載新映像檔，備份資料庫，然後在 <code>docker compose up -d</code> 之前執行 <code>db migrate</code> 和 <code>db roles</code>。",
+    "status": "在資料庫結構、API 和上面介紹的畫面仍在變動期間，Publira 將維持 0.x 版本。次要版本可能變更其中任何一項，並在升級說明中寫明對安裝環境的要求；修補版本只修正其所屬的次要版本，除了替換映像檔之外不提出任何要求。只有最新的次要版本會獲得修正。Issue 和提取要求是影響它未來方向最快的途徑。",
     "guide": "閱讀部署指南",
+    "releaseNotes": "v{version} 版本資訊",
     "contributing": "Contributing"
   },
   "documents": {

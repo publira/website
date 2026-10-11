@@ -17,6 +17,7 @@ import { TallScreenGroup } from "#components/tall-screen-group";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { Link } from "#i18n/navigation";
 import { getCurrentDocsPath } from "#lib/docs";
+import { release } from "#lib/release";
 import { getScreenshots } from "#lib/screenshots";
 import {
   getPageUrl,
@@ -63,6 +64,7 @@ const platformFeatures = [
   "console",
   "themes",
   "payments",
+  "freeReading",
   "signIn",
   "surfaces",
   "royalties",
@@ -77,29 +79,21 @@ const platformFeatures = [
   "cache",
   "offline",
   "localization",
+  "search",
   "searchEngines",
   "mobile",
   "portability",
 ] as const;
 
-const buildCode = `git clone https://github.com/publira/publira.git
-cd publira
-
-docker build -f infra/docker/server/Dockerfile \\
-  -t publira/publira:local .
-docker build -f infra/docker/publiractl/Dockerfile \\
-  -t publira/publiractl:local .
-docker build -f infra/docker/web/Dockerfile \\
-  --build-arg APP_NAME=web-host --build-arg PORT=3000 \\
-  -t publira/web-host:local .
-docker build -f infra/docker/web/Dockerfile \\
-  --build-arg APP_NAME=web-admin --build-arg PORT=4000 \\
-  -t publira/web-admin:local .`;
-
-const secretsCode = `cd infra/deploy
+const releaseCode = `git clone --branch v${release} https://github.com/publira/publira.git
+cd publira/infra/deploy
 cp .env.example .env
+chmod 600 .env
 
-# Each database password goes into a URL unescaped.
+# In .env, the version of the release's images on ghcr.io/publira
+# PUBLIRA_IMAGE_TAG=${release}`;
+
+const secretsCode = `# Each database password goes into a URL unescaped.
 openssl rand -hex 32
 
 # PUBLIRA_SECRET_ENCRYPTION_KEYS, with k1 as its primary key ID
@@ -243,7 +237,7 @@ export const Home = async () => {
           <div className="space-y-28">
             <ScreenGroup
               address="publisher.example"
-              app="apps/web-host"
+              app="apps/web-storefront"
               description={t("screens.host.description")}
               screenshots={screenshots.host}
               title={t("screens.host.title")}
@@ -301,12 +295,12 @@ export const Home = async () => {
           <div className="grid gap-8 lg:grid-cols-2">
             <div className="min-w-0 space-y-4">
               <CodeBlock
-                code={buildCode}
-                label={t("start.buildLabel")}
+                code={releaseCode}
+                label={t("start.releaseLabel")}
                 lang="shell"
               />
               <p className="text-muted-foreground text-sm leading-relaxed">
-                {t("start.build")}
+                {t.rich("start.release", { code, version: release })}
               </p>
             </div>
             <div className="min-w-0 space-y-4">
@@ -340,6 +334,14 @@ export const Home = async () => {
             >
               {t("start.guide")}
             </Link>
+            <a
+              className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
+              href={`https://github.com/publira/publira/releases/tag/v${release}`}
+              rel="noreferrer"
+              target="_blank"
+            >
+              {t("start.releaseNotes", { version: release })}
+            </a>
             <a
               className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
               href="https://github.com/publira/publira/blob/main/CONTRIBUTING.md"
