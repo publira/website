@@ -75,7 +75,7 @@ export interface DocsPage extends Frontmatter, TreeEntry {
   readonly order: readonly number[];
   /**
    * The URLs below the version the page was published at before a rename or a
-   * move, such as `deployments/reverse-proxy`, which redirect to it.
+   * move, such as `/deployments/reverse-proxy`, which redirect to it.
    */
   readonly redirectFrom: readonly string[];
   /** The URL segments below the version: `["deployments", "overview"]`. */
@@ -448,7 +448,7 @@ const findRedirectedPage = (
   { pages }: Pick<DocsTree, "pages">,
   slug: readonly string[]
 ) => {
-  const url = slug.join("/");
+  const url = `/${slug.join("/")}`;
   return pages.find((page) => page.redirectFrom.includes(url));
 };
 
