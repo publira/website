@@ -296,7 +296,7 @@
       },
       "episodes": {
         "title": "Episodes",
-        "caption": "Every episode of a series in reading order, dragged into place — or moved with an arrow key — rather than renumbered by hand. An episode is scheduled for a time in the tenant's own zone, and its pages go up as images, a ZIP, or an EPUB, then are reordered the same way.",
+        "caption": "Every episode of a series in reading order, dragged into place — or moved with an arrow key — rather than renumbered by hand. An episode is scheduled for a time in the tenant's own zone, and its pages go up as images, a ZIP, or an EPUB, are reordered the same way, and can each be replaced or deleted even after the episode is out.",
         "views": {
           "list": "Episodes in reading order",
           "schedule": "Scheduling an episode",
@@ -345,7 +345,7 @@
       },
       "contact": {
         "title": "Contact messages",
-        "caption": "What readers sent through the site's contact form, with the address to answer at and whether anyone has dealt with it yet. A new message is mailed to the staff as well, so nobody has to keep the console open to hear about it.",
+        "caption": "What readers sent through the site's contact form, with the address to answer at, who on the staff has it, and where it stands. An answer written on the message's page is mailed to the reader and kept under it, and a new message is mailed to the staff as well, so nobody has to keep the console open to hear about it.",
         "views": {
           "inbox": "The inbox",
           "message": "One message"
@@ -426,7 +426,7 @@
       },
       "library": {
         "title": "Library and inbox",
-        "caption": "Continue reading, follows, and the episodes saved on the device, each a list of its own; the episodes the reader bought with how long each stays readable; and the inbox of what was sent to them. Saved pages are kept encrypted under a key the device mints for itself, and reading done offline is sent once the network returns.",
+        "caption": "Continue reading, follows, the episodes saved on the device, and recommendations, each a list of its own; the episodes the reader bought with how long each stays readable; and the inbox of what was sent to them. Saved pages are kept encrypted under a key the device mints for itself, and reading done offline is sent once the network returns.",
         "views": {
           "library": "The library",
           "purchases": "Purchases",
@@ -435,7 +435,7 @@
       },
       "account": {
         "title": "Account",
-        "caption": "Everything a reader does with their account without leaving the app — the name, the address, the password, the linked Apple and Google accounts, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
+        "caption": "Everything a reader does with their account without leaving the app — the name, the address, the password, the linked Apple and Google accounts, mail notifications, the tenant's own pages, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
         "views": {
           "account": "The account",
           "signIn": "Sign in"
@@ -453,7 +453,7 @@
       },
       "contactMessage": {
         "title": "A message for staff",
-        "caption": "What a reader sent through the contact form, with the address to answer at and the account they were signed in as, so staff can reply from their own mail client."
+        "caption": "What a reader sent through the contact form, with the address to answer at and the account they were signed in as, so staff can answer from the message's page in the console or from their own mail client."
       }
     }
   },
