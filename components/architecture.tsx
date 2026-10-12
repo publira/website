@@ -11,7 +11,7 @@ const layers = [
   { key: "edge", nodes: ["edge.nodes.proxy"] },
   {
     key: "web",
-    nodes: ["web.nodes.host", "web.nodes.admin", "web.nodes.platform"],
+    nodes: ["web.nodes.storefront", "web.nodes.admin", "web.nodes.platform"],
   },
   { key: "transport", nodes: ["transport.nodes.connect"] },
   { key: "servers", nodes: ["servers.nodes.server", "servers.nodes.worker"] },

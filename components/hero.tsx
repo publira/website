@@ -4,6 +4,7 @@ import Image from "next/image";
 import heroImage from "#assets/screenshots/host/catalog-plain.png";
 import { BrowserFrame } from "#components/browser-frame";
 import { Link } from "#i18n/navigation";
+import { release } from "#lib/release";
 
 const facts = [
   "nextApps",
@@ -70,7 +71,7 @@ export const Hero = async () => {
             {t("status.title")}
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            {t("status.body")}
+            {t("status.body", { version: release })}
           </p>
         </div>
 
