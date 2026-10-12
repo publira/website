@@ -65,9 +65,19 @@ interface Frontmatter {
   readonly updated?: string;
 }
 
+/** The frontmatter as a page writes it, `redirect_from` included. */
+interface PageFrontmatter extends Frontmatter {
+  readonly redirect_from?: readonly string[];
+}
+
 export interface DocsPage extends Frontmatter, TreeEntry {
   /** The `<n>` of each segment of `path`, which orders the navigation. */
   readonly order: readonly number[];
+  /**
+   * The URLs below the version the page was published at before a rename or a
+   * move, such as `/deployments/reverse-proxy`, which redirect to it.
+   */
+  readonly redirectFrom: readonly string[];
   /** The URL segments below the version: `["deployments", "overview"]`. */
   readonly slug: readonly string[];
 }
@@ -324,7 +334,7 @@ const parseFrontmatter = (source: string) => {
   const yaml = first === "---" && end !== -1 ? lines.slice(0, end) : [];
   // SAFETY: `scripts/check-docs.ts` in publira/publira's CI holds every page
   // to these keys, and YAML 1.2 reads a `YYYY-MM-DD` date as a string.
-  return parse(yaml.join("\n")) as Frontmatter;
+  return parse(yaml.join("\n")) as PageFrontmatter;
 };
 
 const decoder = new TextDecoder();
@@ -339,12 +349,16 @@ const toPage = async ({ path: entry, sha }: TreeEntry) => {
 
   const names = name ? [...directories, name] : directories;
   const order = names.map((segment) => segment.order);
+  const { redirect_from: redirectFrom = [], ...frontmatter } = parseFrontmatter(
+    decoder.decode(await getBlob(sha))
+  );
   return [
     {
-      ...parseFrontmatter(decoder.decode(await getBlob(sha))),
+      ...frontmatter,
       // A directory's own page comes before the pages inside it.
       order: name ? order : [...order, 0],
       path: entry,
+      redirectFrom,
       sha,
       slug: names.map((segment) => segment.slug),
     },
@@ -428,6 +442,39 @@ export const findPage = (
   { pages }: Pick<DocsTree, "pages">,
   slug: readonly string[]
 ) => pages.find((page) => page.slug.join("/") === slug.join("/"));
+
+/** The page that lists `slug` as a URL it was published at before. */
+const findRedirectedPage = (
+  { pages }: Pick<DocsTree, "pages">,
+  slug: readonly string[]
+) => {
+  const url = `/${slug.join("/")}`;
+  return pages.find((page) => page.redirectFrom.includes(url));
+};
+
+/**
+ * Where a URL a version has no page at redirects to in that version: the slug
+ * of the page that lists it in `redirect_from`, in the locale's tree or the
+ * source locale's, or `null` when no page does.
+ */
+export const getDocsRedirect = async (
+  version: string,
+  locale: Locale,
+  slug: readonly string[]
+) => {
+  const trees = await Promise.all(
+    [locale, docsSourceLocale].map((candidate) =>
+      getDocsTree(version, candidate)
+    )
+  );
+  for (const tree of trees) {
+    const page = tree && findRedirectedPage(tree, slug);
+    if (page) {
+      return page.slug;
+    }
+  }
+  return null;
+};
 
 /**
  * The page a locale serves at `slug` in a version, and the locale it is

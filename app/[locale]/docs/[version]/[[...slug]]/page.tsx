@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 
 import { DocsPage } from "#components/docs-page";
 import { getRootLocale } from "#i18n/locale";
@@ -14,6 +14,7 @@ import {
   getDocsPageLocales,
   getDocsPageParams,
   getDocsPath,
+  getDocsRedirect,
   getDocsTree,
   getDocsVersions,
   getLocalizedDocsPath,
@@ -105,6 +106,14 @@ const Docs = async ({ params }: Props) => {
     return (
       <DocsPage language={found.language} page={found.page} version={version} />
     );
+  }
+
+  // A page renamed or moved lists its former URL in `redirect_from`, which
+  // keeps leading to it in every version whose tree says so.
+  const target =
+    slug.length > 0 ? await getDocsRedirect(version, locale, slug) : null;
+  if (target) {
+    permanentRedirect(getLocalizedDocsPath(locale, version, target));
   }
 
   // A version without a root `index.md` opens at its first page.
