@@ -629,11 +629,6 @@
     "lead": "설치 환경은 컨테이너 이미지와 Compose 파일 하나로 돌아가고, publiractl이 데이터베이스와 첫 테넌트를 쓸 수 있는 상태로 만듭니다. 호스트에는 Docker만 있으면 됩니다.",
     "releaseLabel": "릴리스 체크아웃",
     "release": "릴리스마다 이미지가 <code>ghcr.io/publira/publiractl:{version}</code>처럼 그 버전으로 GitHub Container Registry에 공개됩니다. linux/amd64와 linux/arm64용이며 로그인 없이 받을 수 있으므로 호스트에서는 아무것도 빌드하지 않습니다. Compose 파일은 프록시 라우팅을 체크아웃에서 마운트하므로 체크아웃 전체를 릴리스 태그 그대로 두고, <code>PUBLIRA_IMAGE_TAG</code>를 같은 버전으로 설정합니다. <code>publiractl</code>은 그 릴리스의 마이그레이션을 담고 있고, 각 프로세스는 그 릴리스의 스키마를 전제로 하기 때문입니다. 코드를 바꾸는 설치 환경이나 다른 플랫폼에서 돌리는 설치 환경은 이미지를 직접 빌드해 그것을 지정합니다.",
-    "secretsLabel": ".env에 넣는 키",
-    "secrets": "<code>infra/deploy/.env.example</code>에는 Compose 파일이 읽는 모든 값이 있습니다. <code>.env</code>로 복사한 뒤 필수 값을 비워 두면 <code>docker compose</code>는 아무것도 띄우지 않고 멈춥니다. <code>PUBLIRA_AUTH_JWT_SECRET</code>은 서버가 검증하는 액세스 토큰에 서명하고, 웹 앱은 각자의 키로 세션 쿠키를 봉인하며, <code>PUBLIRA_SECRET_ENCRYPTION_KEYS</code>는 SMTP 비밀번호, 오브젝트 스토리지 키, 테넌트별 결제와 푸시 키 같은 저장된 자격 증명을 봉인합니다.",
-    "serviceLabel": "서비스 시작",
-    "service": "처음 두 명령은 마이그레이션을 적용하고, 각 프로세스가 접속하는 역할을 <code>.env</code>의 비밀번호로 만듭니다. 이어서 <code>publiractl setup</code>이 오브젝트 스토리지, SMTP 릴레이, 테넌트와 첫 관리자를 묻고 테넌트 사이트와 콘솔의 주소를 알려 줍니다. 선택 사항인 메일 렌더러와 플랫폼 콘솔은 <code>.env</code>의 <code>COMPOSE_PROFILES</code>에 지정하면 나머지와 함께 시작됩니다. 이후 릴리스마다 그 태그를 체크아웃하고 <code>PUBLIRA_IMAGE_TAG</code>를 그 버전으로 바꿔 새 이미지를 받은 뒤, 데이터베이스를 백업하고 <code>docker compose up -d</code> 전에 <code>db migrate</code>와 <code>db roles</code>를 실행합니다.",
-    "status": "스키마, API, 위의 화면들이 아직 움직이는 동안 Publira는 0.x에 머뭅니다. 마이너 릴리스는 그중 무엇이든 바꿀 수 있으며, 설치 환경에 요구하는 것은 업그레이드 노트에 적습니다. 패치 릴리스는 속한 마이너 릴리스의 수정만 담고, 이미지 교체 외에는 아무것도 요구하지 않습니다. 수정은 최신 마이너 릴리스만 받습니다. 앞으로의 방향을 정하는 가장 빠른 길은 이슈와 풀 리퀘스트입니다.",
     "guide": "배포 가이드 읽기",
     "releaseNotes": "v{version} 릴리스 노트",
     "contributing": "Contributing"

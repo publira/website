@@ -629,11 +629,6 @@
     "lead": "安装环境由容器镜像和一个 Compose 文件运行，publiractl 让数据库和第一个租户进入可用状态。主机只需要 Docker。",
     "releaseLabel": "检出版本",
     "release": "每个版本都会以其版本号把镜像发布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支持 linux/amd64 和 linux/arm64，无需登录即可拉取，因此主机上无需构建任何东西。Compose 文件会从检出的代码中挂载代理的路由配置，所以请让整个检出保持在该版本的标签上，并把 <code>PUBLIRA_IMAGE_TAG</code> 设为同一版本：<code>publiractl</code> 带有该版本的迁移，各进程也以该版本的数据库结构为前提。修改了代码或在其他平台上运行的安装环境，则自行构建镜像并指定它们。",
-    "secretsLabel": ".env 需要的密钥",
-    "secrets": "<code>infra/deploy/.env.example</code> 列出了 Compose 文件读取的所有值；复制为 <code>.env</code> 后，如果必填值留空，<code>docker compose</code> 会在启动任何服务之前停止。<code>PUBLIRA_AUTH_JWT_SECRET</code> 为服务器验证的访问令牌签名，每个网页应用用自己的密钥加密会话 Cookie，<code>PUBLIRA_SECRET_ENCRYPTION_KEYS</code> 则加密已保存的凭据：SMTP 密码、对象存储的密钥，以及每个租户的支付和推送密钥。",
-    "serviceLabel": "投入使用",
-    "service": "前两条命令应用迁移，并用 <code>.env</code> 中的密码创建各进程连接所用的角色。接着 <code>publiractl setup</code> 会询问对象存储、SMTP 中继、租户及其第一位管理员，并显示租户站点和控制台的地址。可选的邮件渲染器和平台控制台，只要在 <code>.env</code> 的 <code>COMPOSE_PROFILES</code> 中指定，就会与其他服务一起启动。之后每次发布新版本时，检出其标签，把 <code>PUBLIRA_IMAGE_TAG</code> 设为其版本号并拉取新镜像，备份数据库，然后在 <code>docker compose up -d</code> 之前运行 <code>db migrate</code> 和 <code>db roles</code>。",
-    "status": "在数据库结构、API 和上面介绍的界面仍在变化期间，Publira 将保持 0.x 版本。次版本可能改变其中任何一项，并在升级说明中写明对安装环境的要求；补丁版本只修复其所属的次版本，除替换镜像外不提出任何要求。只有最新的次版本会获得修复。Issue 和拉取请求是影响它未来方向的最快途径。",
     "guide": "阅读部署指南",
     "releaseNotes": "v{version} 发布说明",
     "contributing": "Contributing"
