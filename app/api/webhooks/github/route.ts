@@ -22,11 +22,16 @@ interface ReleaseEvent {
   readonly repository?: { readonly full_name?: string };
 }
 
-/** The `release` actions that can change which Release is the latest. */
+/**
+ * The `release` actions that can change which Release is the latest, which is
+ * never a prerelease.
+ */
 const releaseActions = new Set([
   "deleted",
   "edited",
+  "prereleased",
   "published",
+  "released",
   "unpublished",
 ]);
 
