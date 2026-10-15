@@ -188,7 +188,7 @@
     },
     "title": "Four surfaces, one catalog",
     "lead": "Three Next.js apps, a Flutter client, and the mail they send, each with its own audience.",
-    "seeAll": "See all {count} screens",
+    "seeAll": "See all screens",
     "host": {
       "title": "The reader-facing site",
       "description": "The site a reader lands on, published under the publisher's own brand. Browsing, searching, ranking, following, signing in, and the viewer that turns the pages."

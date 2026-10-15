@@ -69,7 +69,7 @@ export const ScreenGroups = async ({ featured = false }: ScreenGroupsProps) => {
                 className="border-primary text-primary hover:bg-accent inline-block rounded-sm border px-5 py-2.5 text-sm font-medium"
                 href={`/screenshots#${group.id}`}
               >
-                {t("seeAll", { count: all.length })}
+                {t("seeAll")}
               </Link>
             ) : undefined,
           screenshots: shown,
