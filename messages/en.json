@@ -137,7 +137,7 @@
       },
       "mail": {
         "title": "Mail that reads well",
-        "body": "Account mail and the contact form's notice to staff go out under the tenant's name and in its language, as HTML with a plain-text part beside it."
+        "body": "Account mail and the contact form's notice to staff go out under the tenant's name and in its language, with an HTML version beside the plain text where the optional renderer runs."
       },
       "auditLog": {
         "title": "An audit log per tenant",
