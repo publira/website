@@ -15,6 +15,12 @@ const repositories = [
   },
 ];
 
+// The header hides its navigation below `sm`, so a phone reaches the pages here.
+const pages = [
+  { href: "/docs", key: "docs" },
+  { href: "/libraries", key: "libraries" },
+] as const;
+
 const policies = ["privacy", "terms"] as const;
 
 interface SiteFooterProps {
@@ -35,12 +41,20 @@ export const SiteFooter = async ({ note }: SiteFooterProps) => {
           <p className="text-muted-foreground mt-3 max-w-sm text-sm leading-relaxed">
             {t("footer.about")}
           </p>
-          <Link
-            className="text-primary mt-4 inline-block text-sm hover:underline"
-            href="/docs"
-          >
-            {t("footer.docs")}
-          </Link>
+          <nav aria-label={t("footer.pages")}>
+            <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
+              {pages.map(({ href, key }) => (
+                <li key={key}>
+                  <Link
+                    className="text-primary text-sm hover:underline"
+                    href={href}
+                  >
+                    {t(`footer.${key}`)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
         <nav aria-label={t("footer.repositories")}>
           <p className="text-muted-foreground text-sm">

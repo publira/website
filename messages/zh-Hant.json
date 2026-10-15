@@ -648,7 +648,9 @@
   },
   "footer": {
     "about": "一個重視可攜性、易於營運和免於供應商鎖定的開源專案。每個儲存庫都以 Apache-2.0 授權。",
+    "pages": "頁面",
     "docs": "文件",
+    "libraries": "函式庫",
     "repositories": "儲存庫",
     "policies": "政策",
     "privacy": "隱私權政策",
