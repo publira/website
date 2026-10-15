@@ -89,11 +89,11 @@
     "features": {
       "multiTenant": {
         "title": "Multi-tenant from the ground up",
-        "body": "Every publisher runs under its own brand and domain. Above them, the platform console — or publiractl, for an install that runs without it — manages tenant status, the operators, the readers of every tenant, and the settings the whole install shares: object storage, mail, search, Web Push, and security policy."
+        "body": "Every publisher runs under its own brand and domain. Above them, the platform console — or publiractl, for an install that runs without it — manages the tenants, their readers, and the settings the whole install shares."
       },
       "console": {
         "title": "One console for the whole catalog",
-        "body": "Series, episodes, labels, authors and the roles they are credited in, genres, tags, pages, announcements, access tickets, and comments, all from one console with a queue of everything awaiting release. The messages readers send through the contact form are answered there too, and once the tenant receives mail through SendGrid or Resend, a reader's emailed reply comes back under the message. A tenant admin invites the rest of the staff as Tenant admins, Editors, or Auditors, and each sees only the controls their role may use."
+        "body": "The catalog, the pages, and the announcements are edited in one console, with a queue of everything awaiting release. Readers' contact messages are answered there too, and each member of the staff sees only the controls their role may use."
       },
       "themes": {
         "title": "Themes with a real preview",
@@ -101,7 +101,7 @@
       },
       "payments": {
         "title": "Paid episodes, through the provider you choose",
-        "body": "A tenant sells episodes through Stripe or PAY.JP Checkout on the web, and through the App Store and Google Play in its app, in the currency the tenant chooses, which every price is entered and shown in. The redirect unlocks nothing: a purchase is written when the provider's signed notification arrives, and a refund is recorded against the purchase it reverses."
+        "body": "A tenant sells episodes through Stripe or PAY.JP on the web and through the App Store and Google Play in its app. A purchase is written only when the provider's signed notification arrives, not on the redirect."
       },
       "freeReading": {
         "title": "Free to read, on the tenant's schedule",
@@ -137,7 +137,7 @@
       },
       "mail": {
         "title": "Mail that reads well",
-        "body": "Account mail — confirming an address, resetting a password, a changed address — and the contact form's notice to staff are drawn from React components into HTML under the tenant's name and in its language, with a plain-text part beside it. The renderer is an optional service of its own; without it the same mail goes out as plain text."
+        "body": "Account mail and the contact form's notice to staff go out under the tenant's name and in its language, with an HTML version beside the plain text where the optional renderer runs."
       },
       "auditLog": {
         "title": "An audit log per tenant",
@@ -145,7 +145,7 @@
       },
       "databaseRoles": {
         "title": "Role-separated database access",
-        "body": "The reader-facing API, the tenant console, the platform console, and each background job connect to PostgreSQL as roles of their own, with row-level security keeping every tenant's rows apart, so the reader-facing site cannot reach what only an operator should see."
+        "body": "The reader-facing API, both consoles, and each background job connect to PostgreSQL as roles of their own, and row-level security keeps every tenant's rows apart."
       },
       "storage": {
         "title": "Object storage and image delivery",
@@ -165,7 +165,7 @@
       },
       "search": {
         "title": "A search that grows with the catalog",
-        "body": "The search on every tenant's site finds series, authors, and labels in PostgreSQL, with nothing more to run. An install that wants results ranked by relevance moves it to OpenSearch or Elasticsearch, which forgive a mistyped letter and, with the default text analysis, find a title written in kanji from its reading typed in kana. Whichever engine finds the results, what the site shows of them is read from the database, so nothing it shows is stale."
+        "body": "The search on every tenant's site works from PostgreSQL alone. An install that wants results ranked by relevance moves it to OpenSearch or Elasticsearch, which also forgive a mistyped letter."
       },
       "searchEngines": {
         "title": "Found by search engines",
@@ -173,11 +173,11 @@
       },
       "mobile": {
         "title": "A reader app in the same repository",
-        "body": "A Flutter client for Android and iOS, laid out for phones and tablets alike, under the tenant's own name and theme, calling the same public API as the site: accounts from sign-up to deletion, Sign in with Apple and Google, search, genres and tags, follows, an inbox, purchases in the store or through the site's checkout, and episodes saved encrypted on the device to read with no network. Each tenant builds its own app from one manifest."
+        "body": "A Flutter app for Android and iOS, laid out for phones and tablets alike, under the tenant's own name and theme and calling the same public API as the site. Each tenant builds its own from one manifest."
       },
       "portability": {
         "title": "Yours to run anywhere",
-        "body": "Apache-2.0, an image for every process that each release publishes for linux/amd64 and linux/arm64, one Compose file that runs an install on a single host, and publiractl to migrate the database and set the install up. Ordinary infrastructure underneath and no managed service in the way — portability and freedom from lock-in are the point, not a side effect."
+        "body": "Apache-2.0, an image for every process on linux/amd64 and linux/arm64, one Compose file for a single host, and publiractl to set the install up. Portability and freedom from lock-in are the point, not a side effect."
       }
     }
   },
