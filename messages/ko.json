@@ -12,7 +12,8 @@
     "navigationLabel": "주요",
     "navigation": {
       "docs": "문서",
-      "libraries": "라이브러리"
+      "libraries": "라이브러리",
+      "screenshots": "스크린샷"
     },
     "localeLabel": "언어",
     "github": "GitHub"
@@ -181,8 +182,13 @@
     }
   },
   "screens": {
+    "metadata": {
+      "title": "스크린샷",
+      "description": "개발용 시드 데이터로 촬영한 Publira의 모든 화면입니다. 독자용 사이트, 테넌트 콘솔, 플랫폼 콘솔, 모바일 앱, 보내는 메일이 있습니다."
+    },
     "title": "네 개의 화면, 하나의 카탈로그",
-    "lead": "세 개의 Next.js 앱과 Flutter 클라이언트, 그리고 이들이 보내는 메일은 각자 다른 사람을 위한 것입니다. 아래 스크린샷은 모두 저장소에 포함된 개발용 시드 데이터와 시나리오 시드로 촬영했습니다.",
+    "lead": "세 개의 Next.js 앱과 Flutter 클라이언트, 그리고 이들이 보내는 메일은 각자 다른 사람을 위한 것입니다.",
+    "seeAll": "화면 {count}개 모두 보기",
     "host": {
       "title": "독자용 사이트",
       "description": "독자가 찾아오는 사이트로, 출판사 자체 브랜드로 공개됩니다. 둘러보기, 검색, 랭킹, 팔로우, 로그인, 페이지를 넘기는 뷰어를 갖추고 있습니다."
@@ -652,6 +658,7 @@
     "pages": "페이지",
     "docs": "문서",
     "libraries": "라이브러리",
+    "screenshots": "스크린샷",
     "repositories": "저장소",
     "policies": "정책",
     "privacy": "개인정보 처리방침",

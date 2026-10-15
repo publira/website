@@ -42,12 +42,12 @@ export const Hero = async () => {
           >
             {t("docs")}
           </Link>
-          <a
+          <Link
             className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
-            href="#screens"
+            href="/screenshots"
           >
             {t("screens")}
-          </a>
+          </Link>
         </div>
 
         <dl className="border-border mt-12 max-w-2xl border-t text-sm">

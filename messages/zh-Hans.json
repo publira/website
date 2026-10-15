@@ -12,7 +12,8 @@
     "navigationLabel": "主要",
     "navigation": {
       "docs": "文档",
-      "libraries": "库"
+      "libraries": "库",
+      "screenshots": "截图"
     },
     "localeLabel": "语言",
     "github": "GitHub"
@@ -181,8 +182,13 @@
     }
   },
   "screens": {
+    "metadata": {
+      "title": "截图",
+      "description": "使用开发用种子数据拍摄的 Publira 全部界面：面向读者的站点、租户控制台、平台控制台、移动应用，以及它发送的邮件。"
+    },
     "title": "四个界面，一份作品目录",
-    "lead": "三个 Next.js 应用、一个 Flutter 客户端以及它们发送的邮件，各自面向不同的人。下面的截图全部使用仓库自带的开发用种子数据和场景种子拍摄。",
+    "lead": "三个 Next.js 应用、一个 Flutter 客户端以及它们发送的邮件，各自面向不同的人。",
+    "seeAll": "查看全部 {count} 个界面",
     "host": {
       "title": "面向读者的站点",
       "description": "读者访问的站点，以出版社自己的品牌发布。浏览、搜索、排行榜、关注、登录，以及翻页阅读的阅读器。"
@@ -652,6 +658,7 @@
     "pages": "页面",
     "docs": "文档",
     "libraries": "库",
+    "screenshots": "截图",
     "repositories": "仓库",
     "policies": "政策",
     "privacy": "隐私政策",

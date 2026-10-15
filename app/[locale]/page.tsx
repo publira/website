@@ -9,16 +9,14 @@ import { Hero } from "#components/hero";
 import { JsonLd } from "#components/json-ld";
 import { RepoCard } from "#components/repo-card";
 import { RequirementsTable } from "#components/requirements-table";
-import { ScreenGroup } from "#components/screen-group";
+import { ScreenGroups } from "#components/screen-groups";
 import { Section } from "#components/section";
 import { SiteFooter } from "#components/site-footer";
 import { SiteHeader } from "#components/site-header";
-import { TallScreenGroup } from "#components/tall-screen-group";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { Link } from "#i18n/navigation";
 import { getCurrentDocsPath } from "#lib/docs";
 import { release } from "#lib/release";
-import { getScreenshots } from "#lib/screenshots";
 import {
   getPageUrl,
   getSoftwareApplicationId,
@@ -138,10 +136,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 export const Home = async () => {
-  const [locale, t, screenshots, guideHref] = await Promise.all([
+  const [locale, t, guideHref] = await Promise.all([
     getLocale(),
     getTranslations(),
-    getScreenshots(),
     getCurrentDocsPath(["deployments"]),
   ]);
   const softwareApplicationId = getSoftwareApplicationId(locale);
@@ -235,45 +232,7 @@ export const Home = async () => {
           title={t("screens.title")}
           tone="surface"
         >
-          <div className="space-y-28">
-            <ScreenGroup
-              address="publisher.example"
-              app="apps/web-storefront"
-              description={t("screens.host.description")}
-              screenshots={screenshots.host}
-              title={t("screens.host.title")}
-            />
-            <ScreenGroup
-              address="admin.publisher.example"
-              app="apps/web-admin"
-              description={t("screens.admin.description")}
-              screenshots={screenshots.admin}
-              title={t("screens.admin.title")}
-            />
-            <ScreenGroup
-              address="platform.publira.example"
-              app="apps/web-platform"
-              description={t("screens.platform.description")}
-              screenshots={screenshots.platform}
-              title={t("screens.platform.title")}
-            />
-            <TallScreenGroup
-              address={t("screens.mobile.address")}
-              app="mobile"
-              description={t("screens.mobile.description")}
-              frame="phone"
-              screenshots={screenshots.mobile}
-              title={t("screens.mobile.title")}
-            />
-            <TallScreenGroup
-              address={t("screens.mail.address")}
-              app="apps/email-renderer"
-              description={t("screens.mail.description")}
-              frame="mail"
-              screenshots={screenshots.mail}
-              title={t("screens.mail.title")}
-            />
-          </div>
+          <ScreenGroups featured />
         </Section>
 
         <Section

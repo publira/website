@@ -78,6 +78,8 @@ export interface ScreenshotView {
 /** A screen, told in one picture or in several shown one after another. */
 export interface Screenshot {
   readonly caption: string;
+  /** Whether the home page shows it, rather than `/screenshots` alone. */
+  readonly featured: boolean;
   readonly title: string;
   readonly views: readonly [ScreenshotView, ...ScreenshotView[]];
 }
@@ -305,6 +307,25 @@ const groups = {
   ],
 } satisfies Record<Group, readonly Entry[]>;
 
+/** The screens the home page keeps, the ones that show what each app is. */
+const featured = new Set<ScreenshotKey>([
+  "host.browse",
+  "host.seriesDetail",
+  "host.viewer",
+  "admin.dashboard",
+  "admin.episodes",
+  "admin.theme",
+  "platform.dashboard",
+  "platform.tenants",
+  "platform.settings",
+  "mobile.catalog",
+  "mobile.seriesDetail",
+  "mobile.viewer",
+  "mail.verification",
+  "mail.passwordReset",
+  "mail.contactMessage",
+]);
+
 /** Every group of screenshots, titled and captioned in the request's locale. */
 export const getScreenshots = async (): Promise<
   Record<Group, readonly Screenshot[]>
@@ -314,15 +335,26 @@ export const getScreenshots = async (): Promise<
     entries.map(([key, source]) => {
       const title = t(`${key}.title`);
       const caption = t(`${key}.caption`);
+      const isFeatured = featured.has(key);
       if ("src" in source) {
-        return { caption, title, views: [{ image: source, label: title }] };
+        return {
+          caption,
+          featured: isFeatured,
+          title,
+          views: [{ image: source, label: title }],
+        };
       }
       const [first, ...rest] = source;
       const toView = ([viewKey, image]: readonly [
         ViewKey,
         StaticImageData,
       ]) => ({ image, label: t(viewKey) });
-      return { caption, title, views: [toView(first), ...rest.map(toView)] };
+      return {
+        caption,
+        featured: isFeatured,
+        title,
+        views: [toView(first), ...rest.map(toView)],
+      };
     });
 
   return {

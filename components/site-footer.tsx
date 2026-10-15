@@ -15,10 +15,11 @@ const repositories = [
   },
 ];
 
-// The header hides its navigation below `sm`, so a phone reaches the pages here.
+// The header hides its navigation below `md`, so a phone reaches the pages here.
 const pages = [
   { href: "/docs", key: "docs" },
   { href: "/libraries", key: "libraries" },
+  { href: "/screenshots", key: "screenshots" },
 ] as const;
 
 const policies = ["privacy", "terms"] as const;

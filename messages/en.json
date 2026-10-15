@@ -12,7 +12,8 @@
     "navigationLabel": "Main",
     "navigation": {
       "docs": "Docs",
-      "libraries": "Libraries"
+      "libraries": "Libraries",
+      "screenshots": "Screenshots"
     },
     "localeLabel": "Language",
     "github": "GitHub"
@@ -181,8 +182,13 @@
     }
   },
   "screens": {
+    "metadata": {
+      "title": "Screenshots",
+      "description": "Every screen of Publira on its development seed data: the reader-facing site, the tenant console, the platform console, the mobile app, and the mail it sends."
+    },
     "title": "Four surfaces, one catalog",
-    "lead": "Three Next.js apps, a Flutter client, and the mail they send, each with its own audience. Every screenshot below is the development seed data, and the scenario seeds, that ship with the repository.",
+    "lead": "Three Next.js apps, a Flutter client, and the mail they send, each with its own audience.",
+    "seeAll": "See all {count} screens",
     "host": {
       "title": "The reader-facing site",
       "description": "The site a reader lands on, published under the publisher's own brand. Browsing, searching, ranking, following, signing in, and the viewer that turns the pages."
@@ -652,6 +658,7 @@
     "pages": "Pages",
     "docs": "Documentation",
     "libraries": "Libraries",
+    "screenshots": "Screenshots",
     "repositories": "Repositories",
     "policies": "Policies",
     "privacy": "Privacy Policy",
