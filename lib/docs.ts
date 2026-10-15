@@ -4,6 +4,7 @@ import { setTimeout } from "node:timers/promises";
 import { imageSize } from "image-size";
 import type { Locale } from "next-intl";
 import { cacheLife, cacheTag } from "next/cache";
+import { unstable_rethrow } from "next/navigation";
 import { parse } from "yaml";
 
 import { getPathname } from "#i18n/navigation";
@@ -578,13 +579,30 @@ export const getDocsPageLocales = async (
 };
 
 /**
+ * `/docs`, for a page that links the docs while GitHub cannot be read. Its
+ * short life makes the page that renders it ask GitHub again within minutes.
+ */
+// oxlint-disable-next-line require-await -- "use cache" takes only async functions.
+const getUnresolvedDocsPath = async () => {
+  "use cache";
+  cacheLife("minutes");
+  return "/docs";
+};
+
+/**
  * The URL of a page in the newest version, or of `/docs` when that version
- * has no page at `slug`, as after a page is renamed.
+ * has no page at `slug`, as after a page is renamed, or cannot be read.
  */
 export const getCurrentDocsPath = async (slug: readonly string[]) => {
-  const version = await getCurrentVersion();
-  const tree = await getDocsTree(version, docsSourceLocale);
-  return tree && findPage(tree, slug) ? getDocsPath(version, slug) : "/docs";
+  try {
+    const version = await getCurrentVersion();
+    const tree = await getDocsTree(version, docsSourceLocale);
+    return tree && findPage(tree, slug) ? getDocsPath(version, slug) : "/docs";
+  } catch (error) {
+    unstable_rethrow(error);
+    console.error(`Linking /docs for ${slug.join("/")}:`, error);
+    return getUnresolvedDocsPath();
+  }
 };
 
 const externalUrl = /^(?:[a-z][a-z\d+.-]*:|\/|#|\?)/iu;
