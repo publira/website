@@ -16,7 +16,7 @@ import { SiteHeader } from "#components/site-header";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { Link } from "#i18n/navigation";
 import { getCurrentDocsPath } from "#lib/docs";
-import { release } from "#lib/release";
+import { getLatestRelease } from "#lib/latest-release";
 import {
   getPageUrl,
   getSoftwareApplicationId,
@@ -83,13 +83,16 @@ const platformFeatures = [
   "portability",
 ] as const;
 
-const releaseCode = `git clone --branch v${release} https://github.com/publira/publira.git
+/** The checkout of `version`, or of a placeholder while it cannot be named. */
+const getReleaseCode = (
+  version: string
+) => `git clone --branch v${version} https://github.com/publira/publira.git
 cd publira/infra/deploy
 cp .env.example .env
 chmod 600 .env
 
 # In .env, the version of the release's images on ghcr.io/publira
-# PUBLIRA_IMAGE_TAG=${release}`;
+# PUBLIRA_IMAGE_TAG=${version}`;
 
 const code = (chunks: ReactNode) => <code>{chunks}</code>;
 
@@ -106,11 +109,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 export const Home = async () => {
-  const [locale, t, guideHref] = await Promise.all([
+  const [locale, t, guideHref, release] = await Promise.all([
     getLocale(),
     getTranslations(),
     getCurrentDocsPath(["deployments"]),
+    getLatestRelease(),
   ]);
+  const version = release ?? "<version>";
   const softwareApplicationId = getSoftwareApplicationId(locale);
 
   return (
@@ -224,12 +229,12 @@ export const Home = async () => {
         >
           <div className="max-w-3xl space-y-4">
             <CodeBlock
-              code={releaseCode}
+              code={getReleaseCode(version)}
               label={t("start.releaseLabel")}
               lang="shell"
             />
             <p className="text-muted-foreground text-sm leading-relaxed">
-              {t.rich("start.release", { code, version: release })}
+              {t.rich("start.release", { code, version })}
             </p>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -241,11 +246,15 @@ export const Home = async () => {
             </Link>
             <a
               className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"
-              href={`https://github.com/publira/publira/releases/tag/v${release}`}
+              href={
+                release
+                  ? `https://github.com/publira/publira/releases/tag/v${release}`
+                  : "https://github.com/publira/publira/releases/latest"
+              }
               rel="noreferrer"
               target="_blank"
             >
-              {t("start.releaseNotes", { version: release })}
+              {t("start.releaseNotes", { version: release ?? "none" })}
             </a>
             <a
               className="border-primary text-primary hover:bg-accent rounded-sm border px-5 py-2.5 text-sm font-medium"

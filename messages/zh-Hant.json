@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "仍在建置中",
-      "body": "Publira 仍在積極開發中，最新版本 v{version} 也尚不適合用於正式環境。本頁展示的一切現在都能運作，也可以用每個版本發布的映像檔和一個 Compose 檔案架起一套安裝環境，但要為真實的出版社運作它，仍需要閱讀程式碼、配合自己的環境調整，並跟上每個 0.x 次要版本可能帶來的變更。請把它當作可以評估、在其上開發並參與貢獻的專案，而不是成品。"
+      "body": "Publira 仍在積極開發中，最新版本{version, select, none {} other { v{version} }}也尚不適合用於正式環境。本頁展示的一切現在都能運作，也可以用每個版本發布的映像檔和一個 Compose 檔案架起一套安裝環境，但要為真實的出版社運作它，仍需要閱讀程式碼、配合自己的環境調整，並跟上每個 0.x 次要版本可能帶來的變更。請把它當作可以評估、在其上開發並參與貢獻的專案，而不是成品。"
     },
     "screenshot": {
       "alt": "Publira 面向讀者的作品目錄，以租戶主打的作品開頭",
@@ -630,7 +630,7 @@
     "releaseLabel": "簽出版本",
     "release": "每個版本都會以其版本號將映像檔發布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支援 linux/amd64 和 linux/arm64，不需登入即可下載，因此主機上不必建置任何東西。Compose 檔案會從簽出的程式碼掛載代理的路由設定，所以請讓整個簽出保持在該版本的標籤上，並將 <code>PUBLIRA_IMAGE_TAG</code> 設為同一版本：<code>publiractl</code> 帶有該版本的遷移，各程序也以該版本的資料庫結構為前提。修改了程式碼或在其他平台上執行的安裝環境，則自行建置映像檔並指定它們。",
     "guide": "閱讀部署指南",
-    "releaseNotes": "v{version} 版本資訊",
+    "releaseNotes": "{version, select, none {版本資訊} other {v{version} 版本資訊}}",
     "contributing": "Contributing"
   },
   "documents": {

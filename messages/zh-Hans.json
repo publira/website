@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "仍在建设中",
-      "body": "Publira 仍在积极开发中，最新版本 v{version} 也尚不适合用于生产环境。本页展示的一切如今都能运行，也可以用每个版本发布的镜像和一个 Compose 文件搭起一套安装环境，但要为真实的出版社运行它，仍需要阅读代码、适配自己的环境，并跟进每个 0.x 次版本可能带来的变更。请把它当作可以评估、在其上构建和参与贡献的项目，而不是一个成品。"
+      "body": "Publira 仍在积极开发中，最新版本{version, select, none {} other { v{version} }}也尚不适合用于生产环境。本页展示的一切如今都能运行，也可以用每个版本发布的镜像和一个 Compose 文件搭起一套安装环境，但要为真实的出版社运行它，仍需要阅读代码、适配自己的环境，并跟进每个 0.x 次版本可能带来的变更。请把它当作可以评估、在其上构建和参与贡献的项目，而不是一个成品。"
     },
     "screenshot": {
       "alt": "Publira 面向读者的作品目录，以租户主推的作品开头",
@@ -630,7 +630,7 @@
     "releaseLabel": "检出版本",
     "release": "每个版本都会以其版本号把镜像发布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支持 linux/amd64 和 linux/arm64，无需登录即可拉取，因此主机上无需构建任何东西。Compose 文件会从检出的代码中挂载代理的路由配置，所以请让整个检出保持在该版本的标签上，并把 <code>PUBLIRA_IMAGE_TAG</code> 设为同一版本：<code>publiractl</code> 带有该版本的迁移，各进程也以该版本的数据库结构为前提。修改了代码或在其他平台上运行的安装环境，则自行构建镜像并指定它们。",
     "guide": "阅读部署指南",
-    "releaseNotes": "v{version} 发布说明",
+    "releaseNotes": "{version, select, none {发布说明} other {v{version} 发布说明}}",
     "contributing": "Contributing"
   },
   "documents": {
