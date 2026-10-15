@@ -225,6 +225,7 @@ export const Home = async () => {
               body: t(`platform.features.${feature}.body`),
               title: t(`platform.features.${feature}.title`),
             }))}
+            showAllLabel={t("platform.showAll")}
           />
         </Section>
 
