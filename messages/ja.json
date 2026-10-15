@@ -629,11 +629,6 @@
     "lead": "環境はコンテナイメージとひとつのComposeファイルで動き、publiractlがデータベースと最初のテナントを使える状態にします。ホストに必要なのはDockerだけです。",
     "releaseLabel": "リリースをチェックアウトする",
     "release": "リリースごとに、<code>ghcr.io/publira/publiractl:{version}</code>のようにそのバージョンでイメージがGitHub Container Registryに公開されます。linux/amd64とlinux/arm64に対応し、サインインせずに取得できるので、ホストでは何もビルドしません。Composeファイルはプロキシのルーティングをチェックアウトからマウントするので、チェックアウト全体をリリースのタグのまま置き、<code>PUBLIRA_IMAGE_TAG</code>を同じバージョンにします。<code>publiractl</code>はそのリリースのマイグレーションを持ち、各プロセスはそのリリースのスキーマを前提にしているためです。コードを変更する環境やほかのプラットフォームで動かす環境は、自分でイメージをビルドしてそれを指定します。",
-    "secretsLabel": ".envに入れる鍵",
-    "secrets": "<code>infra/deploy/.env.example</code>にはComposeファイルが読む値がすべて並んでいます。<code>.env</code>にコピーしたあと、必須の値を空のままにすると<code>docker compose</code>は何も起動せずに止まります。<code>PUBLIRA_AUTH_JWT_SECRET</code>はサーバーが検証するアクセストークンに署名し、Webアプリはそれぞれ自分の鍵でセッションのCookieを暗号化します。<code>PUBLIRA_SECRET_ENCRYPTION_KEYS</code>は、SMTPのパスワード、オブジェクトストレージの鍵、テナントごとの決済とプッシュ通知の鍵といった保存された認証情報を暗号化します。",
-    "serviceLabel": "使える状態にする",
-    "service": "最初のふたつのコマンドで、マイグレーションを適用し、各プロセスが接続するロールを<code>.env</code>のパスワードで作成します。続く<code>publiractl setup</code>はオブジェクトストレージ、SMTPリレー、テナントとその最初の管理者を尋ね、テナントのサイトとコンソールのアドレスを表示します。任意のメールのレンダラーとプラットフォームコンソールは、<code>.env</code>の<code>COMPOSE_PROFILES</code>に指定すればほかと一緒に起動します。以後のリリースでは、そのタグをチェックアウトして<code>PUBLIRA_IMAGE_TAG</code>をそのバージョンにし、新しいイメージを取得してデータベースをバックアップしたうえで、<code>docker compose up -d</code>の前に<code>db migrate</code>と<code>db roles</code>を実行します。",
-    "status": "スキーマもAPIも上で紹介した画面もまだ変わり続けているあいだ、Publiraは0.xのままです。マイナーリリースはそのどれでも変えることがあり、環境に求めることはアップグレードノートに書かれます。パッチリリースは属するマイナーリリースの修正だけで、イメージの入れ替えのほかには何も求めません。修正を受けるのは最新のマイナーリリースだけです。今後の方向性に関わるいちばんの近道はIssueとプルリクエストです。",
     "guide": "デプロイガイドを読む",
     "releaseNotes": "v{version}のリリースノート",
     "contributing": "Contributing"

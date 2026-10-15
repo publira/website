@@ -91,36 +91,6 @@ chmod 600 .env
 # In .env, the version of the release's images on ghcr.io/publira
 # PUBLIRA_IMAGE_TAG=${release}`;
 
-const secretsCode = `# Each database password goes into a URL unescaped.
-openssl rand -hex 32
-
-# PUBLIRA_SECRET_ENCRYPTION_KEYS, with k1 as its primary key ID
-echo "k1:$(openssl rand -base64 32)"
-
-# The access token key, each app's session key, and the tokens
-openssl rand -base64 32`;
-
-const serviceCode = `docker compose run --rm publiractl db migrate
-docker compose run --rm publiractl db roles \\
-  --public-password-file /run/secrets/public-db-password \\
-  --admin-password-file /run/secrets/admin-db-password \\
-  --platform-password-file /run/secrets/platform-db-password \\
-  --outbox-password-file /run/secrets/outbox-db-password \\
-  --ticker-password-file /run/secrets/ticker-db-password \\
-  --content-stats-password-file /run/secrets/content-stats-db-password
-docker compose up -d
-
-# The bucket, created in the bundled RustFS with its own credential.
-docker compose exec rustfs sh -c \\
-  'curl -fsS -X PUT --aws-sigv4 aws:amz:us-east-1:s3 --user "$RUSTFS_ACCESS_KEY:$RUSTFS_SECRET_KEY" http://localhost:9000/publira'
-
-# Save the object store, the SMTP relay, and the first tenant and its admin.
-docker compose run --rm publiractl setup \\
-  --bucket publira --region us-east-1 \\
-  --endpoint http://rustfs:9000 --force-path-style \\
-  --access-key-id <PUBLIRA_RUSTFS_ACCESS_KEY> \\
-  --secret-access-key-file /run/secrets/rustfs-secret-key`;
-
 const code = (chunks: ReactNode) => <code>{chunks}</code>;
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -252,41 +222,16 @@ export const Home = async () => {
           title={t("start.title")}
           tone="surface"
         >
-          <div className="grid gap-8 lg:grid-cols-2">
-            <div className="min-w-0 space-y-4">
-              <CodeBlock
-                code={releaseCode}
-                label={t("start.releaseLabel")}
-                lang="shell"
-              />
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {t.rich("start.release", { code, version: release })}
-              </p>
-            </div>
-            <div className="min-w-0 space-y-4">
-              <CodeBlock
-                code={secretsCode}
-                label={t("start.secretsLabel")}
-                lang="shell"
-              />
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                {t.rich("start.secrets", { code })}
-              </p>
-            </div>
-            <div className="min-w-0 space-y-4 lg:col-span-2">
-              <CodeBlock
-                code={serviceCode}
-                label={t("start.serviceLabel")}
-                lang="shell"
-              />
-              <p className="text-muted-foreground max-w-3xl text-sm leading-relaxed">
-                {t.rich("start.service", { code })}
-              </p>
-            </div>
+          <div className="max-w-3xl space-y-4">
+            <CodeBlock
+              code={releaseCode}
+              label={t("start.releaseLabel")}
+              lang="shell"
+            />
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {t.rich("start.release", { code, version: release })}
+            </p>
           </div>
-          <p className="border-border text-muted-foreground mt-10 max-w-3xl border-t pt-6 text-sm leading-relaxed">
-            {t("start.status")}
-          </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               className="bg-primary text-primary-foreground hover:bg-foreground rounded-sm px-5 py-2.5 text-sm font-medium"
