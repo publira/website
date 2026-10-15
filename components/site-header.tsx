@@ -10,6 +10,7 @@ import { routing } from "#i18n/routing";
 const navigation = [
   { current: "true", href: "/docs", key: "docs" },
   { current: "page", href: "/libraries", key: "libraries" },
+  { current: "page", href: "/screenshots", key: "screenshots" },
 ] as const;
 
 type NavigationKey = (typeof navigation)[number]["key"];
@@ -45,7 +46,7 @@ export const SiteHeader = async ({
 
         <nav
           aria-label={t("header.navigationLabel")}
-          className="ml-auto hidden items-center gap-6 sm:flex"
+          className="ml-auto hidden items-center gap-6 md:flex"
         >
           {navigation.map(({ current, href, key }) => (
             <Link
@@ -59,7 +60,7 @@ export const SiteHeader = async ({
           ))}
         </nav>
 
-        <div className="ml-auto sm:ml-0">
+        <div className="ml-auto md:ml-0">
           <LocaleMenu
             label={t("header.localeLabel")}
             locales={locales}

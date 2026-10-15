@@ -12,7 +12,8 @@
     "navigationLabel": "主要",
     "navigation": {
       "docs": "文件",
-      "libraries": "函式庫"
+      "libraries": "函式庫",
+      "screenshots": "截圖"
     },
     "localeLabel": "語言",
     "github": "GitHub"
@@ -181,8 +182,13 @@
     }
   },
   "screens": {
+    "metadata": {
+      "title": "截圖",
+      "description": "以開發用種子資料拍攝的 Publira 全部畫面：面向讀者的網站、租戶主控台、平台主控台、行動應用程式，以及它寄出的郵件。"
+    },
     "title": "四個畫面，一份作品目錄",
-    "lead": "三個 Next.js 應用程式、一個 Flutter 用戶端以及它們寄出的郵件，各自面向不同的人。以下截圖全部以儲存庫附帶的開發用種子資料和情境種子拍攝。",
+    "lead": "三個 Next.js 應用程式、一個 Flutter 用戶端以及它們寄出的郵件，各自面向不同的人。",
+    "seeAll": "查看全部畫面",
     "host": {
       "title": "面向讀者的網站",
       "description": "讀者造訪的網站，以出版社自己的品牌發布。瀏覽、搜尋、排行榜、追蹤、登入，以及翻頁閱讀的閱讀器。"
@@ -652,6 +658,7 @@
     "pages": "頁面",
     "docs": "文件",
     "libraries": "函式庫",
+    "screenshots": "截圖",
     "repositories": "儲存庫",
     "policies": "政策",
     "privacy": "隱私權政策",
