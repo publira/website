@@ -84,6 +84,7 @@
   "platform": {
     "title": "What a publisher gets on day one",
     "lead": "A publisher gets a reader-facing site, an app, an editorial console, and — for whoever runs the install — a console above them all.",
+    "showAll": "Show all features",
     "features": {
       "multiTenant": {
         "title": "Multi-tenant from the ground up",
