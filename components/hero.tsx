@@ -4,7 +4,7 @@ import Image from "next/image";
 import heroImage from "#assets/screenshots/host/catalog-plain.png";
 import { BrowserFrame } from "#components/browser-frame";
 import { Link } from "#i18n/navigation";
-import { release } from "#lib/release";
+import { getLatestRelease } from "#lib/latest-release";
 
 const facts = [
   "nextApps",
@@ -15,7 +15,10 @@ const facts = [
 ] as const;
 
 export const Hero = async () => {
-  const t = await getTranslations("hero");
+  const [t, release] = await Promise.all([
+    getTranslations("hero"),
+    getLatestRelease(),
+  ]);
 
   return (
     <section>
@@ -71,7 +74,7 @@ export const Hero = async () => {
             {t("status.title")}
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            {t("status.body", { version: release })}
+            {t("status.body", { version: release ?? "none" })}
           </p>
         </div>
 

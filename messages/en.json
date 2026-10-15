@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "Still being built",
-      "body": "Publira is under active development, and its newest release, v{version}, is not ready for production use yet. Everything shown on this page runs today, and an install can be brought up from the images each release publishes with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and taking the changes each 0.x minor release may bring. Take it as something to evaluate, build on, and contribute to — not as a finished product."
+      "body": "Publira is under active development, and its newest release{version, select, none {} other {, v{version},}} is not ready for production use yet. Everything shown on this page runs today, and an install can be brought up from the images each release publishes with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and taking the changes each 0.x minor release may bring. Take it as something to evaluate, build on, and contribute to — not as a finished product."
     },
     "screenshot": {
       "alt": "The Publira reader-facing catalog, led by the work the tenant is featuring",
@@ -630,7 +630,7 @@
     "releaseLabel": "Check out the release",
     "release": "Every release publishes its images to the GitHub Container Registry under its version, such as <code>ghcr.io/publira/publiractl:{version}</code>, for linux/amd64 and linux/arm64, and a host pulls them without signing in, so nothing is built. Keep the whole checkout at the release's tag, since the Compose file mounts the proxy's routing from it, and set <code>PUBLIRA_IMAGE_TAG</code> to the same version: <code>publiractl</code> carries the migrations of its release, and the processes expect the schema of theirs. An install that changes the code, or runs on another platform, builds its own images and names them instead.",
     "guide": "Read the deployment guide",
-    "releaseNotes": "Release notes for v{version}",
+    "releaseNotes": "{version, select, none {Release notes} other {Release notes for v{version}}}",
     "contributing": "Contributing"
   },
   "documents": {

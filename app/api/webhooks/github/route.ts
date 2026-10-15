@@ -3,6 +3,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 
 import { docsCacheTags, docsRepository } from "#lib/docs";
+import { latestReleaseCacheTag } from "#lib/latest-release";
 
 interface PushEvent {
   readonly commits?: readonly {
@@ -15,6 +16,24 @@ interface PushEvent {
   readonly ref?: string;
   readonly repository?: { readonly full_name?: string };
 }
+
+interface ReleaseEvent {
+  readonly action?: string;
+  readonly repository?: { readonly full_name?: string };
+}
+
+/**
+ * The `release` actions that can change which Release is the latest, which is
+ * never a prerelease.
+ */
+const releaseActions = new Set([
+  "deleted",
+  "edited",
+  "prereleased",
+  "published",
+  "released",
+  "unpublished",
+]);
 
 const isSigned = (body: string, signature: string | null) => {
   const secret = process.env.GITHUB_WEBHOOK_SECRET;
@@ -29,7 +48,7 @@ const isSigned = (body: string, signature: string | null) => {
 };
 
 /** The cache tags a push to the documentation's repository makes stale. */
-const getStaleTags = (event: PushEvent) => {
+const getPushStaleTags = (event: PushEvent) => {
   if (event.repository?.full_name !== docsRepository) {
     return [];
   }
@@ -52,22 +71,37 @@ const getStaleTags = (event: PushEvent) => {
   return [];
 };
 
-/** The `push` webhook of publira/publira, which keeps `/docs` current. */
-const receivePush = async (request: Request) => {
+/** The cache tags a change to a Release of the repository makes stale. */
+const getReleaseStaleTags = (event: ReleaseEvent) =>
+  event.repository?.full_name === docsRepository &&
+  event.action &&
+  releaseActions.has(event.action)
+    ? [latestReleaseCacheTag]
+    : [];
+
+/**
+ * The `push` and `release` webhooks of publira/publira, which keep `/docs`
+ * and the home page's release current.
+ */
+const receiveEvent = async (request: Request) => {
   const body = await request.text();
   if (!isSigned(body, request.headers.get("x-hub-signature-256"))) {
     return new Response(null, { status: 401 });
   }
-  if (request.headers.get("x-github-event") !== "push") {
+  const event = request.headers.get("x-github-event");
+  if (event !== "push" && event !== "release") {
     return new Response(null, { status: 204 });
   }
 
-  // SAFETY: the signature shows GitHub sent the body, as a `push` payload.
-  const tags = getStaleTags(JSON.parse(body) as PushEvent);
+  // SAFETY: the signature shows GitHub sent the body, as a payload of `event`.
+  const tags =
+    event === "push"
+      ? getPushStaleTags(JSON.parse(body) as PushEvent)
+      : getReleaseStaleTags(JSON.parse(body) as ReleaseEvent);
   for (const tag of tags) {
     revalidateTag(tag, "max");
   }
   return Response.json({ revalidated: tags });
 };
 
-export { receivePush as POST };
+export { receiveEvent as POST };

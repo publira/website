@@ -121,7 +121,7 @@ const releaseRequest = () => {
   return next(null);
 };
 
-const fetchGitHub = async (
+export const fetchGitHub = async (
   endpoint: string,
   accept = "application/vnd.github+json",
   attempt = 0
