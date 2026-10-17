@@ -44,9 +44,11 @@ const Frame = ({
     case "browser": {
       return <BrowserFrame address={address}>{children}</BrowserFrame>;
     }
+
     case "mail": {
       return <MailFrame>{children}</MailFrame>;
     }
+
     default: {
       return <PhoneFrame>{children}</PhoneFrame>;
     }
@@ -67,6 +69,7 @@ export const ScreenGrid = async ({
   title,
 }: ScreenGridProps) => {
   const t = await getTranslations("screens.dialog");
+
   const items = await Promise.all(
     screenshots.map(async (screenshot) => ({
       screenshot,

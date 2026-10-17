@@ -37,6 +37,7 @@ interface MarkdownNode {
 
 const visit = (node: MarkdownNode, visitor: (node: MarkdownNode) => void) => {
   visitor(node);
+
   for (const child of node.children ?? []) {
     visit(child, visitor);
   }
@@ -72,9 +73,12 @@ const remarkDocsImageSizes =
     await Promise.all(
       images.map(async (node) => {
         const url = node.url ?? definitions.get(node.identifier);
+
         const image =
           url === undefined ? null : resolveDocsImage(trees, from, url);
+
         const size = image && (await getDocsImageSize(image));
+
         if (size) {
           node.data = {
             ...node.data,
@@ -111,6 +115,7 @@ const DocsImage = (props: MarkdownImageProps) => {
   const { alt = "", src, title } = props;
   const height = Number(props.height);
   const width = Number(props.width);
+
   if (!(src && height > 0 && width > 0)) {
     return mdxComponents.img(props);
   }
@@ -118,6 +123,7 @@ const DocsImage = (props: MarkdownImageProps) => {
   // `next/image` serves an SVG as it is only when `src` ends in `.svg`, and
   // `localPatterns` allows no query.
   const [file] = src.split(/[?#]/u, 1);
+
   return (
     <Image
       alt={alt}
@@ -149,15 +155,19 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
   );
 
   const locale = await getRootLocale();
+
   const [tree, source] = await Promise.all([
     getDocsTree(version, locale),
     locale === docsSourceLocale ? null : getDocsTree(version, docsSourceLocale),
   ]);
+
   const translation = tree && findPage(tree, slug);
   const page = translation ?? (source && findPage(source, slug));
+
   if (!page) {
     notFound();
   }
+
   // An untranslated page's URLs resolve in its own tree, the source locale's.
   const trees = (translation ? [tree, source] : [source]).filter(
     (candidate) => candidate !== null

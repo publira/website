@@ -37,13 +37,17 @@ const releaseActions = new Set([
 
 const isSigned = (body: string, signature: string | null) => {
   const secret = process.env.GITHUB_WEBHOOK_SECRET;
+
   if (!(secret && signature)) {
     return false;
   }
+
   const expected = Buffer.from(
     `sha256=${createHmac("sha256", secret).update(body).digest("hex")}`
   );
+
   const actual = Buffer.from(signature);
+
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 };
 
@@ -52,6 +56,7 @@ const getPushStaleTags = (event: PushEvent) => {
   if (event.repository?.full_name !== docsRepository) {
     return [];
   }
+
   if (event.ref === "refs/heads/main") {
     const touchesDocs = event.commits?.some((commit) =>
       [
@@ -60,14 +65,17 @@ const getPushStaleTags = (event: PushEvent) => {
         ...(commit.removed ?? []),
       ].some((path) => path.startsWith("docs/"))
     );
+
     return touchesDocs ? [docsCacheTags.next] : [];
   }
+
   if (
     event.ref?.startsWith("refs/tags/v") &&
     (event.created || event.deleted)
   ) {
     return [docsCacheTags.releases];
   }
+
   return [];
 };
 
@@ -85,10 +93,13 @@ const getReleaseStaleTags = (event: ReleaseEvent) =>
  */
 const receiveEvent = async (request: Request) => {
   const body = await request.text();
+
   if (!isSigned(body, request.headers.get("x-hub-signature-256"))) {
     return new Response(null, { status: 401 });
   }
+
   const event = request.headers.get("x-github-event");
+
   if (event !== "push" && event !== "release") {
     return new Response(null, { status: 204 });
   }
@@ -98,9 +109,11 @@ const receiveEvent = async (request: Request) => {
     event === "push"
       ? getPushStaleTags(JSON.parse(body) as PushEvent)
       : getReleaseStaleTags(JSON.parse(body) as ReleaseEvent);
+
   for (const tag of tags) {
     revalidateTag(tag, "max");
   }
+
   return Response.json({ revalidated: tags });
 };
 

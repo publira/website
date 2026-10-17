@@ -34,6 +34,7 @@ export const getAlternates = (
 /** Open Graph writes a locale as a language and a territory: `ja_JP`. */
 const toOpenGraphLocale = (locale: Locale) => {
   const { language, region } = new Intl.Locale(locale).maximize();
+
   return `${language}_${region}`;
 };
 

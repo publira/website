@@ -7,8 +7,10 @@ import { routing } from "#i18n/routing";
 /** The `[locale]` root param, or not found for one the site does not have. */
 export const getRootLocale = async () => {
   const locale = await rootLocale();
+
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
   return locale;
 };

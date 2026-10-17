@@ -29,6 +29,7 @@ export const Menu = ({
 
   useEffect(() => {
     const details = detailsRef.current;
+
     if (!details) {
       return;
     }
@@ -37,6 +38,7 @@ export const Menu = ({
     // followed from it would still be open when the reader comes back.
     const closeOnClick = (event: MouseEvent) => {
       const { target } = event;
+
       if (
         details.open &&
         target instanceof Element &&
@@ -45,6 +47,7 @@ export const Menu = ({
         details.open = false;
       }
     };
+
     const closeOnEscape = (event: KeyboardEvent) => {
       if (details.open && event.key === "Escape") {
         details.open = false;
