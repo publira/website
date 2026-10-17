@@ -51,9 +51,11 @@ export const ScreenGroups = async ({ featured = false }: ScreenGroupsProps) => {
     <div className={featured ? "space-y-20" : "space-y-28"}>
       {groups.map((group) => {
         const all = screenshots[group.key];
+
         const shown = featured
           ? all.filter((screenshot) => screenshot.featured)
           : all;
+
         const props = {
           address:
             "address" in group ? group.address : t(`${group.key}.address`),

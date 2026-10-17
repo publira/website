@@ -101,9 +101,11 @@ export const ScreenshotDialog = ({
   // offset, and `onScroll` reports the view a swipe or a scroll came to rest on.
   const show = (index: number) => {
     const track = trackRef.current;
+
     if (!track) {
       return;
     }
+
     const clamped = Math.min(Math.max(index, 0), views.length - 1);
     track.scrollTo({ left: clamped * track.clientWidth });
   };
@@ -121,6 +123,7 @@ export const ScreenshotDialog = ({
   useEffect(() => {
     const dialog = dialogRef.current;
     const track = trackRef.current;
+
     if (!(dialog && track) || openedAt === null) {
       return;
     }

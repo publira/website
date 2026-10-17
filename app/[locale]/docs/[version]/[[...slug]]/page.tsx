@@ -34,6 +34,7 @@ export const generateStaticParams = async () => {
     getDocsVersions(),
     getDocsPageParams(await getRootLocale()),
   ]);
+
   return [
     ...versions.map(({ name }) => ({ slug: [], version: name })),
     ...pages,
@@ -45,6 +46,7 @@ const loadPage = async (params: Props["params"]) => {
     params,
     getRootLocale(),
   ]);
+
   return {
     found: await getDocsPage(version, locale, slug),
     locale,
@@ -61,12 +63,14 @@ export const generateMetadata = async ({
     getCurrentVersion(),
     getTranslations(),
   ]);
+
   if (!found) {
     return {};
   }
 
   const { language, page } = found;
   const path = getDocsPath(version, slug);
+
   // Every version but the newest is left out of search, and points at the
   // same page in the newest version when it has one. An untranslated page
   // points at the source locale's, which alone is indexed.
@@ -74,6 +78,7 @@ export const generateMetadata = async ({
     version === latest ? null : getDocsTree(latest, language),
     getDocsPageLocales(version, slug),
   ]);
+
   const canonical =
     latestTree && findPage(latestTree, slug) ? getDocsPath(latest, slug) : path;
 
@@ -102,6 +107,7 @@ export const generateMetadata = async ({
 
 const Docs = async ({ params }: Props) => {
   const { found, locale, slug, version } = await loadPage(params);
+
   if (found) {
     return (
       <DocsPage language={found.language} page={found.page} version={version} />
@@ -112,6 +118,7 @@ const Docs = async ({ params }: Props) => {
   // keeps leading to it in every version whose tree says so.
   const target =
     slug.length > 0 ? await getDocsRedirect(version, locale, slug) : null;
+
   if (target) {
     permanentRedirect(getLocalizedDocsPath(locale, version, target));
   }
@@ -119,9 +126,11 @@ const Docs = async ({ params }: Props) => {
   // A version without a root `index.md` opens at its first page.
   const [first] =
     slug.length === 0 ? await getDocsNavigation(version, locale) : [];
+
   if (first) {
     redirect(getLocalizedDocsPath(locale, version, first.slug));
   }
+
   notFound();
 };
 

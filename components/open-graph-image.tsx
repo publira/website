@@ -32,14 +32,17 @@ const hiragana = /^\p{Script=Hiragana}+$/u;
 const toPhrases = (locale: Locale, text: string) => {
   const phrases: { start: number; text: string }[] = [];
   const segmenter = new Intl.Segmenter(locale, { granularity: "word" });
+
   for (const { index, isWordLike, segment } of segmenter.segment(text)) {
     const previous = phrases.at(-1);
+
     if (previous && (!isWordLike || hiragana.test(segment))) {
       previous.text += segment;
     } else {
       phrases.push({ start: index, text: segment });
     }
   }
+
   return phrases;
 };
 
@@ -53,6 +56,7 @@ export const toLocale = (locale: string) => {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+
   return locale;
 };
 
@@ -63,6 +67,7 @@ export const renderOpenGraphImage = async (locale: Locale, title: string) => {
   const t = await getTranslator(locale);
   const siteName = t("site.name");
   const family = families[locale];
+
   const [font, avatar] = await Promise.all([
     loadGoogleFont(family, `${siteName}${title}`),
     loadOrganizationAvatar(),

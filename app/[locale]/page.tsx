@@ -115,6 +115,7 @@ export const Home = async () => {
     getCurrentDocsPath(["deployments"]),
     getLatestRelease(),
   ]);
+
   const version = release ?? "<version>";
   const softwareApplicationId = getSoftwareApplicationId(locale);
 

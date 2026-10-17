@@ -19,6 +19,7 @@ interface DocumentPageProps {
 
 export const DocumentPage = async ({ name }: DocumentPageProps) => {
   const locale = await getLocale();
+
   const [{ default: Content, frontmatter }, t] = await Promise.all([
     loadDocument(name, locale),
     getTranslations(),

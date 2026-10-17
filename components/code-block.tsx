@@ -31,18 +31,24 @@ const onDartLiteral = (current: string, index: number, code: string) => {
   const raw = current === "r";
   const start = raw ? index + 1 : index;
   const quote = code[start];
+
   if (quote !== "'" && quote !== '"') {
     return 0;
   }
+
   const triple = quote.repeat(3);
   const delimiter = code.startsWith(triple, start) ? triple : quote;
+
   if (!raw && delimiter === quote) {
     return 0;
   }
+
   let end = start + delimiter.length;
+
   while (end < code.length && !code.startsWith(delimiter, end)) {
     end += !raw && code[end] === "\\" ? 2 : 1;
   }
+
   return Math.min(end + delimiter.length, code.length) - index;
 };
 

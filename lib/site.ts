@@ -13,7 +13,9 @@ export const getAbsoluteUrl = (path: string) => {
   if (!productionUrl) {
     return path;
   }
+
   const url = new URL(path, productionUrl);
+
   // Next.js writes a page's canonical URL for the root as the bare origin, and
   // the sitemap has to repeat it character for character.
   return url.pathname === "/" ? url.origin : url.href;

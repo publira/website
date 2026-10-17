@@ -21,15 +21,19 @@ const collapsedClassName = (index: number) => {
   if (index < 3) {
     return "";
   }
+
   if (index === 3) {
     return "overflow-hidden max-sm:max-h-32";
   }
+
   if (index < 6) {
     return "overflow-hidden max-sm:hidden sm:max-lg:max-h-32";
   }
+
   if (index < 9) {
     return "overflow-hidden max-lg:hidden lg:max-h-32";
   }
+
   return "hidden";
 };
 
@@ -41,12 +45,14 @@ export const FeatureGrid = ({ features, showAllLabel }: FeatureGridProps) => {
   const listId = useId();
   const clipRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+
   const [state, setState] = useState<"collapsed" | "opening" | "open">(
     "collapsed"
   );
 
   const open = () => {
     const clip = clipRef.current;
+
     // Without a transition `transitionend` never fires to clear the height.
     if (clip && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
       // Hold the collapsed height while the rest renders, then grow to it.
@@ -56,6 +62,7 @@ export const FeatureGrid = ({ features, showAllLabel }: FeatureGridProps) => {
     } else {
       setState("open");
     }
+
     // The button goes once the list is open, so focus moves to the list.
     listRef.current?.focus({ preventScroll: true });
   };
