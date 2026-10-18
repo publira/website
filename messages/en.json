@@ -227,7 +227,7 @@
       },
       "browse": {
         "title": "Genres",
-        "caption": "Each genre drawn from the covers of the series it ranks highest, or from artwork the editors upload for it, with the number of series behind it. A genre opens into its series, sorted and narrowed the way the whole list is, and the genres themselves are the tenant's own classification rather than a fixed list.",
+        "caption": "Each genre drawn from the covers of the series it ranks highest, or from artwork the editors upload for it, with the number of series behind it. A genre opens into its most-read series of the week above all of its series, sorted and narrowed the way the whole list is, and the genres themselves are the tenant's own classification rather than a fixed list.",
         "views": {
           "genres": "Every genre",
           "genre": "One genre's series"
@@ -272,7 +272,7 @@
       },
       "signIn": {
         "title": "Signing in",
-        "caption": "An email address and a password, or the Apple and Google accounts a reader already has, on the sign-in and the sign-up form alike. The providers are the tenant's own: they appear once its console holds their credentials, and a new reader is asked to accept the tenant's terms when it names them.",
+        "caption": "An email address and a password, or the Apple and Google accounts a reader already has, on the sign-in and the sign-up form alike, and a passkey for a reader who has registered one. The providers are the tenant's own: they appear once its console holds their credentials, and a new reader is asked to accept the tenant's terms when it names them.",
         "views": {
           "signIn": "Sign in",
           "signUp": "Sign up"
@@ -295,7 +295,7 @@
       },
       "series": {
         "title": "Series",
-        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. A series opens into its details: a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes start from.",
+        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. A series opens into its details: its title and synopsis in each language the tenant offers, and a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes start from.",
         "views": {
           "list": "Every series",
           "form": "One series and its credits"
@@ -360,7 +360,7 @@
       },
       "reports": {
         "title": "Reports and royalties",
-        "caption": "How many members finish each episode, and a month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV.",
+        "caption": "How many members finish each episode, and a month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV, and a refund recorded after the close is carried into the next statement as an adjustment.",
         "views": {
           "readThrough": "Read-through",
           "royalties": "An open month",
@@ -442,7 +442,7 @@
       },
       "account": {
         "title": "Account",
-        "caption": "Everything a reader does with their account without leaving the app — the name, the address, the password, the linked Apple and Google accounts, mail notifications, the tenant's own pages, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
+        "caption": "Everything a reader does with their account without leaving the app — the icon, the name, the address, the password, the linked Apple and Google accounts, mail notifications, the tenant's own pages, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
         "views": {
           "account": "The account",
           "signIn": "Sign in"
