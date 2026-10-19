@@ -101,15 +101,15 @@
       },
       "payments": {
         "title": "Paid episodes, through the provider you choose",
-        "body": "A tenant sells episodes through Stripe or PAY.JP on the web and through the App Store and Google Play in its app. A purchase is written only when the provider's signed notification arrives, not on the redirect."
+        "body": "A tenant sells episodes through Stripe or PAY.JP on the web and through the App Store and Google Play in its app. A purchase is written only when the provider's signed notification arrives, not on the redirect, and the reader is mailed a receipt. Staff refund a web purchase from the console, and a full refund or a dispute closes the episode again."
       },
       "freeReading": {
         "title": "Free to read, on the tenant's schedule",
         "body": "A paid episode opens to every reader for a free reading period, scheduled on one episode or across many episodes of a series at once. A series can also offer free if you wait: signed-in readers open its paid episodes free, one at a time, with a ticket that comes back after a wait."
       },
       "signIn": {
-        "title": "Sign in with Apple and Google",
-        "body": "Each tenant registers its own Apple and Google credentials, and its readers sign in with them on the site and in the app as well as with an email address. Tenant staff and the platform's operators can turn on two-step verification, and the platform can require it of every tenant administrator and every operator."
+        "title": "Sign in with a passkey, Apple, or Google",
+        "body": "Readers sign in to the site and the app with an email address, a passkey that works on both, or the Apple and Google credentials each tenant registers. Tenant staff and the platform's operators can turn on two-step verification, which staff can answer with a passkey, and the platform can require it of every tenant administrator and every operator."
       },
       "surfaces": {
         "title": "The site, the app, or both",
@@ -125,7 +125,7 @@
       },
       "comments": {
         "title": "Comments, and the queue behind them",
-        "body": "Readers comment where an episode ends, under the mode its series publishes in. Staff work through what was posted and what was flagged, and a withdrawn comment is purged once its retention window has passed."
+        "body": "Readers comment where an episode ends, under the mode its series publishes in, beside an icon of their own if the tenant allows one. Staff work through what was posted and what was flagged, and a withdrawn comment is purged once its retention window has passed."
       },
       "engagement": {
         "title": "What readers do feeds the catalog",
@@ -161,11 +161,11 @@
       },
       "localization": {
         "title": "Localized end to end",
-        "body": "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, in the app, and in the mail. A tenant's own pages — its terms and its privacy policy among them — carry a translation per language, and its time zone governs how its records are read."
+        "body": "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, in the app, and in the mail. Each tenant chooses which of them its site offers, and its pages, series titles, and synopses carry a translation in each."
       },
       "search": {
         "title": "A search that grows with the catalog",
-        "body": "The search on every tenant's site works from PostgreSQL alone. An install that wants results ranked by relevance moves it to OpenSearch or Elasticsearch, which also forgive a mistyped letter."
+        "body": "The search on every tenant's site works from PostgreSQL alone, in the reader's own language. An install that wants results ranked by relevance moves it to OpenSearch or Elasticsearch, which also forgive a mistyped letter."
       },
       "searchEngines": {
         "title": "Found by search engines",
@@ -195,7 +195,7 @@
     },
     "admin": {
       "title": "The tenant console",
-      "description": "Where editors work: the catalog and the publishing queue, the payment and sign-in providers, the theme and the pages of the public site, the messages readers send, what each author is owed, and the record of every change made to any of it."
+      "description": "Where editors work: the catalog and the publishing queue, the payment and sign-in providers, the theme and the pages of the public site, the messages readers send, the purchases they made and their refunds, what each author is owed, and the record of every change made to any of it."
     },
     "platform": {
       "title": "The platform console",
@@ -203,7 +203,7 @@
     },
     "mobile": {
       "title": "The mobile app",
-      "description": "The same catalog on a phone, from one Flutter codebase for Android and iOS, under the tenant's own name and theme. It calls the public API directly rather than going through the site, signs a reader in with an email address, Apple, or Google, sells episodes through the store or the site's checkout, and keeps the episodes a reader has opened or saved on the device.",
+      "description": "The same catalog on a phone, from one Flutter codebase for Android and iOS, under the tenant's own name and theme. It calls the public API directly rather than going through the site, signs a reader in with an email address, a passkey, Apple, or Google, sells episodes through the store or the site's checkout, and keeps the episodes a reader has opened or saved on the device.",
       "address": "the Publira app"
     },
     "mail": {
@@ -227,7 +227,7 @@
       },
       "browse": {
         "title": "Genres",
-        "caption": "Each genre drawn from the covers of the series it ranks highest, or from artwork the editors upload for it, with the number of series behind it. A genre opens into its series, sorted and narrowed the way the whole list is, and the genres themselves are the tenant's own classification rather than a fixed list.",
+        "caption": "Each genre drawn from the covers of the series it ranks highest, or from artwork the editors upload for it, with the number of series behind it. A genre opens into its most-read series of the week above all of its series, sorted and narrowed the way the whole list is, and the genres themselves are the tenant's own classification rather than a fixed list.",
         "views": {
           "genres": "Every genre",
           "genre": "One genre's series"
@@ -272,7 +272,7 @@
       },
       "signIn": {
         "title": "Signing in",
-        "caption": "An email address and a password, or the Apple and Google accounts a reader already has, on the sign-in and the sign-up form alike. The providers are the tenant's own: they appear once its console holds their credentials, and a new reader is asked to accept the tenant's terms when it names them.",
+        "caption": "An email address and a password, or the Apple and Google accounts a reader already has, on the sign-in and the sign-up form alike, and a passkey for a reader who has registered one. The providers are the tenant's own: they appear once its console holds their credentials, and readers are asked to accept the tenant's terms when it names them, and again when it revises them.",
         "views": {
           "signIn": "Sign in",
           "signUp": "Sign up"
@@ -295,7 +295,7 @@
       },
       "series": {
         "title": "Series",
-        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. A series opens into its details: a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes start from.",
+        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. A series opens into its details: its title and synopsis in each language the tenant offers, and a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes start from.",
         "views": {
           "list": "Every series",
           "form": "One series and its credits"
@@ -360,7 +360,7 @@
       },
       "reports": {
         "title": "Reports and royalties",
-        "caption": "How many members finish each episode, and a month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV.",
+        "caption": "How many members finish each episode, and a month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV, and a refund recorded after the close is carried into the next statement as an adjustment.",
         "views": {
           "readThrough": "Read-through",
           "royalties": "An open month",
@@ -442,7 +442,7 @@
       },
       "account": {
         "title": "Account",
-        "caption": "Everything a reader does with their account without leaving the app — the name, the address, the password, the linked Apple and Google accounts, mail notifications, the tenant's own pages, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
+        "caption": "Everything a reader does with their account without leaving the app — the icon, the name, the address, the password, the linked Apple and Google accounts, mail notifications, the tenant's own pages, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
         "views": {
           "account": "The account",
           "signIn": "Sign in"
@@ -512,7 +512,7 @@
         }
       }
     },
-    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs, and on a single host the two can run as one process, <code>publira server --with-worker</code>. An optional <code>email-renderer</code> draws the HTML part of each mail, and <code>publiractl</code> migrates the database, creates its roles, sets an install up, and runs any of the worker’s jobs by hand.",
+    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. A second one started with <code>--role storefront</code> can take the tenants’ domains alone, holding only the reader-facing database login. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs, and on a single host the two can run as one process, <code>publira server --with-worker</code>. An optional <code>email-renderer</code> draws the HTML part of each mail, and <code>publiractl</code> migrates the database, creates its roles, sets an install up, and runs any of the worker’s jobs by hand.",
     "tracing": "Every layer is instrumented with <strong>OpenTelemetry</strong>, so one browser request reads as a single trace: the Next.js root span, the Connect RPC it makes during SSR, the identically named span on the Go side, and the <code>db.query</code> children below it. Point it at whatever collector you already run, or leave tracing off — it is disabled by default. The two Go processes export OpenTelemetry metrics as well, which stay off until enabled in the same way."
   },
   "requirements": {
@@ -523,7 +523,7 @@
     "items": {
       "proxy": {
         "name": "A reverse proxy",
-        "purpose": "Routes each tenant's hosts to its site and console, and /api and /images to the server. The repository ships configurations for Traefik, nginx, and Caddy."
+        "purpose": "Routes each tenant's hosts to its site and console, and the public API and the images to the server. The repository ships configurations for Traefik, nginx, and Caddy."
       },
       "postgres": {
         "name": "PostgreSQL",
@@ -551,7 +551,7 @@
       },
       "inboundEmail": {
         "name": "An inbound email provider",
-        "purpose": "SendGrid or Resend, per tenant, for a tenant that wants readers' replies to its answers filed under their contact messages in the console."
+        "purpose": "SendGrid, Resend, Mailgun, Amazon SES, or a mail server that posts what it receives over HTTPS, per tenant, for a tenant that wants readers' replies to its answers filed under their contact messages in the console."
       },
       "firebase": {
         "name": "A Firebase project",
