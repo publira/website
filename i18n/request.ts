@@ -18,6 +18,7 @@ export default getRequestConfig(async () => {
       if (error.code === IntlErrorCode.MISSING_MESSAGE) {
         throw error;
       }
+
       console.error(error);
     },
   };

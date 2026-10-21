@@ -12,12 +12,14 @@ export const generateStaticParams = () =>
 
 const getTitle = async (locale: Locale) => {
   const t = await getTranslator(locale);
+
   return t("metadata.title", { name: t("site.name") });
 };
 
 const image = async ({ params }: { params: Promise<{ locale: string }> }) => {
   const { locale: requested } = await params;
   const locale = toLocale(requested);
+
   return renderOpenGraphImage(locale, await getTitle(locale));
 };
 

@@ -19,9 +19,11 @@ const readLatestRelease = async () => {
   cacheTag(latestReleaseCacheTag);
 
   const response = await fetchGitHub("releases/latest");
+
   if (response.status === 404) {
     return null;
   }
+
   if (!response.ok) {
     throw new Error(
       `GitHub responded to the latest Release with ${response.status}`
@@ -32,11 +34,13 @@ const readLatestRelease = async () => {
   const { tag_name: tag } = (await response.json()) as {
     readonly tag_name: string;
   };
+
   if (!releaseTag.test(tag)) {
     throw new Error(
       `The latest Release of ${docsRepository} is tagged ${tag}, not vX.Y.Z`
     );
   }
+
   return tag.slice(1);
 };
 
@@ -48,6 +52,7 @@ const readLatestRelease = async () => {
 const getUnresolvedRelease = async () => {
   "use cache";
   cacheLife("minutes");
+
   return null;
 };
 
@@ -58,6 +63,7 @@ export const getLatestRelease = async (): Promise<string | null> => {
   } catch (error) {
     unstable_rethrow(error);
     console.error("Reading the latest Release:", error);
+
     return getUnresolvedRelease();
   }
 };

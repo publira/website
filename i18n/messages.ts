@@ -4,6 +4,7 @@ import type { Locale, Messages } from "next-intl";
 // translation is missing a key the source has.
 const load = async (catalog: Promise<{ default: Messages }>) => {
   const { default: messages } = await catalog;
+
   return messages;
 };
 

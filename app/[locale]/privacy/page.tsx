@@ -7,6 +7,7 @@ import { loadDocument } from "#lib/documents";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
+
   const [{ frontmatter }, t] = await Promise.all([
     loadDocument("privacy", locale),
     getTranslations(),

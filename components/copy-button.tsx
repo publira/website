@@ -30,7 +30,9 @@ export const CopyButton = ({
     if (!copied) {
       return;
     }
+
     const timeout = setTimeout(() => setCopied(false), copiedFor);
+
     return () => clearTimeout(timeout);
   }, [copied]);
 

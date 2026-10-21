@@ -9,9 +9,11 @@ export const generateStaticParams = async () => {
   const pages = await Promise.all(
     routing.locales.map(async (locale) => {
       const params = await getDocsPageParams(locale);
+
       return params.map((page) => ({ ...page, locale }));
     })
   );
+
   return pages.flat();
 };
 
@@ -24,13 +26,17 @@ const renderCard = async (
   }: RouteContext<"/[locale]/docs/[version]/opengraph-image/[[...slug]]">
 ) => {
   const { locale, slug = [], version } = await params;
+
   if (!hasLocale(routing.locales, locale)) {
     return new Response(null, { status: 404 });
   }
+
   const found = await getDocsPage(version, locale, slug);
+
   if (!found) {
     return new Response(null, { status: 404 });
   }
+
   return renderOpenGraphImage(locale, found.page.title);
 };
 
