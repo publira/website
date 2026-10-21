@@ -2,6 +2,10 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 import { revalidateTag } from "next/cache";
 
+import {
+  appManifestSchemaCacheTag,
+  appManifestSchemaRoot,
+} from "#lib/app-manifest-schema";
 import { docsCacheTags, docsRepository } from "#lib/docs";
 import { latestReleaseCacheTag } from "#lib/latest-release";
 
@@ -47,20 +51,26 @@ const isSigned = (body: string, signature: string | null) => {
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 };
 
+/** The cache tag of what `main` serves from each directory. */
+const mainPathTags = [
+  ["docs/", docsCacheTags.next],
+  [appManifestSchemaRoot, appManifestSchemaCacheTag],
+] as const;
+
 /** The cache tags a push to the documentation's repository makes stale. */
 const getPushStaleTags = (event: PushEvent) => {
   if (event.repository?.full_name !== docsRepository) {
     return [];
   }
   if (event.ref === "refs/heads/main") {
-    const touchesDocs = event.commits?.some((commit) =>
-      [
-        ...(commit.added ?? []),
-        ...(commit.modified ?? []),
-        ...(commit.removed ?? []),
-      ].some((path) => path.startsWith("docs/"))
+    const paths = (event.commits ?? []).flatMap((commit) => [
+      ...(commit.added ?? []),
+      ...(commit.modified ?? []),
+      ...(commit.removed ?? []),
+    ]);
+    return mainPathTags.flatMap(([root, tag]) =>
+      paths.some((path) => path.startsWith(root)) ? [tag] : []
     );
-    return touchesDocs ? [docsCacheTags.next] : [];
   }
   if (
     event.ref?.startsWith("refs/tags/v") &&
@@ -80,8 +90,8 @@ const getReleaseStaleTags = (event: ReleaseEvent) =>
     : [];
 
 /**
- * The `push` and `release` webhooks of publira/publira, which keep `/docs`
- * and the home page's release current.
+ * The `push` and `release` webhooks of publira/publira, which keep `/docs`,
+ * the app manifest's schema, and the home page's release current.
  */
 const receiveEvent = async (request: Request) => {
   const body = await request.text();
