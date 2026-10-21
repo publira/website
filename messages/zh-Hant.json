@@ -627,8 +627,8 @@
   "start": {
     "title": "執行安裝環境",
     "lead": "安裝環境由容器映像檔和一個 Compose 檔案執行，publiractl 讓資料庫和第一個租戶進入可用狀態。主機只需要 Docker。",
-    "releaseLabel": "簽出版本",
-    "release": "每個版本都會以其版本號將映像檔發布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支援 linux/amd64 和 linux/arm64，不需登入即可下載，因此主機上不必建置任何東西。Compose 檔案會從簽出的程式碼掛載代理的路由設定，所以請讓整個簽出保持在該版本的標籤上，並將 <code>PUBLIRA_IMAGE_TAG</code> 設為同一版本：<code>publiractl</code> 帶有該版本的遷移，各程序也以該版本的資料庫結構為前提。修改了程式碼或在其他平台上執行的安裝環境，則自行建置映像檔並指定它們。",
+    "releaseLabel": "下載版本",
+    "release": "<p>封存檔中包含該版本的 Compose 檔案、代理的 <code>Caddyfile</code> 和 <code>.env.example</code>。<code>publiractl env generate</code> 會據此寫出 <code>.env</code>，並產生所有祕密的值填入其中。</p><p>每個版本都會以其版本號將映像檔發布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支援 linux/amd64 和 linux/arm64，不需登入即可下載，因此主機上不必建置任何東西。</p><p><code>.env</code> 中的 <code>PUBLIRA_IMAGE_TAG</code> 已經設為該版本號，請不要修改。映像檔必須與 <code>.env</code> 所在目錄中的檔案屬於同一版本：<code>publiractl</code> 帶有該版本的遷移，各程序以該版本的資料庫結構為前提，代理依封存檔中 <code>Caddyfile</code> 的路由執行。</p><p>修改了程式碼或在其他平台上執行的安裝環境，則從儲存庫的簽出自行建置映像檔並指定它們。</p>",
     "guide": "閱讀部署指南",
     "releaseNotes": "{version, select, none {版本資訊} other {v{version} 版本資訊}}",
     "contributing": "Contributing"

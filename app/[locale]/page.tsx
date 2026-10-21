@@ -83,18 +83,22 @@ const platformFeatures = [
   "portability",
 ] as const;
 
-/** The checkout of `version`, or of a placeholder while it cannot be named. */
-const getReleaseCode = (
-  version: string
-) => `git clone --branch v${version} https://github.com/publira/publira.git
-cd publira/infra/deploy
-cp .env.example .env
-chmod 600 .env
+/**
+ * The download of `version`'s Compose archive, or of a placeholder while it
+ * cannot be named.
+ */
+const getReleaseCode = (version: string) => `PUBLIRA_VERSION=${version}
+curl -fsSLO \\
+  https://github.com/publira/publira/releases/download/v$PUBLIRA_VERSION/publira-deploy-$PUBLIRA_VERSION.tar.gz
+tar -xzf publira-deploy-$PUBLIRA_VERSION.tar.gz
+cd publira-deploy-$PUBLIRA_VERSION
 
-# In .env, the version of the release's images on ghcr.io/publira
-# PUBLIRA_IMAGE_TAG=${version}`;
+# Write .env from .env.example, with every secret generated
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work \\
+  ghcr.io/publira/publiractl:$PUBLIRA_VERSION env generate`;
 
 const code = (chunks: ReactNode) => <code>{chunks}</code>;
+const paragraph = (chunks: ReactNode) => <p>{chunks}</p>;
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const [locale, t] = await Promise.all([getLocale(), getTranslations()]);
@@ -233,9 +237,9 @@ export const Home = async () => {
               label={t("start.releaseLabel")}
               lang="shell"
             />
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {t.rich("start.release", { code, version })}
-            </p>
+            <div className="text-muted-foreground space-y-3 text-sm leading-relaxed">
+              {t.rich("start.release", { code, p: paragraph, version })}
+            </div>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link

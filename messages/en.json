@@ -627,8 +627,8 @@
   "start": {
     "title": "Running an install",
     "lead": "An install runs from container images and one Compose file, and publiractl brings its database and its first tenant into service. The host needs Docker and nothing else.",
-    "releaseLabel": "Check out the release",
-    "release": "Every release publishes its images to the GitHub Container Registry under its version, such as <code>ghcr.io/publira/publiractl:{version}</code>, for linux/amd64 and linux/arm64, and a host pulls them without signing in, so nothing is built. Keep the whole checkout at the release's tag, since the Compose file mounts the proxy's routing from it, and set <code>PUBLIRA_IMAGE_TAG</code> to the same version: <code>publiractl</code> carries the migrations of its release, and the processes expect the schema of theirs. An install that changes the code, or runs on another platform, builds its own images and names them instead.",
+    "releaseLabel": "Download the release",
+    "release": "<p>The archive holds the release's Compose file, the proxy's <code>Caddyfile</code>, and an <code>.env.example</code>. <code>publiractl env generate</code> writes <code>.env</code> from it, with every secret generated.</p><p>Every release publishes its images to the GitHub Container Registry under its version, such as <code>ghcr.io/publira/publiractl:{version}</code>, for linux/amd64 and linux/arm64. A host pulls them without signing in, so nothing is built on it.</p><p><code>PUBLIRA_IMAGE_TAG</code> in <code>.env</code> already names the release's version, so do not change it. The images have to come from the same release as the files beside <code>.env</code>: <code>publiractl</code> carries the migrations of its release, the processes expect the schema of theirs, and the proxy runs the routing of the <code>Caddyfile</code> in the archive.</p><p>An install that changes the code, or runs on another platform, builds its own images from a checkout of the repository and names them instead.</p>",
     "guide": "Read the deployment guide",
     "releaseNotes": "{version, select, none {Release notes} other {Release notes for v{version}}}",
     "contributing": "Contributing"
