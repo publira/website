@@ -6,19 +6,23 @@ import { createAppAuth } from "@octokit/auth-app";
  */
 const createAuth = () => {
   const appId = process.env.GITHUB_APP_ID ?? "";
+
   // A key pasted on one line keeps its line breaks as `\n`.
   const privateKey = (process.env.GITHUB_APP_PRIVATE_KEY ?? "").replaceAll(
     String.raw`\n`,
     "\n"
   );
+
   if (appId === "" && privateKey === "") {
     return null;
   }
+
   if (appId === "" || privateKey === "") {
     throw new Error(
       "The GitHub App is misconfigured: set both GITHUB_APP_ID and GITHUB_APP_PRIVATE_KEY"
     );
   }
+
   return createAppAuth({ appId, privateKey });
 };
 
@@ -32,7 +36,9 @@ const findInstallation = async (repository: string) => {
   if (!auth) {
     throw new Error("The GitHub App is not configured");
   }
+
   const { token } = await auth({ type: "app" });
+
   const response = await fetch(
     `https://api.github.com/repos/${repository}/installation`,
     {
@@ -43,13 +49,16 @@ const findInstallation = async (repository: string) => {
       },
     }
   );
+
   if (!response.ok) {
     throw new Error(
       `The GitHub App is not installed on ${repository}: GitHub responded with ${response.status}`
     );
   }
+
   // SAFETY: the shape GitHub documents for "Get a repository installation".
   const { id } = (await response.json()) as { readonly id: number };
+
   return id;
 };
 
@@ -65,12 +74,15 @@ export const getGitHubToken = async (repository: string) => {
 
   const lookup =
     installationIds.get(repository) ?? findInstallation(repository);
+
   installationIds.set(repository, lookup);
+
   try {
     const { token } = await auth({
       installationId: await lookup,
       type: "installation",
     });
+
     return token;
   } catch (error) {
     // Look the installation up again next time rather than keep the failure.

@@ -34,14 +34,18 @@ interface NavigationItem {
 const toNavigation = (pages: readonly DocsNavigationPage[]) => {
   const items = new Map<string, NavigationItem>();
   const roots: NavigationItem[] = [];
+
   // A directory's page sorts before the pages inside it.
   for (const page of pages) {
     const item = { children: [], page };
     items.set(page.slug.join("/"), item);
+
     const parent =
       page.slug.length > 1 && items.get(page.slug.slice(0, -1).join("/"));
+
     (parent ? parent.children : roots).push(item);
   }
+
   return roots;
 };
 
@@ -123,6 +127,7 @@ const code = (chunks: ReactNode) => <code>{chunks}</code>;
 /** Where a page outside the newest release stands, and a way to the newest. */
 const VersionNotice = async ({ latest, version }: VersionNoticeProps) => {
   const t = await getTranslations("docs");
+
   const link = (chunks: ReactNode) => (
     <Link className="text-primary underline" href={getDocsPath(latest)}>
       {chunks}
@@ -191,6 +196,7 @@ const PageDate = async ({ date, kind }: PageDateProps) => {
     getTranslations("docs"),
     getFormatter(),
   ]);
+
   const time = (chunks: ReactNode) => <time dateTime={date}>{chunks}</time>;
 
   return (
@@ -220,6 +226,7 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
     getCurrentVersion(),
     getDocsVersions(),
   ]);
+
   const [pageLocales, pages] = await Promise.all([
     Promise.all(
       versions.map(async ({ name }) => ({
@@ -229,27 +236,34 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
     ),
     getDocsNavigation(version, locale),
   ]);
+
   // A version has the page when the source locale does, which a locale
   // without it falls back to.
   const versionsWithPage = pageLocales.map(({ locales, name }) => ({
     hasPage: locales.includes(locale) || locales.includes(docsSourceLocale),
     name,
   }));
+
   const locales =
     pageLocales.find(({ name }) => name === version)?.locales ?? [];
+
   // Every locale serves the source locale's pages.
   const servedLocales = locales.includes(docsSourceLocale)
     ? undefined
     : locales;
+
   const translated = language === locale;
   const url = getAbsoluteUrl(getLocalizedDocsPath(locale, version, page.slug));
+
   // The directories' pages above this one.
   const ancestors = page.slug.flatMap((_, index) => {
     const ancestor =
       index < page.slug.length - 1 &&
       findPage({ pages }, page.slug.slice(0, index + 1));
+
     return ancestor ? [ancestor] : [];
   });
+
   const position = pages.findIndex(({ path }) => path === page.path);
   const previous = pages[position - 1];
   const next = pages[position + 1];

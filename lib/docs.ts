@@ -104,8 +104,10 @@ const waitingRequests: ((value: null) => void)[] = [];
 const acquireRequest = async () => {
   if (activeRequests < maxRequests) {
     activeRequests += 1;
+
     return;
   }
+
   const { promise, resolve } = Promise.withResolvers<null>();
   waitingRequests.push(resolve);
   await promise;
@@ -114,10 +116,13 @@ const acquireRequest = async () => {
 /** Hands the slot to the next waiting request, if any. */
 const releaseRequest = () => {
   const next = waitingRequests.shift();
+
   if (!next) {
     activeRequests -= 1;
+
     return;
   }
+
   return next(null);
 };
 
@@ -130,13 +135,17 @@ export const fetchGitHub = async (
     accept,
     "x-github-api-version": "2022-11-28",
   });
+
   // Without a token, GitHub allows 60 requests an hour, which a build spends.
   const token = await getGitHubToken(docsRepository);
+
   if (token) {
     headers.set("authorization", `Bearer ${token}`);
   }
+
   await acquireRequest();
   let response: Response;
+
   try {
     response = await fetch(
       `https://api.github.com/repos/${docsRepository}/${endpoint}`,
@@ -149,18 +158,23 @@ export const fetchGitHub = async (
   // A cold build's burst of blobs meets the secondary rate limit, which names
   // a wait. Each retry waits longer, so the burst spreads out.
   const retryAfter = Number(response.headers.get("retry-after"));
+
   if (retryAfter > 0 && attempt < 4) {
     await setTimeout(retryAfter * 1000 * 2 ** attempt);
+
     return fetchGitHub(endpoint, accept, attempt + 1);
   }
+
   return response;
 };
 
 const fetchGitHubOk = async (endpoint: string, accept?: string) => {
   const response = await fetchGitHub(endpoint, accept);
+
   if (!response.ok) {
     throw new Error(`GitHub responded to ${endpoint} with ${response.status}`);
   }
+
   return response;
 };
 
@@ -178,9 +192,11 @@ const getTreeEntries = async (
 
   const treeish = encodeURIComponent(`${ref}:${docsRoot}`);
   const response = await fetchGitHub(`git/trees/${treeish}?recursive=1`);
+
   if (response.status === 404) {
     return null;
   }
+
   if (!response.ok) {
     throw new Error(
       `GitHub responded to the tree of ${ref} with ${response.status}`
@@ -192,6 +208,7 @@ const getTreeEntries = async (
     readonly tree: readonly { path: string; sha: string; type: string }[];
     readonly truncated: boolean;
   };
+
   if (truncated) {
     throw new Error(`GitHub truncated the tree of ${docsRoot} at ${ref}`);
   }
@@ -208,9 +225,11 @@ const getLocaleEntries = async (
 ): Promise<readonly TreeEntry[] | null> => {
   const prefix = `${locale}/`;
   const entries = await getTreeEntries(ref);
+
   const localeEntries = entries?.flatMap(({ path: entry, sha }) =>
     entry.startsWith(prefix) ? [{ path: entry.slice(prefix.length), sha }] : []
   );
+
   return localeEntries?.length ? localeEntries : null;
 };
 
@@ -225,6 +244,7 @@ export const getBlob = async (sha: string) => {
     `git/blobs/${sha}`,
     "application/vnd.github.raw+json"
   );
+
   return new Uint8Array(await response.arrayBuffer());
 };
 
@@ -232,13 +252,16 @@ export const getBlob = async (sha: string) => {
 const compareNumbers = (a: readonly number[], b: readonly number[]): number => {
   const [first, ...rest] = a;
   const [other, ...otherRest] = b;
+
   if (first === undefined || other === undefined) {
     return a.length - b.length;
   }
+
   return first === other ? compareNumbers(rest, otherRest) : first - other;
 };
 
 const tagPrefix = "refs/tags/";
+
 const releaseTag =
   /^refs\/tags\/v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/u;
 
@@ -247,9 +270,11 @@ const findDocumentedTag = async (
   tags: readonly string[]
 ): Promise<string | undefined> => {
   const [tag, ...older] = tags;
+
   if (tag === undefined || (await getLocaleEntries(tag, docsSourceLocale))) {
     return tag;
   }
+
   return findDocumentedTag(older);
 };
 
@@ -268,16 +293,20 @@ const getReleases = async (): Promise<readonly DocsVersion[]> => {
 
   // The tags of each minor version, newest first, highest patch first.
   const minors = new Map<string, string[]>();
+
   const tags = refs
     .flatMap(({ ref }) => {
       if (!releaseTag.test(ref)) {
         return [];
       }
+
       const tag = ref.slice(tagPrefix.length);
       const numbers = tag.slice(1).split(".").map(Number);
+
       return [{ name: `v${numbers.slice(0, 2).join(".")}`, numbers, tag }];
     })
     .toSorted((a, b) => compareNumbers(b.numbers, a.numbers));
+
   for (const { name, tag } of tags) {
     minors.set(name, [...(minors.get(name) ?? []), tag]);
   }
@@ -288,6 +317,7 @@ const getReleases = async (): Promise<readonly DocsVersion[]> => {
       ref: await findDocumentedTag(candidates),
     }))
   );
+
   return documented.flatMap(({ name, ref }) => (ref ? [{ name, ref }] : []));
 };
 
@@ -300,6 +330,7 @@ export const getDocsVersions = async (): Promise<readonly DocsVersion[]> => [
 /** The newest release, or `next` while there is none. */
 export const getCurrentVersion = async () => {
   const [newest] = await getReleases();
+
   return newest?.name ?? nextVersion;
 };
 
@@ -310,7 +341,9 @@ const parseName = (name: string) => {
   if (!numberedName.test(name)) {
     return null;
   }
+
   const separator = name.indexOf("-");
+
   return {
     order: Number(name.slice(0, separator)),
     slug: name.slice(separator + 1),
@@ -320,9 +353,11 @@ const parseName = (name: string) => {
 /** A path's directories as `<n>-<slug>` names, and its file name. */
 const parsePath = (entry: string) => {
   const directories = path.posix.dirname(entry).split("/");
+
   const parsed = directories.flatMap((name) =>
     name === "." ? [] : [parseName(name)]
   );
+
   return {
     directories: parsed.every((name) => name !== null) ? parsed : null,
     file: path.posix.basename(entry),
@@ -333,6 +368,7 @@ const parseFrontmatter = (source: string) => {
   const [first, ...lines] = source.split(/\r?\n/u);
   const end = lines.indexOf("---");
   const yaml = first === "---" && end !== -1 ? lines.slice(0, end) : [];
+
   // SAFETY: `scripts/check-docs.ts` in publira/publira's CI holds every page
   // to these keys, and YAML 1.2 reads a `YYYY-MM-DD` date as a string.
   return parse(yaml.join("\n")) as PageFrontmatter;
@@ -342,17 +378,21 @@ const decoder = new TextDecoder();
 
 const toPage = async ({ path: entry, sha }: TreeEntry) => {
   const { directories, file } = parsePath(entry);
+
   const name =
     file === "index.md" ? null : parseName(path.posix.parse(file).name);
+
   if (!directories || (file !== "index.md" && !name)) {
     return [];
   }
 
   const names = name ? [...directories, name] : directories;
   const order = names.map((segment) => segment.order);
+
   const { redirect_from: redirectFrom = [], ...frontmatter } = parseFrontmatter(
     decoder.decode(await getBlob(sha))
   );
+
   return [
     {
       ...frontmatter,
@@ -369,6 +409,7 @@ const toPage = async ({ path: entry, sha }: TreeEntry) => {
 const toImage = ({ path: entry, sha }: TreeEntry) => {
   const { directories, file } = parsePath(entry);
   const type = imageTypes.get(path.posix.extname(file).toLowerCase());
+
   if (!(directories && type)) {
     return [];
   }
@@ -394,9 +435,11 @@ export const findDocsImage = async (
   slug: readonly string[]
 ) => {
   const versions = await getDocsVersions();
+
   const trees = await Promise.all(
     versions.map(({ ref }) => getLocaleEntries(ref, locale))
   );
+
   return trees
     .flatMap((entries) => entries?.flatMap(toImage) ?? [])
     .find(
@@ -417,15 +460,19 @@ export const getDocsTree = async (
 
   const versions = await getDocsVersions();
   const ref = versions.find(({ name }) => name === version)?.ref;
+
   if (!ref) {
     return null;
   }
+
   cacheTag(getRefTag(ref));
 
   const entries = await getLocaleEntries(ref, locale);
+
   if (!entries) {
     return null;
   }
+
   const pages = await Promise.all(
     entries.flatMap((entry) =>
       entry.path.endsWith(".md") ? [toPage(entry)] : []
@@ -450,6 +497,7 @@ const findRedirectedPage = (
   slug: readonly string[]
 ) => {
   const url = `/${slug.join("/")}`;
+
   return pages.find((page) => page.redirectFrom.includes(url));
 };
 
@@ -468,12 +516,15 @@ export const getDocsRedirect = async (
       getDocsTree(version, candidate)
     )
   );
+
   for (const tree of trees) {
     const page = tree && findRedirectedPage(tree, slug);
+
     if (page) {
       return page.slug;
     }
   }
+
   return null;
 };
 
@@ -491,12 +542,15 @@ export const getDocsPage = async (
       getDocsTree(version, candidate)
     )
   );
+
   for (const tree of trees) {
     const page = tree && findPage(tree, slug);
+
     if (page) {
       return { language: tree.locale, page };
     }
   }
+
   return null;
 };
 
@@ -517,9 +571,11 @@ export const getDocsNavigation = async (
     getDocsTree(version, locale),
     getDocsTree(version, docsSourceLocale),
   ]);
+
   if (!source) {
     return tree?.pages ?? [];
   }
+
   return source.pages.map(
     (page) =>
       (tree && findPage(tree, page.slug)) ?? {
@@ -532,12 +588,15 @@ export const getDocsNavigation = async (
 /** Every version's pages that a locale lists, as route params. */
 export const getDocsPageParams = async (locale: Locale) => {
   const versions = await getDocsVersions();
+
   const params = await Promise.all(
     versions.map(async ({ name }) => {
       const pages = await getDocsNavigation(name, locale);
+
       return pages.map(({ slug }) => ({ slug: [...slug], version: name }));
     })
   );
+
   return params.flat();
 };
 
@@ -573,6 +632,7 @@ export const getDocsPageLocales = async (
       tree: await getDocsTree(version, locale),
     }))
   );
+
   return trees.flatMap(({ locale, tree }) =>
     tree && findPage(tree, slug) ? [locale] : []
   );
@@ -586,6 +646,7 @@ export const getDocsPageLocales = async (
 const getUnresolvedDocsPath = async () => {
   "use cache";
   cacheLife("minutes");
+
   return "/docs";
 };
 
@@ -597,10 +658,12 @@ export const getCurrentDocsPath = async (slug: readonly string[]) => {
   try {
     const version = await getCurrentVersion();
     const tree = await getDocsTree(version, docsSourceLocale);
+
     return tree && findPage(tree, slug) ? getDocsPath(version, slug) : "/docs";
   } catch (error) {
     unstable_rethrow(error);
     console.error(`Linking /docs for ${slug.join("/")}:`, error);
+
     return getUnresolvedDocsPath();
   }
 };
@@ -618,6 +681,7 @@ const resolveEntry = (from: string, url: string) => {
 
   const end = url.search(/[?#]/u);
   const target = end === -1 ? url : url.slice(0, end);
+
   try {
     return {
       entry: path.posix.join(path.posix.dirname(from), decodeURI(target)),
@@ -637,10 +701,12 @@ export type DocsTrees = readonly DocsTree[];
 const findImage = (trees: DocsTrees, entry: string | undefined) => {
   for (const { images, locale } of trees) {
     const image = images.find((candidate) => candidate.path === entry);
+
     if (image) {
       return { image, locale };
     }
   }
+
   return null;
 };
 
@@ -657,19 +723,24 @@ export const resolveDocsUrl = (
   url: string
 ) => {
   const resolved = resolveEntry(from, url);
+
   if (!resolved) {
     return url;
   }
 
   // The query or fragment is kept: a page's heading, or an SVG's view.
   const { entry, suffix } = resolved;
+
   const page = trees
     .flatMap((tree) => tree.pages)
     .find((candidate) => candidate.path === entry);
+
   if (page) {
     return `${getLocalizedDocsPath(locale, version, page.slug)}${suffix}`;
   }
+
   const found = findImage(trees, entry);
+
   return found
     ? `${getDocsImagePath(found.locale, found.image)}${suffix}`
     : url;
@@ -683,8 +754,10 @@ export const resolveDocsImage = (trees: DocsTrees, from: string, url: string) =>
 export const getDocsImageSize = async ({ sha }: DocsImage) => {
   // A failed fetch throws rather than leave a cached page without the size.
   const blob = await getBlob(sha);
+
   try {
     const { height, orientation = 1, width } = imageSize(blob);
+
     // EXIF orientations 5 to 8 turn the image a quarter, as browsers show it.
     return orientation >= 5
       ? { height: width, width: height }

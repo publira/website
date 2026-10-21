@@ -11,6 +11,7 @@ const serveSchema = async (
 ) => {
   const { name } = await params;
   const schema = await getAppManifestSchema(name);
+
   if (!schema) {
     return new Response(null, { status: 404 });
   }

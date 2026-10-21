@@ -24,16 +24,21 @@ export const getAppManifestSchema = async (name: string) => {
   if (!schemaName.test(name)) {
     return null;
   }
+
   const file = `${appManifestSchemaRoot}app.schema.${name}`;
+
   const response = await fetchGitHub(
     `contents/${file}?ref=main`,
     "application/vnd.github.raw+json"
   );
+
   if (response.status === 404) {
     return null;
   }
+
   if (!response.ok) {
     throw new Error(`GitHub responded to ${file} with ${response.status}`);
   }
+
   return new Uint8Array(await response.arrayBuffer());
 };

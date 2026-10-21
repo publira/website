@@ -53,6 +53,7 @@ const getPageEntries = (): SitemapEntry[] =>
 // names as its canonical page, in each locale that has the page.
 const getDocsEntries = async (): Promise<SitemapEntry[]> => {
   const version = await getCurrentVersion();
+
   const trees = await Promise.all(
     routing.locales.map(async (locale) => ({
       locale,
@@ -61,6 +62,7 @@ const getDocsEntries = async (): Promise<SitemapEntry[]> => {
   );
 
   const pageLocales = new Map<string, Locale[]>();
+
   for (const { locale, tree } of trees) {
     for (const { slug } of tree?.pages ?? []) {
       const key = slug.join("/");
@@ -75,6 +77,7 @@ const getDocsEntries = async (): Promise<SitemapEntry[]> => {
         locale,
         pageLocales.get(slug.join("/"))
       );
+
       return {
         alternates: toAbsoluteAlternates(languages),
         lastModified: updated ?? published,
@@ -98,6 +101,7 @@ const toUrlElement = ({ alternates = {}, lastModified, url }: SitemapEntry) =>
 
 const serveSitemap = async () => {
   const entries = [...getPageEntries(), ...(await getDocsEntries())];
+
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',

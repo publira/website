@@ -13,5 +13,10 @@ export default defineConfig({
   extends: [core, react, next, vitest, nextJsPlugins, antiSlop, jsPlugins],
   ignorePatterns: core.ignorePatterns,
   jsPlugins: jsPlugins.jsPlugins,
+  rules: {
+    // An effect's early `return;` can't satisfy it without the `return
+    // undefined;` that unicorn/no-useless-undefined rejects.
+    "sonarjs/no-inconsistent-returns": "off",
+  },
   settings: jsPluginSettings,
 });

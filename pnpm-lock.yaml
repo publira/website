@@ -264,8 +264,8 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       ultracite:
-        specifier: 8.0.0
-        version: 8.0.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(oxfmt@0.73.0)(oxlint@1.88.0)(prettier@3.9.10)
+        specifier: 8.0.1
+        version: 8.0.1(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(oxfmt@0.73.0)(oxlint@1.88.0)(prettier@3.9.10)
 
 packages:
 
@@ -3166,6 +3166,28 @@ packages:
           targets:
             - cpu: x64
               os: win32
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-glQSWCWj5eg0vYomDatMgwP3IEZKdBUG7CeYm5uhdps=
+            type: binary
+            url: https://unofficial-builds.nodejs.org/download/release/v24.22.1/node-v24.22.1-linux-arm64-musl.tar.gz
+          targets:
+            - cpu: arm64
+              os: linux
+              libc: musl
+        - resolution:
+            archive: tarball
+            bin:
+              node: bin/node
+            integrity: sha256-Cp7dzi0ujzrdvpT6RtdRMlstdPf9HOYylhZNNrbfxuU=
+            type: binary
+            url: https://unofficial-builds.nodejs.org/download/release/v24.22.1/node-v24.22.1-linux-x64-musl.tar.gz
+          targets:
+            - cpu: x64
+              os: linux
+              libc: musl
     version: 24.22.1
     hasBin: true
 
@@ -3702,8 +3724,8 @@ packages:
   ufo@1.6.4:
     resolution: {integrity: sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==}
 
-  ultracite@8.0.0:
-    resolution: {integrity: sha512-52y2Zzp6ngUPJIjvcnoyM2p4qSDwOCzrWwHvKfxNcOdRRuhmrTLqzwMpGhnhz2LC2POEO8GV7EcggbwTRmHEdA==}
+  ultracite@8.0.1:
+    resolution: {integrity: sha512-4XtB3My7o/O8uveSBPjMO6aPwkO7LEGDf2RCuR4jMVSJ4JByLNIb8+xpCR5M+HssgPrl0aSTQ/40od80ItmiqQ==}
     engines: {node: '>=22.18.0'}
     hasBin: true
     peerDependencies:
@@ -7431,7 +7453,7 @@ snapshots:
 
   ufo@1.6.4: {}
 
-  ultracite@8.0.0(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(oxfmt@0.73.0)(oxlint@1.88.0)(prettier@3.9.10):
+  ultracite@8.0.1(eslint@9.39.5(jiti@2.7.0)(supports-color@7.2.0))(oxfmt@0.73.0)(oxlint@1.88.0)(prettier@3.9.10):
     dependencies:
       '@clack/prompts': 1.8.1
       cli-truncate: 6.1.1

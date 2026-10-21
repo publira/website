@@ -331,11 +331,13 @@ export const getScreenshots = async (): Promise<
   Record<Group, readonly Screenshot[]>
 > => {
   const t = await getTranslations("screenshots");
+
   const localize = (entries: readonly Entry[]): readonly Screenshot[] =>
     entries.map(([key, source]) => {
       const title = t(`${key}.title`);
       const caption = t(`${key}.caption`);
       const isFeatured = featured.has(key);
+
       if ("src" in source) {
         return {
           caption,
@@ -344,11 +346,14 @@ export const getScreenshots = async (): Promise<
           views: [{ image: source, label: title }],
         };
       }
+
       const [first, ...rest] = source;
+
       const toView = ([viewKey, image]: readonly [
         ViewKey,
         StaticImageData,
       ]) => ({ image, label: t(viewKey) });
+
       return {
         caption,
         featured: isFeatured,

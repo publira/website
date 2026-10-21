@@ -12,6 +12,7 @@ const image = async ({ params }: { params: Promise<{ locale: string }> }) => {
   const { locale: requested } = await params;
   const locale = toLocale(requested);
   const t = await getTranslator(locale);
+
   return renderOpenGraphImage(locale, t("screens.metadata.title"));
 };
 

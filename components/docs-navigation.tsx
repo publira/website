@@ -26,6 +26,7 @@ export const DocsNavigation = ({
 
   useEffect(() => {
     const details = detailsRef.current;
+
     if (!details) {
       return;
     }

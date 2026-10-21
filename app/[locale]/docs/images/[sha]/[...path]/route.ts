@@ -14,9 +14,11 @@ const serveImage = async (
   { params }: RouteContext<"/[locale]/docs/images/[sha]/[...path]">
 ) => {
   const { locale, path, sha } = await params;
+
   const image = hasLocale(routing.locales, locale)
     ? await findDocsImage(locale, sha, path)
     : undefined;
+
   if (!image) {
     return new Response(null, { status: 404 });
   }

@@ -12,9 +12,11 @@ const getText = (node: ReactNode): string => {
   if (Array.isArray(node)) {
     return node.map(getText).join("");
   }
+
   if (isValidElement<{ children?: ReactNode }>(node)) {
     return getText(node.props.children);
   }
+
   // What remains is text, or a value React renders as nothing.
   return node === true || node === false ? "" : String(node ?? "");
 };
@@ -67,6 +69,7 @@ export const mdxComponents = {
   p: (props) => <p className="mt-4 leading-relaxed" {...props} />,
   pre: async ({ children, className = "", ...props }) => {
     const t = await getTranslations("codeBlock");
+
     return (
       <div className="relative mt-6">
         {/* The right padding lets a first line that runs under the button
