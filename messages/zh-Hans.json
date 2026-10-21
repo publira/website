@@ -628,7 +628,7 @@
     "title": "运行安装环境",
     "lead": "安装环境由容器镜像和一个 Compose 文件运行，publiractl 让数据库和第一个租户进入可用状态。主机只需要 Docker。",
     "releaseLabel": "下载版本",
-    "release": "每个版本都附带一个归档，包含 Compose 文件、代理的 <code>Caddyfile</code>，以及已在 <code>PUBLIRA_IMAGE_TAG</code> 中写好该版本号的 <code>.env.example</code>，并以其版本号把镜像发布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支持 linux/amd64 和 linux/arm64，无需登录即可拉取，因此主机上无需构建任何东西。请保留这个标签。所有镜像都以它运行，并且它必须与归档中的文件一致：<code>publiractl</code> 带有该版本的迁移，各进程以该版本的数据库结构为前提，代理按同一归档中 <code>Caddyfile</code> 的路由运行。修改了代码或在其他平台上运行的安装环境，则从仓库的检出自行构建镜像并指定它们。",
+    "release": "<p>归档中包含该版本的 Compose 文件、代理的 <code>Caddyfile</code> 和 <code>.env.example</code>。<code>publiractl env generate</code> 会据此写出 <code>.env</code>，并生成所有密钥填入其中。</p><p>每个版本都会以其版本号把镜像发布到 GitHub Container Registry，例如 <code>ghcr.io/publira/publiractl:{version}</code>，支持 linux/amd64 和 linux/arm64，无需登录即可拉取，因此主机上无需构建任何东西。</p><p><code>.env</code> 中的 <code>PUBLIRA_IMAGE_TAG</code> 已经设为该版本号，请不要修改。镜像必须与 <code>.env</code> 所在目录中的文件属于同一版本：<code>publiractl</code> 带有该版本的迁移，各进程以该版本的数据库结构为前提，代理按归档中 <code>Caddyfile</code> 的路由运行。</p><p>修改了代码或在其他平台上运行的安装环境，则从仓库的检出自行构建镜像并指定它们。</p>",
     "guide": "阅读部署指南",
     "releaseNotes": "{version, select, none {发布说明} other {v{version} 发布说明}}",
     "contributing": "Contributing"

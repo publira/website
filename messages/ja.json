@@ -628,7 +628,7 @@
     "title": "環境を動かす",
     "lead": "環境はコンテナイメージとひとつのComposeファイルで動き、publiractlがデータベースと最初のテナントを使える状態にします。ホストに必要なのはDockerだけです。",
     "releaseLabel": "リリースをダウンロードする",
-    "release": "リリースごとに、Composeファイル、プロキシの<code>Caddyfile</code>、<code>PUBLIRA_IMAGE_TAG</code>にそのバージョンを設定済みの<code>.env.example</code>をまとめたアーカイブが添付され、<code>ghcr.io/publira/publiractl:{version}</code>のようにそのバージョンでイメージがGitHub Container Registryに公開されます。linux/amd64とlinux/arm64に対応し、サインインせずに取得できるので、ホストでは何もビルドしません。タグは変えずにおきます。すべてのイメージがそのタグで動き、アーカイブのファイルと揃っている必要があるためです。<code>publiractl</code>はそのリリースのマイグレーションを持ち、各プロセスはそのリリースのスキーマを前提にし、プロキシは同梱の<code>Caddyfile</code>のルーティングで動きます。コードを変更する環境やほかのプラットフォームで動かす環境は、リポジトリのチェックアウトから自分でイメージをビルドしてそれを指定します。",
+    "release": "<p>アーカイブには、そのリリースのComposeファイル、プロキシの<code>Caddyfile</code>、<code>.env.example</code>が入っています。<code>publiractl env generate</code>はこの<code>.env.example</code>から<code>.env</code>を書き出し、秘密の値をすべて生成して埋めます。</p><p>リリースごとに、<code>ghcr.io/publira/publiractl:{version}</code>のようにそのバージョンでイメージがGitHub Container Registryに公開されます。linux/amd64とlinux/arm64に対応し、サインインせずに取得できるので、ホストでは何もビルドしません。</p><p><code>.env</code>の<code>PUBLIRA_IMAGE_TAG</code>にはすでにそのリリースのバージョンが入っているので、書き換えないでください。イメージは<code>.env</code>と同じディレクトリにあるファイルと同じリリースでなければなりません。<code>publiractl</code>はそのリリースのマイグレーションを持ち、各プロセスはそのリリースのスキーマを前提にし、プロキシはアーカイブの<code>Caddyfile</code>のルーティングで動くためです。</p><p>コードを変更する環境やほかのプラットフォームで動かす環境は、リポジトリのチェックアウトから自分でイメージをビルドしてそれを指定します。</p>",
     "guide": "デプロイガイドを読む",
     "releaseNotes": "{version, select, none {リリースノート} other {v{version}のリリースノート}}",
     "contributing": "Contributing"

@@ -98,6 +98,7 @@ docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work \\
   ghcr.io/publira/publiractl:$PUBLIRA_VERSION env generate`;
 
 const code = (chunks: ReactNode) => <code>{chunks}</code>;
+const paragraph = (chunks: ReactNode) => <p>{chunks}</p>;
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const [locale, t] = await Promise.all([getLocale(), getTranslations()]);
@@ -236,9 +237,9 @@ export const Home = async () => {
               label={t("start.releaseLabel")}
               lang="shell"
             />
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {t.rich("start.release", { code, version })}
-            </p>
+            <div className="text-muted-foreground space-y-3 text-sm leading-relaxed">
+              {t.rich("start.release", { code, p: paragraph, version })}
+            </div>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
