@@ -1,4 +1,5 @@
 import { Highlight } from "@sugar-high/react/core";
+import { getTranslations } from "next-intl/server";
 import {
   keywords as goKeywords,
   onCommentEnd as goOnCommentEnd,
@@ -11,6 +12,8 @@ import {
   onCommentStart as shellOnCommentStart,
 } from "sugar-high/lang/shell";
 import { tokenize as typescriptTokenize } from "sugar-high/lang/typescript";
+
+import { CopyButton } from "#components/copy-button";
 
 // Sugar High has no Dart. Its comments are C-style, as Go's are.
 const dartKeywords = new Set(
@@ -76,36 +79,44 @@ export interface CodeBlockProps {
   readonly lang: keyof typeof languages;
 }
 
-export const CodeBlock = ({ code, label, lang }: CodeBlockProps) => (
-  <div className="border-border bg-muted overflow-hidden rounded-lg border">
-    <div className="border-border text-muted-foreground border-b px-4 py-2 font-mono text-xs">
-      {label}
+export const CodeBlock = async ({ code, label, lang }: CodeBlockProps) => {
+  const t = await getTranslations("codeBlock");
+  return (
+    <div className="border-border bg-muted overflow-hidden rounded-lg border">
+      <div className="border-border text-muted-foreground flex items-center justify-between gap-3 border-b py-1.5 pr-1.5 pl-4 font-mono text-xs">
+        {label}
+        <CopyButton
+          code={code}
+          copiedNotice={t("copiedNotice")}
+          label={t("copyLabel")}
+        />
+      </div>
+      <pre className="text-foreground overflow-x-auto px-4 py-4 font-mono text-[0.8rem] leading-relaxed">
+        <Highlight
+          code={code}
+          lang={languages[lang]}
+          render={({ lines }) => (
+            <code>
+              {lines.map((line, lineIndex) => (
+                // Lines are plain inline spans joined by newlines, so blank lines
+                // keep their height inside <pre> and copied text keeps its breaks.
+                <span className={line.properties.className} key={lineIndex}>
+                  {lineIndex > 0 && "\n"}
+                  {line.tokens.map((token, tokenIndex) => (
+                    <span
+                      className={token.properties.className}
+                      key={tokenIndex}
+                      style={{ color: `var(--sh-${token.tokenType})` }}
+                    >
+                      {token.value}
+                    </span>
+                  ))}
+                </span>
+              ))}
+            </code>
+          )}
+        />
+      </pre>
     </div>
-    <pre className="text-foreground overflow-x-auto px-4 py-4 font-mono text-[0.8rem] leading-relaxed">
-      <Highlight
-        code={code}
-        lang={languages[lang]}
-        render={({ lines }) => (
-          <code>
-            {lines.map((line, lineIndex) => (
-              // Lines are plain inline spans joined by newlines, so blank lines
-              // keep their height inside <pre> and copied text keeps its breaks.
-              <span className={line.properties.className} key={lineIndex}>
-                {lineIndex > 0 && "\n"}
-                {line.tokens.map((token, tokenIndex) => (
-                  <span
-                    className={token.properties.className}
-                    key={tokenIndex}
-                    style={{ color: `var(--sh-${token.tokenType})` }}
-                  >
-                    {token.value}
-                  </span>
-                ))}
-              </span>
-            ))}
-          </code>
-        )}
-      />
-    </pre>
-  </div>
-);
+  );
+};

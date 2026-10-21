@@ -648,6 +648,10 @@
     "olderNotice": "本頁說明的是 {version}，並非最新發布版本。最新發布版本請參閱<link>{latest} 的文件</link>。",
     "untranslatedNotice": "本頁尚未翻譯成中文，因此以英文顯示。"
   },
+  "codeBlock": {
+    "copyLabel": "複製程式碼",
+    "copiedNotice": "已複製到剪貼簿"
+  },
   "footer": {
     "about": "一個重視可攜性、易於營運和免於供應商鎖定的開源專案。每個儲存庫都以 Apache-2.0 授權。",
     "pages": "頁面",

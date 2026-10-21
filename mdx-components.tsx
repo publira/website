@@ -1,6 +1,23 @@
 import type { MDXComponents } from "mdx/types";
+import { getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
+import { isValidElement } from "react";
+
+import { CopyButton } from "#components/copy-button";
 
 export const imageClassName = "border-border mt-6 rounded-md border";
+
+/** The text of a code block, out of the spans Sugar High splits it into. */
+const getText = (node: ReactNode): string => {
+  if (Array.isArray(node)) {
+    return node.map(getText).join("");
+  }
+  if (isValidElement<{ children?: ReactNode }>(node)) {
+    return getText(node.props.children);
+  }
+  // What remains is text, or a value React renders as nothing.
+  return node === true || node === false ? "" : String(node ?? "");
+};
 
 // The documents under `content/`, and the documentation read from
 // publira/publira, are plain Markdown, so each element they can produce takes
@@ -48,12 +65,29 @@ export const mdxComponents = {
     />
   ),
   p: (props) => <p className="mt-4 leading-relaxed" {...props} />,
-  pre: ({ className = "", ...props }) => (
-    <pre
-      className={`border-border bg-muted text-foreground mt-6 overflow-x-auto rounded-lg border px-4 py-4 font-mono text-[0.8rem] leading-relaxed ${className}`}
-      {...props}
-    />
-  ),
+  pre: async ({ children, className = "", ...props }) => {
+    const t = await getTranslations("codeBlock");
+    return (
+      <div className="relative mt-6">
+        {/* The right padding lets a first line that runs under the button
+            scroll out from under it. */}
+        <pre
+          className={`border-border bg-muted text-foreground overflow-x-auto rounded-lg border py-4 pr-12 pl-4 font-mono text-[0.8rem] leading-relaxed ${className}`}
+          {...props}
+        >
+          {children}
+        </pre>
+        <CopyButton
+          className="absolute top-3 right-3"
+          // Sugar High ends the last line with a newline too, on which a shell
+          // would run the last command as soon as it is pasted.
+          code={getText(children).replace(/\n$/u, "")}
+          copiedNotice={t("copiedNotice")}
+          label={t("copyLabel")}
+        />
+      </div>
+    );
+  },
   table: (props) => (
     <div className="mt-6 overflow-x-auto">
       <table className="w-full border-collapse text-left text-sm" {...props} />
