@@ -627,8 +627,8 @@
   "start": {
     "title": "설치 환경 운영하기",
     "lead": "설치 환경은 컨테이너 이미지와 Compose 파일 하나로 돌아가고, publiractl이 데이터베이스와 첫 테넌트를 쓸 수 있는 상태로 만듭니다. 호스트에는 Docker만 있으면 됩니다.",
-    "releaseLabel": "릴리스 체크아웃",
-    "release": "릴리스마다 이미지가 <code>ghcr.io/publira/publiractl:{version}</code>처럼 그 버전으로 GitHub Container Registry에 공개됩니다. linux/amd64와 linux/arm64용이며 로그인 없이 받을 수 있으므로 호스트에서는 아무것도 빌드하지 않습니다. Compose 파일은 프록시 라우팅을 체크아웃에서 마운트하므로 체크아웃 전체를 릴리스 태그 그대로 두고, <code>PUBLIRA_IMAGE_TAG</code>를 같은 버전으로 설정합니다. <code>publiractl</code>은 그 릴리스의 마이그레이션을 담고 있고, 각 프로세스는 그 릴리스의 스키마를 전제로 하기 때문입니다. 코드를 바꾸는 설치 환경이나 다른 플랫폼에서 돌리는 설치 환경은 이미지를 직접 빌드해 그것을 지정합니다.",
+    "releaseLabel": "릴리스 다운로드",
+    "release": "릴리스마다 Compose 파일, 프록시의 <code>Caddyfile</code>, <code>PUBLIRA_IMAGE_TAG</code>에 그 버전이 설정된 <code>.env.example</code>을 묶은 아카이브가 첨부되고, 이미지가 <code>ghcr.io/publira/publiractl:{version}</code>처럼 그 버전으로 GitHub Container Registry에 공개됩니다. linux/amd64와 linux/arm64용이며 로그인 없이 받을 수 있으므로 호스트에서는 아무것도 빌드하지 않습니다. 태그는 바꾸지 않습니다. 모든 이미지가 그 태그로 실행되고 아카이브의 파일과 맞아야 하기 때문입니다. <code>publiractl</code>은 그 릴리스의 마이그레이션을 담고 있고, 각 프로세스는 그 릴리스의 스키마를 전제로 하며, 프록시는 함께 들어 있는 <code>Caddyfile</code>의 라우팅으로 동작합니다. 코드를 바꾸는 설치 환경이나 다른 플랫폼에서 돌리는 설치 환경은 저장소를 체크아웃해 이미지를 직접 빌드하고 그것을 지정합니다.",
     "guide": "배포 가이드 읽기",
     "releaseNotes": "{version, select, none {릴리스 노트} other {v{version} 릴리스 노트}}",
     "contributing": "Contributing"
