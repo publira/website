@@ -54,7 +54,7 @@
     "oxlint-plugin-react-doctor": "0.9.18",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
-    "ultracite": "8.0.0"
+    "ultracite": "8.0.1"
   },
   "devEngines": {
     "runtime": {
