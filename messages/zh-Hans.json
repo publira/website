@@ -648,6 +648,10 @@
     "olderNotice": "本页介绍的是 {version}，并非最新发布版本。最新发布版本请参阅<link>{latest} 的文档</link>。",
     "untranslatedNotice": "本页尚未翻译成中文，因此以英文显示。"
   },
+  "codeBlock": {
+    "copyLabel": "复制代码",
+    "copiedNotice": "已复制到剪贴板"
+  },
   "footer": {
     "about": "一个重视可移植性、易于运维和免于厂商锁定的开源项目。每个仓库都以 Apache-2.0 授权。",
     "pages": "页面",

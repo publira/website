@@ -648,6 +648,10 @@
     "olderNotice": "이 페이지는 최신 릴리스가 아닌 {version} 버전을 설명합니다. 최신 릴리스는 <link>{latest} 문서</link>를 참고하세요.",
     "untranslatedNotice": "이 페이지는 아직 한국어로 번역되지 않아 영어로 표시됩니다."
   },
+  "codeBlock": {
+    "copyLabel": "코드 복사",
+    "copiedNotice": "클립보드에 복사했습니다"
+  },
   "footer": {
     "about": "이식성, 운영의 수월함, 벤더 락인으로부터의 자유를 소중히 여기는 오픈 소스 프로젝트입니다. 모든 저장소는 Apache-2.0으로 라이선스됩니다.",
     "pages": "페이지",
