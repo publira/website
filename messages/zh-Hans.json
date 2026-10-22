@@ -4,8 +4,8 @@
     "organization": "Publira 项目"
   },
   "metadata": {
-    "description": "通往数字出版乌托邦的开源之门。",
-    "title": "{name} — 通往数字出版乌托邦的开源之门"
+    "description": "以自有品牌发行漫画的开源平台。",
+    "title": "{name} — 专为漫画打造的开源发行平台"
   },
   "header": {
     "tagline": "Open source, still in development",
@@ -19,8 +19,8 @@
     "github": "GitHub"
   },
   "hero": {
-    "title": "通往数字出版乌托邦的开源之门。",
-    "lead": "Publira 是一套多租户 SaaS，让 IT 资源有限的出版社也能以自有品牌运营漫画和小说的数字发行平台。编辑录入从作者那里收到的作品信息，读者在网页或手机上阅读。",
+    "title": "以自有品牌发行漫画的开源平台。",
+    "lead": "Publira 是一套多租户 SaaS，让 IT 资源有限的出版社也能以自有品牌运营漫画数字发行平台。编辑录入从作者那里收到的作品信息，读者在网页或手机上阅读。",
     "github": "publira/publira on GitHub",
     "docs": "阅读文档",
     "screens": "查看界面",
