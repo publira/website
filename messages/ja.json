@@ -4,8 +4,8 @@
     "organization": "Publiraプロジェクト"
   },
   "metadata": {
-    "description": "理想のデジタル出版を、オープンソースで。",
-    "title": "{name} — 理想のデジタル出版を、オープンソースで"
+    "description": "マンガと小説を自社ブランドで配信できる、オープンソースのプラットフォーム。",
+    "title": "{name} — マンガと小説のためのオープンソース配信プラットフォーム"
   },
   "header": {
     "tagline": "Open source, still in development",
@@ -19,7 +19,7 @@
     "github": "GitHub"
   },
   "hero": {
-    "title": "理想のデジタル出版を、オープンソースで。",
+    "title": "マンガと小説を自社ブランドで配信できる、オープンソースのプラットフォーム。",
     "lead": "Publiraは、ITリソースの限られた出版社がマンガや小説のデジタル配信プラットフォームを自社ブランドで運営するためのマルチテナントSaaSです。編集者は作家から預かった作品を書誌情報とともに入稿し、読者はそれをWebやモバイルアプリで読みます。",
     "github": "publira/publira on GitHub",
     "docs": "ドキュメントを読む",
