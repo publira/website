@@ -4,8 +4,8 @@
     "organization": "Publira 프로젝트"
   },
   "metadata": {
-    "description": "만화와 소설을 자사 브랜드로 서비스하는 오픈 소스 플랫폼.",
-    "title": "{name} — 만화와 소설을 위한 오픈 소스 유통 플랫폼"
+    "description": "만화를 자사 브랜드로 서비스하는 오픈 소스 플랫폼.",
+    "title": "{name} — 만화를 위한 오픈 소스 유통 플랫폼"
   },
   "header": {
     "tagline": "Open source, still in development",
@@ -19,8 +19,8 @@
     "github": "GitHub"
   },
   "hero": {
-    "title": "만화와 소설을 자사 브랜드로 서비스하는 오픈 소스 플랫폼.",
-    "lead": "Publira는 IT 인력이 부족한 출판사도 만화와 소설의 디지털 유통 플랫폼을 자사 브랜드로 운영할 수 있게 해 주는 멀티테넌트 SaaS입니다. 편집자가 작가에게서 받은 작품을 서지 정보와 함께 등록하면, 독자는 웹이나 모바일 앱에서 읽을 수 있습니다.",
+    "title": "만화를 자사 브랜드로 서비스하는 오픈 소스 플랫폼.",
+    "lead": "Publira는 IT 인력이 부족한 출판사도 만화 디지털 유통 플랫폼을 자사 브랜드로 운영할 수 있게 해 주는 멀티테넌트 SaaS입니다. 편집자가 작가에게서 받은 작품을 서지 정보와 함께 등록하면, 독자는 웹이나 모바일 앱에서 읽을 수 있습니다.",
     "github": "publira/publira on GitHub",
     "docs": "문서 읽기",
     "screens": "화면 보기",

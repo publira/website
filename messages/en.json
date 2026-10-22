@@ -4,8 +4,8 @@
     "organization": "Publira project"
   },
   "metadata": {
-    "description": "An open-source platform for distributing manga and novels under your own brand.",
-    "title": "{name} — Open-Source Distribution Platform for Manga and Novels"
+    "description": "An open-source platform for distributing manga under your own brand.",
+    "title": "{name} — Open-Source Distribution Platform for Manga"
   },
   "header": {
     "tagline": "Open source, still in development",
@@ -19,8 +19,8 @@
     "github": "GitHub"
   },
   "hero": {
-    "title": "An open-source platform for distributing manga and novels under your own brand.",
-    "lead": "Publira is a multi-tenant SaaS that gives publishers with limited IT resources a digital distribution platform for manga and novels, run under their own brand. Editors submit the book information they receive from creators, and readers read it on the web or on mobile.",
+    "title": "An open-source platform for distributing manga under your own brand.",
+    "lead": "Publira is a multi-tenant SaaS that gives publishers with limited IT resources a digital distribution platform for manga, run under their own brand. Editors submit the book information they receive from creators, and readers read it on the web or on mobile.",
     "github": "publira/publira on GitHub",
     "docs": "Read the documentation",
     "screens": "See the screens",
