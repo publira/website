@@ -79,6 +79,7 @@ const platformFeatures = [
   "localization",
   "search",
   "searchEngines",
+  "analytics",
   "mobile",
   "portability",
 ] as const;

@@ -51,7 +51,7 @@
       "body": "Publira is under active development, and its newest release{version, select, none {} other {, v{version},}} is not ready for production use yet. Everything shown on this page runs today, and an install can be brought up from the images each release publishes with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and taking the changes each 0.x minor release may bring. Take it as something to evaluate, build on, and contribute to — not as a finished product."
     },
     "screenshot": {
-      "alt": "The Publira reader-facing catalog, led by the work the tenant is featuring",
+      "alt": "The Publira reader-facing catalog, led by the tenant's campaign banners",
       "caption": "The catalog of a tenant site, running on the development seed data."
     }
   },
@@ -93,7 +93,7 @@
       },
       "console": {
         "title": "One console for the whole catalog",
-        "body": "The catalog, the pages, and the announcements are edited in one console, with a queue of everything awaiting release. Readers' contact messages are answered there too, and each member of the staff sees only the controls their role may use."
+        "body": "The catalog, the pages, the announcements, and the campaign banners atop the site are edited in one console, with a queue of everything awaiting release. Readers' contact messages are answered there, sign-up can be closed behind a notice of the tenant's own, and each member of the staff sees only the controls their role may use."
       },
       "themes": {
         "title": "Themes with a real preview",
@@ -101,7 +101,7 @@
       },
       "payments": {
         "title": "Paid episodes, through the provider you choose",
-        "body": "A tenant sells episodes through Stripe or PAY.JP on the web and through the App Store and Google Play in its app. A purchase is written only when the provider's signed notification arrives, not on the redirect, and the reader is mailed a receipt. Staff refund a web purchase from the console, and a full refund or a dispute closes the episode again."
+        "body": "A tenant sells through Stripe or PAY.JP on the web and through the App Store and Google Play in its app: an episode to keep or to rent, a volume, or the rest of a series at a bundle discount, at a campaign price it schedules ahead. A purchase is written only when the provider's signed notification arrives, and a full refund or a dispute closes the episode again."
       },
       "freeReading": {
         "title": "Free to read, on the tenant's schedule",
@@ -117,7 +117,7 @@
       },
       "royalties": {
         "title": "Royalties, closed month by month",
-        "body": "Each credited author carries a share of an episode's sales. A month closes into a statement — by hand, or on the day the tenant chooses — and a closed statement downloads as CSV. An author linked to a reader account reads their own episodes without buying them, and cannot rate them."
+        "body": "Each credited author carries a share of an episode's sales, including what it earns in a volume or in the rest of a series. A month closes into a statement — by hand, or on the day the tenant chooses — and a closed statement downloads as CSV. An author linked to a reader account reads their own episodes without buying them, and cannot rate them."
       },
       "ageRatings": {
         "title": "Age ratings under the tenant's own rule",
@@ -133,11 +133,11 @@
       },
       "notifications": {
         "title": "Notifications wherever the reader is",
-        "body": "A new episode reaches a follower in the reader's inbox, as mail the worker delivers, as a Web Push notification the browser shows once the reader has allowed it, and as a push notification on the phone that opens the episode in the app."
+        "body": "Each reader chooses, for new episodes of what they follow, their own comments, and announcements, which reach their inbox, their mail, the browser as a Web Push notification, and their phone as a push notification that opens the episode in the app. An announcement staff send to everyone reaches every reader whatever they chose."
       },
       "mail": {
         "title": "Mail that reads well",
-        "body": "Account mail and the contact form's notice to staff go out under the tenant's name and in its language, with an HTML version beside the plain text where the optional renderer runs."
+        "body": "Account mail, the notifications a reader keeps on for mail, and the contact form's notice to staff go out under the tenant's name, with an HTML version beside the plain text where the optional renderer runs."
       },
       "auditLog": {
         "title": "An audit log per tenant",
@@ -161,7 +161,7 @@
       },
       "localization": {
         "title": "Localized end to end",
-        "body": "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, in the app, and in the mail. Each tenant chooses which of them its site offers, and its pages, series titles, and synopses carry a translation in each."
+        "body": "English, Japanese, Korean, and Chinese in both scripts, on the reader site, in both consoles, in the app, and in the mail. Each tenant chooses which of them its site offers, and its pages, series titles, synopses, genre names, announcements, and site copy carry a translation in each."
       },
       "search": {
         "title": "A search that grows with the catalog",
@@ -169,7 +169,11 @@
       },
       "searchEngines": {
         "title": "Found by search engines",
-        "body": "Every tenant site serves its own robots.txt and sitemap, and every public page names its canonical address and the same page in each of the other languages, so a search engine indexes each publisher as the site it is."
+        "body": "Every tenant site serves its own robots.txt and sitemap, keeping out the AI and image-search crawlers and the paths the tenant names, and every public page names its canonical address and the same page in each of the other languages, so a search engine indexes each publisher as the site it is."
+      },
+      "analytics": {
+        "title": "The tenant's own Google tag",
+        "body": "A tenant measures its site with its own GA4 measurement ID or Tag Manager container, loaded from Google, from its server-side container, or through a Google tag gateway on the site's own domain. The sign-in, sign-up, and account settings pages load none."
       },
       "mobile": {
         "title": "A reader app in the same repository",
@@ -208,7 +212,7 @@
     },
     "mail": {
       "title": "The mail it sends",
-      "description": "Account mail and the notices staff receive, drawn as HTML from React components by a renderer of its own and sent with a plain-text part beside it. Mail to a tenant's readers and staff carries the tenant's name rather than Publira's and is written in the tenant's language; in Japanese, Korean, and Chinese the spacing between scripts is left to the mail client's text rendering, as it is on the site.",
+      "description": "Account mail, the notifications readers choose to receive by mail, and the notices staff receive, drawn as HTML from React components by a renderer of its own and sent with a plain-text part beside it. Mail to a tenant's readers and staff carries the tenant's name rather than Publira's; in Japanese, Korean, and Chinese the spacing between scripts is left to the mail client's text rendering, as it is on the site.",
       "address": "a mail client"
     },
     "dialog": {
@@ -223,7 +227,7 @@
     "host": {
       "catalog": {
         "title": "Catalog",
-        "caption": "The work the tenant is leading with, above the shelves the rest of the page is built from: the week's chart, the newest episodes, the day's schedule, and the labels and authors it wants read. An announcement the console pins runs across the top of every page until the reader closes it, and everything carries the publisher's brand rather than Publira's."
+        "caption": "The campaign banners the console schedules, above the work the tenant is leading with and the shelves the rest of the page is built from: the week's chart, the newest episodes, the day's schedule, and the labels and authors it wants read. An announcement the console pins runs across the top of every page until the reader closes it, and everything carries the publisher's brand rather than Publira's."
       },
       "browse": {
         "title": "Genres",
@@ -247,7 +251,7 @@
       },
       "seriesDetail": {
         "title": "Series detail",
-        "caption": "The cover, synopsis, label, genres, and tags, with every author in the role they are credited in, and Follow and Share beside them. The episodes run below in reading order, each marked free or paid, so what can be read now is clear before anyone signs in."
+        "caption": "The cover, synopsis, label, genres, and tags, with every author in the role they are credited in, and Follow and Share beside them. The episodes run below in reading order, each marked free or paid, under an offer to buy the rest of them in one checkout, so what can be read now is clear before anyone signs in."
       },
       "viewer": {
         "title": "Episode viewer",
@@ -280,7 +284,7 @@
       },
       "account": {
         "title": "A reader's own pages",
-        "caption": "What is new from the series and authors the reader follows, the episodes they bought with how long each stays readable, and how they want to be told about a new episode — by mail, or by a notification from the browser.",
+        "caption": "What is new from the series and authors the reader follows, the episodes they bought or rented with how long each stays readable, and a grid of which notifications reach them where — the inbox, the browser, the app, or mail.",
         "views": {
           "myPage": "My page",
           "purchases": "Purchases",
@@ -295,7 +299,7 @@
       },
       "series": {
         "title": "Series",
-        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. A series opens into its details: its title and synopsis in each language the tenant offers, and a credit for every author in the role they hold and the share of sales it earns, with the publisher's remainder worked out as the shares are typed. Those credits are the template its new episodes start from.",
+        "caption": "Titles, labels, publication dates, reading period, age rating, and status in one table, narrowed by serialization state or by rating. A series opens into its details: its title and synopsis in each language the tenant offers, the rental period and the bundle discount on the rest of the series, its volumes on a tab of their own, and a credit for every author in the role they hold and the share of sales it earns. Those credits are the template its new episodes start from.",
         "views": {
           "list": "Every series",
           "form": "One series and its credits"
@@ -303,7 +307,7 @@
       },
       "episodes": {
         "title": "Episodes",
-        "caption": "Every episode of a series in reading order, dragged into place — or moved with an arrow key — rather than renumbered by hand. An episode is scheduled for a time in the tenant's own zone, and its pages go up as images, a ZIP, or an EPUB, are reordered the same way, and can each be replaced or deleted even after the episode is out.",
+        "caption": "Every episode of a series in reading order, dragged into place — or moved with an arrow key — rather than renumbered by hand, with free reading periods and campaign prices scheduled on many at once. An episode is scheduled for a time in the tenant's own zone, and its pages go up as images, a ZIP, or an EPUB, are reordered the same way, and can each be replaced or deleted even after the episode is out.",
         "views": {
           "list": "Episodes in reading order",
           "schedule": "Scheduling an episode",
@@ -344,7 +348,7 @@
       },
       "site": {
         "title": "Pages and announcements",
-        "caption": "The tenant's own pages written in Markdown, with a translation per language and every published version kept to compare and roll back to, and the announcements it delivers to everyone who opens the site — one of them pinned as a banner across the top of every page.",
+        "caption": "The tenant's own pages written in Markdown, with a translation per language and every published version kept to compare and roll back to, and the announcements it delivers in each language it writes them in — as each reader allows, or to everyone — one of them pinned as a banner across the top of every page.",
         "views": {
           "pages": "A page and its translations",
           "announcements": "Announcements"
@@ -442,7 +446,7 @@
       },
       "account": {
         "title": "Account",
-        "caption": "Everything a reader does with their account without leaving the app — the icon, the name, the address, the password, the linked Apple and Google accounts, mail notifications, the tenant's own pages, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
+        "caption": "Everything a reader does with their account without leaving the app — the icon, the name, the address, the password, the linked Apple and Google accounts, which notifications arrive where, the tenant's own pages, a message to the tenant, and deleting the account — and a sign-in that offers Google on Android and Apple on iOS beside an email address.",
         "views": {
           "account": "The account",
           "signIn": "Sign in"
@@ -461,6 +465,10 @@
       "contactMessage": {
         "title": "A message for staff",
         "caption": "What a reader sent through the contact form, with the address to answer at and the account they were signed in as, so staff can answer from the message's page in the console or from their own mail client."
+      },
+      "announcement": {
+        "title": "An announcement",
+        "caption": "What a reader who keeps announcements on for mail receives when staff post one, and every reader with a confirmed address when staff send it to everyone: its title, the way to the announcements page, and where to choose which mail arrives."
       }
     }
   },
@@ -512,7 +520,7 @@
         }
       }
     },
-    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. A second one started with <code>--role storefront</code> can take the tenants’ domains alone, holding only the reader-facing database login. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs, and on a single host the two can run as one process, <code>publira server --with-worker</code>. An optional <code>email-renderer</code> draws the HTML part of each mail, and <code>publiractl</code> migrates the database, creates its roles, sets an install up, and runs any of the worker’s jobs by hand.",
+    "processes": "One <code>publira server</code> process carries the public, admin, and platform namespaces and delivers the images for both the reader’s origin and the console’s. Started with <code>--role</code>, copies split them: one with <code>--role storefront</code> takes the tenants’ domains alone, holding only the reader-facing database login and reading the published catalog from a PostgreSQL hot standby when given one, while another with <code>--role admin,platform</code> serves the consoles. <code>publira worker</code>, from the same binary, delivers the mail and the push notifications and runs every scheduled job: promoting due episodes, applying the free-window boundaries, turning over each tenant’s calendar day, rebuilding the charts, closing royalty months, and purging what has outlived its retention. Running it is all the scheduling a deployment needs, copies of it can divide its queues with <code>--queue</code>, and on a single host the two can run as one process, <code>publira server --with-worker</code>. An optional <code>email-renderer</code> draws the HTML part of each mail, and <code>publiractl</code> migrates the database, creates its roles, sets an install up, and runs any of the worker’s jobs by hand.",
     "tracing": "Every layer is instrumented with <strong>OpenTelemetry</strong>, so one browser request reads as a single trace: the Next.js root span, the Connect RPC it makes during SSR, the identically named span on the Go side, and the <code>db.query</code> children below it. Point it at whatever collector you already run, or leave tracing off — it is disabled by default. The two Go processes export OpenTelemetry metrics as well, which stay off until enabled in the same way."
   },
   "requirements": {
@@ -527,7 +535,7 @@
       },
       "postgres": {
         "name": "PostgreSQL",
-        "purpose": "The catalog, tenants, users, purchases, and the audit log. Each server connects as its own role."
+        "purpose": "The catalog, tenants, users, purchases, and the audit log. Each server connects as its own role, and a hot standby can take the storefront's catalog reads."
       },
       "cache": {
         "name": "A Redis-compatible cache",
@@ -552,6 +560,10 @@
       "inboundEmail": {
         "name": "An inbound email provider",
         "purpose": "SendGrid, Resend, Mailgun, Amazon SES, or a mail server that posts what it receives over HTTPS, per tenant, for a tenant that wants readers' replies to its answers filed under their contact messages in the console."
+      },
+      "googleTag": {
+        "name": "Google Analytics or Tag Manager",
+        "purpose": "Per tenant, for a tenant that measures its site: a GA4 property or a Tag Manager container, and a server-side container or a Google tag gateway on the site's domain for one that loads the tag from either."
       },
       "firebase": {
         "name": "A Firebase project",
