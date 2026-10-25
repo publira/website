@@ -42,6 +42,7 @@ import hostSignUp from "#assets/screenshots/host/sign-up.png";
 import hostViewerControls from "#assets/screenshots/host/viewer-controls.png";
 import hostViewerEnd from "#assets/screenshots/host/viewer-end.png";
 import hostViewerSpread from "#assets/screenshots/host/viewer-spread.png";
+import mailAnnouncement from "#assets/screenshots/mail/announcement.png";
 import mailContactMessage from "#assets/screenshots/mail/contact-message.png";
 import mailPasswordReset from "#assets/screenshots/mail/password-reset.png";
 import mailVerification from "#assets/screenshots/mail/verification.png";
@@ -243,6 +244,7 @@ const groups = {
     ["mail.verification", mailVerification],
     ["mail.passwordReset", mailPasswordReset],
     ["mail.contactMessage", mailContactMessage],
+    ["mail.announcement", mailAnnouncement],
   ],
   mobile: [
     ["mobile.catalog", mobileCatalog],

@@ -9,6 +9,7 @@ const requirements = [
   { key: "search", required: false },
   { key: "payments", required: false },
   { key: "inboundEmail", required: false },
+  { key: "googleTag", required: false },
   { key: "firebase", required: false },
   { key: "openTelemetry", required: false },
 ] as const;
