@@ -126,14 +126,9 @@ const releaseRequest = () => {
   return next(null);
 };
 
-const isBuild = process.env.NEXT_PHASE === "phase-production-build";
-
-// A regeneration that waits longer outlives its function invocation. A build
-// can wait out the hourly limit, which the site's traffic may have spent.
-const maxRetryWait = isBuild ? 3_600_000 : 60_000;
-
-// Once per worker, so a stalled build says why without a line per request.
-let buildWaitLogged = false;
+// Next.js stops a `"use cache"` function after 54 seconds, in a build or a
+// regeneration, so the retries wait less than that in all.
+const maxRetryWait = 45_000;
 
 /**
  * How long GitHub asks to wait before trying again: the secondary rate limit
@@ -198,11 +193,6 @@ export const fetchGitHub = async (
   const wait = getRetryWait(response, attempt);
 
   if (wait > 0 && waited + wait <= maxRetryWait) {
-    if (isBuild && !buildWaitLogged) {
-      buildWaitLogged = true;
-      console.warn(`GitHub rate-limited the build; retrying in ${wait} ms`);
-    }
-
     await setTimeout(wait);
 
     return fetchGitHub(endpoint, accept, attempt + 1, waited + wait);
