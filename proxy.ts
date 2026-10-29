@@ -32,8 +32,10 @@ const proxy = (request: NextRequest) => {
 
   url.pathname = url.pathname.replace(unversionedDocs, "$&latest/");
   // next-intl passes a path that names its locale through rather than
-  // rewriting it. Its other headers, such as the locale, are kept.
+  // rewriting it. Its other headers, such as the locale, are kept, but not
+  // its `Link` alternates: the page names the versioned ones.
   response.headers.delete("x-middleware-next");
+  response.headers.delete("link");
 
   return NextResponse.rewrite(url, { headers: response.headers });
 };
