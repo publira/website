@@ -126,10 +126,16 @@ const releaseRequest = () => {
   return next(null);
 };
 
-export const fetchGitHub = async (
-  endpoint: string,
-  accept = "application/vnd.github+json",
-  attempt = 0
+const githubApi = "https://api.github.com";
+
+// A regeneration that waits longer outlives its function invocation.
+const maxRetryWait = 60_000;
+
+const requestGitHub = async (
+  url: string,
+  { accept, body }: { readonly accept: string; readonly body?: string },
+  attempt = 0,
+  waited = 0
 ): Promise<Response> => {
   const headers = new Headers({
     accept,
@@ -148,25 +154,34 @@ export const fetchGitHub = async (
 
   try {
     response = await fetch(
-      `https://api.github.com/repos/${docsRepository}/${endpoint}`,
-      { headers }
+      url,
+      body === undefined ? { headers } : { body, headers, method: "POST" }
     );
   } finally {
     releaseRequest();
   }
 
-  // A cold build's burst of blobs meets the secondary rate limit, which names
-  // a wait. Each retry waits longer, so the burst spreads out.
-  const retryAfter = Number(response.headers.get("retry-after"));
+  // A cold build's burst meets the secondary rate limit, which names a wait.
+  // Each retry waits longer, so the burst spreads out, up to the ceiling.
+  const wait =
+    Number(response.headers.get("retry-after")) * 1000 * 2 ** attempt;
 
-  if (retryAfter > 0 && attempt < 4) {
-    await setTimeout(retryAfter * 1000 * 2 ** attempt);
+  if (wait > 0 && waited + wait <= maxRetryWait) {
+    await setTimeout(wait);
 
-    return fetchGitHub(endpoint, accept, attempt + 1);
+    return requestGitHub(url, { accept, body }, attempt + 1, waited + wait);
   }
 
   return response;
 };
+
+export const fetchGitHub = (
+  endpoint: string,
+  accept = "application/vnd.github+json"
+) =>
+  requestGitHub(`${githubApi}/repos/${docsRepository}/${endpoint}`, {
+    accept,
+  });
 
 const fetchGitHubOk = async (endpoint: string, accept?: string) => {
   const response = await fetchGitHub(endpoint, accept);
@@ -246,6 +261,78 @@ export const getBlob = async (sha: string) => {
   );
 
   return new Uint8Array(await response.arrayBuffer());
+};
+
+// Few enough that GitHub answers a query of Markdown pages within its timeout.
+const blobsPerQuery = 100;
+
+const [repositoryOwner, repositoryName] = docsRepository.split("/");
+
+/** The texts of up to `blobsPerQuery` blobs, in one GraphQL query. */
+const getBlobTextChunk = async (shas: readonly string[]) => {
+  const objects = shas.map(
+    (sha, index) => `b${index}: object(oid: "${sha}") { ... on Blob { text } }`
+  );
+
+  const response = await requestGitHub(`${githubApi}/graphql`, {
+    accept: "application/vnd.github+json",
+    body: JSON.stringify({
+      query: `{ repository(owner: "${repositoryOwner}", name: "${repositoryName}") { ${objects.join(" ")} } }`,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `GitHub responded to the blobs query with ${response.status}`
+    );
+  }
+
+  // SAFETY: the shape GitHub's GraphQL API answers the query above with.
+  const { data, errors } = (await response.json()) as {
+    readonly data?: {
+      readonly repository: Readonly<
+        Record<string, { readonly text: string | null } | null>
+      >;
+    };
+    readonly errors?: readonly { readonly message: string }[];
+  };
+
+  if (errors?.length || !data) {
+    throw new Error(
+      `GitHub answered the blobs query with ${errors?.map(({ message }) => message).join("; ")}`
+    );
+  }
+
+  return shas.map((sha, index) => {
+    // `null` for a blob GitHub takes for binary.
+    const text = data.repository[`b${index}`]?.text ?? null;
+
+    if (text === null) {
+      throw new Error(`GitHub has no text for the blob ${sha}`);
+    }
+
+    return [sha, text] as const;
+  });
+};
+
+/**
+ * The texts of blobs by hash. A query reads a tree's pages at once, where the
+ * REST API takes a request for each.
+ */
+const getBlobTexts = async (shas: readonly string[]) => {
+  const unique = [...new Set(shas)];
+
+  const chunks = await Promise.all(
+    Array.from(
+      { length: Math.ceil(unique.length / blobsPerQuery) },
+      (_, index) =>
+        getBlobTextChunk(
+          unique.slice(index * blobsPerQuery, (index + 1) * blobsPerQuery)
+        )
+    )
+  );
+
+  return new Map(chunks.flat());
 };
 
 /** Compares number by number, a prefix first. */
@@ -374,9 +461,10 @@ const parseFrontmatter = (source: string) => {
   return parse(yaml.join("\n")) as PageFrontmatter;
 };
 
-const decoder = new TextDecoder();
-
-const toPage = async ({ path: entry, sha }: TreeEntry) => {
+const toPage = (
+  { path: entry, sha }: TreeEntry,
+  texts: ReadonlyMap<string, string>
+) => {
   const { directories, file } = parsePath(entry);
 
   const name =
@@ -390,7 +478,7 @@ const toPage = async ({ path: entry, sha }: TreeEntry) => {
   const order = names.map((segment) => segment.order);
 
   const { redirect_from: redirectFrom = [], ...frontmatter } = parseFrontmatter(
-    decoder.decode(await getBlob(sha))
+    texts.get(sha) ?? ""
   );
 
   return [
@@ -455,7 +543,8 @@ export const getDocsTree = async (
   version: string,
   locale: Locale
 ): Promise<DocsTree | null> => {
-  "use cache";
+  // Remote, so one regeneration reads a tree's pages for every instance.
+  "use cache: remote";
   cacheLife("max");
 
   const versions = await getDocsVersions();
@@ -473,16 +562,15 @@ export const getDocsTree = async (
     return null;
   }
 
-  const pages = await Promise.all(
-    entries.flatMap((entry) =>
-      entry.path.endsWith(".md") ? [toPage(entry)] : []
-    )
-  );
+  const markdown = entries.filter((entry) => entry.path.endsWith(".md"));
+  const texts = await getBlobTexts(markdown.map(({ sha }) => sha));
 
   return {
     images: entries.flatMap(toImage),
     locale,
-    pages: pages.flat().toSorted((a, b) => compareNumbers(a.order, b.order)),
+    pages: markdown
+      .flatMap((entry) => toPage(entry, texts))
+      .toSorted((a, b) => compareNumbers(a.order, b.order)),
   };
 };
 
