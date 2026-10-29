@@ -27,6 +27,12 @@ const nextBranch = "main";
 
 export const nextVersion = "next";
 
+/**
+ * The newest release, at the URLs without a version (`/docs/<slug>`) that
+ * `proxy.ts` rewrites to it.
+ */
+export const latestVersion = "latest";
+
 /** The cache tags the webhook revalidates. */
 export const docsCacheTags = {
   next: "docs-next",
@@ -643,10 +649,10 @@ export const getDocsPageParams = async (locale: Locale) => {
 
 /**
  * The URL of a page, or of a version's root with no slug, without the locale
- * that `Link` adds.
+ * that `Link` adds. `latest` names no version.
  */
 export const getDocsPath = (version: string, slug: readonly string[] = []) =>
-  ["/docs", version, ...slug].join("/");
+  ["/docs", ...(version === latestVersion ? [] : [version]), ...slug].join("/");
 
 /** The URL of a page in a locale. */
 export const getLocalizedDocsPath = (

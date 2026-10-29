@@ -18,6 +18,7 @@ import {
   getDocsTree,
   getDocsVersions,
   getLocalizedDocsPath,
+  latestVersion,
 } from "#lib/docs";
 
 type Props = PageProps<"/[locale]/docs/[version]/[[...slug]]">;
@@ -28,28 +29,42 @@ type Props = PageProps<"/[locale]/docs/[version]/[[...slug]]">;
 export const instant = false;
 
 // Every locale serves the source locale's pages, translated or not. Each
-// version's root is given too, which redirects without an `index.md`.
+// version's root is given too, which redirects without an `index.md`, and the
+// newest release's pages again as `latest`.
 export const generateStaticParams = async () => {
-  const [versions, pages] = await Promise.all([
+  const [versions, pages, current] = await Promise.all([
     getDocsVersions(),
     getDocsPageParams(await getRootLocale()),
+    getCurrentVersion(),
   ]);
 
   return [
-    ...versions.map(({ name }) => ({ slug: [], version: name })),
+    ...[...versions.map(({ name }) => name), latestVersion].map((version) => ({
+      slug: [],
+      version,
+    })),
     ...pages,
+    ...pages.flatMap(({ slug, version }) =>
+      version === current ? [{ slug, version: latestVersion }] : []
+    ),
   ];
 };
 
 const loadPage = async (params: Props["params"]) => {
-  const [{ slug = [], version }, locale] = await Promise.all([
+  const [{ slug = [], version: segment }, locale] = await Promise.all([
     params,
     getRootLocale(),
   ]);
 
+  // `latest` renders as the newest release's page, so the canonical link and
+  // the links inside it name that release.
+  const version =
+    segment === latestVersion ? await getCurrentVersion() : segment;
+
   return {
     found: await getDocsPage(version, locale, slug),
     locale,
+    segment,
     slug,
     version,
   };
@@ -106,7 +121,7 @@ export const generateMetadata = async ({
 };
 
 const Docs = async ({ params }: Props) => {
-  const { found, locale, slug, version } = await loadPage(params);
+  const { found, locale, segment, slug, version } = await loadPage(params);
 
   if (found) {
     return (
@@ -115,12 +130,13 @@ const Docs = async ({ params }: Props) => {
   }
 
   // A page renamed or moved lists its former URL in `redirect_from`, which
-  // keeps leading to it in every version whose tree says so.
+  // keeps leading to it in every version whose tree says so. A URL without a
+  // version leads to one without a version, so it never pins a release.
   const target =
     slug.length > 0 ? await getDocsRedirect(version, locale, slug) : null;
 
   if (target) {
-    permanentRedirect(getLocalizedDocsPath(locale, version, target));
+    permanentRedirect(getLocalizedDocsPath(locale, segment, target));
   }
 
   // A version without a root `index.md` opens at its first page.
@@ -128,7 +144,7 @@ const Docs = async ({ params }: Props) => {
     slug.length === 0 ? await getDocsNavigation(version, locale) : [];
 
   if (first) {
-    redirect(getLocalizedDocsPath(locale, version, first.slug));
+    redirect(getLocalizedDocsPath(locale, segment, first.slug));
   }
 
   notFound();
