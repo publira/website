@@ -408,11 +408,18 @@ const getReleases = async (): Promise<readonly DocsVersion[]> => {
   return documented.flatMap(({ name, ref }) => (ref ? [{ name, ref }] : []));
 };
 
+// A preview serves the newest release alone, so its build stays small.
+const previewReleases = process.env.VERCEL_ENV === "preview" ? 1 : undefined;
+
 /** `next`, then the releases, newest first. */
-export const getDocsVersions = async (): Promise<readonly DocsVersion[]> => [
-  { name: nextVersion, ref: nextBranch },
-  ...(await getReleases()),
-];
+export const getDocsVersions = async (): Promise<readonly DocsVersion[]> => {
+  const releases = await getReleases();
+
+  return [
+    { name: nextVersion, ref: nextBranch },
+    ...releases.slice(0, previewReleases),
+  ];
+};
 
 /** The newest release, or `next` while there is none. */
 export const getCurrentVersion = async () => {
