@@ -20,8 +20,9 @@ The site is then served on `http://localhost:3000`. A Dev Container definition i
 | `pnpm start` | Serve a production build |
 | `pnpm check` | Verify formatting and lint rules with [Ultracite] (oxfmt + oxlint) |
 | `pnpm fix` | Apply the formatting and lint fixes `pnpm check` reports |
+| `pnpm typecheck` | Generate the route types and type-check the project without building it |
 
-`pnpm install` also installs the [lefthook] git hooks, so committing formats the staged files with oxfmt and commits the result. It reformats nothing you have left unstaged, and `git commit --no-verify` skips it. Lint rules and the type check are not part of the hook: run `pnpm check` and `pnpm build` before opening a pull request. `pnpm build` is what runs the TypeScript compiler, so a type error surfaces there rather than in `pnpm check`. CI runs only `pnpm check`; the build runs in Vercel's preview deployment of the pull request.
+`pnpm install` also installs the [lefthook] git hooks, so committing formats the staged files with oxfmt and commits the result. It reformats nothing you have left unstaged, and `git commit --no-verify` skips it. Lint rules and the type check are not part of the hook: run `pnpm check`, `pnpm typecheck`, and `pnpm build` before opening a pull request. A type error surfaces in `pnpm typecheck` and `pnpm build`, not in `pnpm check`. CI runs `pnpm check` and `pnpm typecheck`; the build runs in Vercel's preview deployment of the pull request.
 
 [Ultracite]: https://www.ultracite.ai/
 [lefthook]: https://lefthook.dev/

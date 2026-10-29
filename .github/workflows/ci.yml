@@ -29,3 +29,6 @@ jobs:
 
       - name: Validate / Lint and Format
         run: pnpm check
+
+      - name: Validate / Types
+        run: pnpm typecheck
