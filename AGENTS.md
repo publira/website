@@ -19,8 +19,9 @@ Repository-specific conventions for coding agents.
 - `pnpm build`: produce the production build, which also type-checks the project.
 - `pnpm check`: run the Ultracite lint and format checks (oxfmt and oxlint).
 - `pnpm fix`: apply the Ultracite fixes.
+- `pnpm typecheck`: generate the route types and type-check the project without building it.
 
-Run `pnpm check` and `pnpm build` before committing, since `.github/workflows/ci.yml` runs both on every pull request. `pnpm install` also installs the lefthook pre-commit hook, which formats the staged files with oxfmt and stages the result; it does not lint or type-check.
+Run `pnpm check`, `pnpm typecheck`, and `pnpm build` before committing. `.github/workflows/ci.yml` runs the first two on every pull request; the build runs in Vercel's deployment of each pull request, since it also fetches the documentation through the GitHub API. `pnpm install` also installs the lefthook pre-commit hook, which formats the staged files with oxfmt and stages the result; it does not lint or type-check.
 
 ## Language
 
