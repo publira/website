@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "Still being built",
-      "body": "Publira is under active development, and its newest release{version, select, none {} other {, v{version},}} is not ready for production use yet. Everything shown on this page runs today, and an install can be brought up from the images each release publishes with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and taking the changes each 0.x minor release may bring. The guides for <operating>operating an install</operating> are already in the documentation, from health checks and backups to upgrades and deploying on Kubernetes or Amazon ECS. Take it as something to evaluate, build on, and contribute to — not as a finished product."
+      "body": "Publira is under active development, and its newest release{version, select, none {} other {, v{version},}} is not ready for production use yet. Everything shown on this page runs today, and an install can be brought up from the images each release publishes with one Compose file, but running it for a real publisher still means reading the code, adapting it to your own environment, and taking the changes each 0.x minor release may bring. Take it as something to evaluate, build on, and contribute to — not as a finished product."
     },
     "screenshot": {
       "alt": "The Publira reader-facing catalog, led by the tenant's campaign banners",
@@ -638,7 +638,7 @@
   },
   "operating": {
     "title": "Operating an install",
-    "lead": "What an install already gives you to keep it running, each with its guide in the documentation of the newest release.",
+    "lead": "What an install already gives you to keep it running.",
     "topics": {
       "health": {
         "title": "Health checks",

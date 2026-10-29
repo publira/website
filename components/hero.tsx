@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import type { ReactNode } from "react";
 
 import heroImage from "#assets/screenshots/host/catalog-plain.png";
 import { BrowserFrame } from "#components/browser-frame";
@@ -14,12 +13,6 @@ const facts = [
   "readerLanguages",
   "license",
 ] as const;
-
-const operating = (chunks: ReactNode) => (
-  <a className="text-primary underline" href="#operating">
-    {chunks}
-  </a>
-);
 
 export const Hero = async () => {
   const [t, release] = await Promise.all([
@@ -81,10 +74,7 @@ export const Hero = async () => {
             {t("status.title")}
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            {t.rich("status.body", {
-              operating,
-              version: release ?? "none",
-            })}
+            {t("status.body", { version: release ?? "none" })}
           </p>
         </div>
 
