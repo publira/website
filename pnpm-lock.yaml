@@ -179,11 +179,11 @@ importers:
         specifier: 8.3.1
         version: 8.3.1
       '@sugar-high/react':
-        specifier: 2.5.0
-        version: 2.5.0(react@19.3.1)
+        specifier: 2.5.1
+        version: 2.5.1(react@19.3.1)
       '@sugar-high/remark':
-        specifier: 1.0.3
-        version: 1.0.3
+        specifier: 1.0.4
+        version: 1.0.4
       image-size:
         specifier: 2.0.4
         version: 2.0.4
@@ -212,8 +212,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0
       sugar-high:
-        specifier: 2.6.3
-        version: 2.6.3
+        specifier: 2.6.4
+        version: 2.6.4
       yaml:
         specifier: 2.9.1
         version: 2.9.1
@@ -1194,13 +1194,13 @@ packages:
   '@sonarsource/analyzer-commons-configurations@2.31.0-5284':
     resolution: {integrity: sha512-ruk3blMs9BE9RNSp9LPpWZAIjxJmq4Cp00E3cELIHz7Kym3WxdWGRlKOMYLRQ5tJg/de7jN5AtEElY3bGIfTcw==}
 
-  '@sugar-high/react@2.5.0':
-    resolution: {integrity: sha512-F1DYkfVMvXRDXIz86JXnvZENqwWrWAF0qfFWILuFMeZmYaxqwiSIb/mw88RbixxVQRQacm7Z0F/fE4dgOS2aSQ==}
+  '@sugar-high/react@2.5.1':
+    resolution: {integrity: sha512-8kp6oN/Cud3Aj+QpvRZFZaA3lIBQwqZVINSkdOuBvK0V6F6ABnzIxqCvK/26uc/zamVb7k1z+h9KTwYL+WXmGg==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
-  '@sugar-high/remark@1.0.3':
-    resolution: {integrity: sha512-CatNsy3L3Uf7k8iWTsBXf+lUXGCvfdKsYLXQI/x//79QVsmwfFitM+BmHHl4m7uvXun2/Q1iyB4NMtkXlhFUSQ==}
+  '@sugar-high/remark@1.0.4':
+    resolution: {integrity: sha512-ZjZ8onzOMF8ezuPd3Xll+YYdzCEUpo5BbvcX27o7PUn9NOZZd1g45ErUgR0WMp0MqR4E5cWdpAJqJ5ylHlQ99Q==}
 
   '@swc/core-darwin-arm64@1.16.20':
     resolution: {integrity: sha512-i7NFSDnuE6tdBvBgmoVKKmburgcwZt/FZK2IusJaVGrjFrMUC1hrgE3RI+Kt9RhYM7vHvQj0W9j53zSxKEMbWQ==}
@@ -3621,8 +3621,8 @@ packages:
       babel-plugin-macros:
         optional: true
 
-  sugar-high@2.6.3:
-    resolution: {integrity: sha512-IfcHTzIo5Akp9h4NCwGmu8agrf4bbXDauwFcVmfYwqEj1RbdRfS2NEdMaCOKLSjK06I7fZmVmovYlz3+KkvH5Q==}
+  sugar-high@2.6.4:
+    resolution: {integrity: sha512-GJkKsIyzqPMCJabhM8c4IKBg3aKUtI62DMPGdgFuXDo0Z5LY+q3SIT3PsSjGkOT9IglhCR6dZBDVQYmdIfumsw==}
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -4530,14 +4530,14 @@ snapshots:
 
   '@sonarsource/analyzer-commons-configurations@2.31.0-5284': {}
 
-  '@sugar-high/react@2.5.0(react@19.3.1)':
+  '@sugar-high/react@2.5.1(react@19.3.1)':
     dependencies:
       react: 19.3.1
-      sugar-high: 2.6.3
+      sugar-high: 2.6.4
 
-  '@sugar-high/remark@1.0.3':
+  '@sugar-high/remark@1.0.4':
     dependencies:
-      sugar-high: 2.6.3
+      sugar-high: 2.6.4
       unist-util-map: 4.0.0
 
   '@swc/core-darwin-arm64@1.16.20':
@@ -7328,7 +7328,7 @@ snapshots:
       client-only: 0.0.1
       react: 19.3.1
 
-  sugar-high@2.6.3: {}
+  sugar-high@2.6.4: {}
 
   supports-color@7.2.0:
     dependencies:
