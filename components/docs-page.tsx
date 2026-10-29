@@ -146,13 +146,69 @@ const VersionNotice = async ({ latest, version }: VersionNoticeProps) => {
   );
 };
 
+interface TranslatedInVersionNoticeProps {
+  readonly slug: readonly string[];
+  /** A version that has the page in the reader's locale. */
+  readonly version: string;
+}
+
+/** That the page is shown in the source locale, and a way to its translation. */
+const TranslatedInVersionNotice = async ({
+  slug,
+  version,
+}: TranslatedInVersionNoticeProps) => {
+  const t = await getTranslations("docs");
+
+  const link = (chunks: ReactNode) => (
+    <Link className="text-primary underline" href={getDocsPath(version, slug)}>
+      {chunks}
+    </Link>
+  );
+
+  return (
+    <p className="border-border rounded-md border px-4 py-3 text-sm leading-relaxed">
+      {t.rich("translatedInVersionNotice", { link, version })}
+    </p>
+  );
+};
+
+/** publira/publira's Issue for translating the locales without a tree yet. */
+const translationIssueLink = (chunks: ReactNode) => (
+  <a
+    className="text-primary underline"
+    href="https://github.com/publira/publira/issues/4075"
+  >
+    {chunks}
+  </a>
+);
+
+interface TranslationNoticeProps {
+  /** Whether the reader's locale is yet to be translated at all. */
+  readonly planned: boolean;
+  readonly slug: readonly string[];
+  /** A version that has the page in the reader's locale. */
+  readonly translatedVersion: string | undefined;
+}
+
 /** That the page is shown in the source locale until it is translated. */
-const TranslationNotice = async () => {
+const TranslationNotice = async ({
+  planned,
+  slug,
+  translatedVersion,
+}: TranslationNoticeProps) => {
+  if (translatedVersion) {
+    return (
+      <TranslatedInVersionNotice slug={slug} version={translatedVersion} />
+    );
+  }
+
   const t = await getTranslations("docs");
 
   return (
     <p className="border-border rounded-md border px-4 py-3 text-sm leading-relaxed">
-      {t("untranslatedNotice")}
+      {planned
+        ? t.rich("translationPlannedNotice", { link: translationIssueLink })
+        : t("untranslatedNotice")}
     </p>
   );
 };
@@ -253,6 +309,23 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
     : locales;
 
   const translated = language === locale;
+
+  // The newest release with the page in the reader's locale, or `next`.
+  const translatedVersions = pageLocales.flatMap((pageLocale) =>
+    pageLocale.locales.includes(locale) ? [pageLocale.name] : []
+  );
+
+  const translatedVersion =
+    translatedVersions.find((name) => name !== nextVersion) ??
+    translatedVersions[0];
+
+  // `next` mirrors the source tree in every translated locale, so a page it
+  // has only in the source locale is in a locale yet to be translated.
+  const translationPlanned =
+    pageLocales
+      .find(({ name }) => name === nextVersion)
+      ?.locales.includes(docsSourceLocale) ?? false;
+
   const url = getAbsoluteUrl(getLocalizedDocsPath(locale, version, page.slug));
 
   // The directories' pages above this one.
@@ -333,7 +406,13 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
               {version === latest ? null : (
                 <VersionNotice latest={latest} version={version} />
               )}
-              {translated ? null : <TranslationNotice />}
+              {translated ? null : (
+                <TranslationNotice
+                  planned={translationPlanned}
+                  slug={page.slug}
+                  translatedVersion={translatedVersion}
+                />
+              )}
             </div>
           )}
           {/* An untranslated article is marked as the source locale's, all
