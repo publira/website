@@ -126,8 +126,40 @@ const releaseRequest = () => {
   return next(null);
 };
 
-// A regeneration that waits longer outlives its function invocation.
-const maxRetryWait = 60_000;
+const isBuild = process.env.NEXT_PHASE === "phase-production-build";
+
+// A regeneration that waits longer outlives its function invocation. A build
+// can wait out the hourly limit, which the site's traffic may have spent.
+const maxRetryWait = isBuild ? 3_600_000 : 60_000;
+
+// Once per worker, so a stalled build says why without a line per request.
+let buildWaitLogged = false;
+
+/**
+ * How long GitHub asks to wait before trying again: the secondary rate limit
+ * names a wait, doubled per retry so a burst spreads out, and the primary
+ * rate limit names when it resets.
+ */
+const getRetryWait = (response: Response, attempt: number) => {
+  // The request that spends the last of the limit succeeds.
+  if (response.status !== 403 && response.status !== 429) {
+    return 0;
+  }
+
+  const retryAfter = Number(response.headers.get("retry-after"));
+
+  if (retryAfter > 0) {
+    return retryAfter * 1000 * 2 ** attempt;
+  }
+
+  if (response.headers.get("x-ratelimit-remaining") !== "0") {
+    return 0;
+  }
+
+  const reset = Number(response.headers.get("x-ratelimit-reset")) * 1000;
+
+  return Math.max(reset - Date.now(), 0) + 1000;
+};
 
 export const fetchGitHub = async (
   endpoint: string,
@@ -151,21 +183,26 @@ export const fetchGitHub = async (
   let response: Response;
 
   try {
+    // Next.js memoizes a GET during a render, which would answer a retry with
+    // the response it retries. A signal opts out.
     response = await fetch(
       `https://api.github.com/repos/${docsRepository}/${endpoint}`,
-      { headers }
+      attempt === 0
+        ? { headers }
+        : { headers, signal: new AbortController().signal }
     );
   } finally {
     releaseRequest();
   }
 
-  // A cold build's burst of blobs meets the secondary rate limit, which names
-  // a wait. Each retry waits longer, so the burst spreads out, up to the
-  // ceiling.
-  const wait =
-    Number(response.headers.get("retry-after")) * 1000 * 2 ** attempt;
+  const wait = getRetryWait(response, attempt);
 
   if (wait > 0 && waited + wait <= maxRetryWait) {
+    if (isBuild && !buildWaitLogged) {
+      buildWaitLogged = true;
+      console.warn(`GitHub rate-limited the build; retrying in ${wait} ms`);
+    }
+
     await setTimeout(wait);
 
     return fetchGitHub(endpoint, accept, attempt + 1, waited + wait);
