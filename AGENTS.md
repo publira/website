@@ -20,7 +20,7 @@ Repository-specific conventions for coding agents.
 - `pnpm check`: run the Ultracite lint and format checks (oxfmt and oxlint).
 - `pnpm fix`: apply the Ultracite fixes.
 
-Run `pnpm check` and `pnpm build` before committing, since `.github/workflows/ci.yml` runs both on every pull request. `pnpm install` also installs the lefthook pre-commit hook, which formats the staged files with oxfmt and stages the result; it does not lint or type-check.
+Run `pnpm check` and `pnpm build` before committing. `.github/workflows/ci.yml` runs only `pnpm check`; the build, and with it the type check, runs in Vercel's deployment of each pull request. `pnpm install` also installs the lefthook pre-commit hook, which formats the staged files with oxfmt and stages the result; it does not lint or type-check.
 
 ## Language
 

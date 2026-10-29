@@ -21,7 +21,7 @@ The site is then served on `http://localhost:3000`. A Dev Container definition i
 | `pnpm check` | Verify formatting and lint rules with [Ultracite] (oxfmt + oxlint) |
 | `pnpm fix` | Apply the formatting and lint fixes `pnpm check` reports |
 
-`pnpm install` also installs the [lefthook] git hooks, so committing formats the staged files with oxfmt and commits the result. It reformats nothing you have left unstaged, and `git commit --no-verify` skips it. Lint rules and the type check are not part of the hook: run `pnpm check` and `pnpm build` before opening a pull request. `pnpm build` is what runs the TypeScript compiler, so a type error surfaces there rather than in `pnpm check`.
+`pnpm install` also installs the [lefthook] git hooks, so committing formats the staged files with oxfmt and commits the result. It reformats nothing you have left unstaged, and `git commit --no-verify` skips it. Lint rules and the type check are not part of the hook: run `pnpm check` and `pnpm build` before opening a pull request. `pnpm build` is what runs the TypeScript compiler, so a type error surfaces there rather than in `pnpm check`. CI runs only `pnpm check`; the build runs in Vercel's preview deployment of the pull request.
 
 [Ultracite]: https://www.ultracite.ai/
 [lefthook]: https://lefthook.dev/
@@ -63,7 +63,7 @@ The cache holds until publira/publira's webhook reaches `/api/webhooks/github`: 
 | `GITHUB_APP_PRIVATE_KEY` | A private key of that App, in PEM; line breaks may be written as `\n` |
 | `GITHUB_WEBHOOK_SECRET` | The webhook's secret, which signs each delivery. Without it every delivery is rejected |
 
-Without the App, the site reads with `GITHUB_TOKEN` instead, or without a token, which GitHub allows 60 requests an hour. CI passes the workflow's token, and locally `GITHUB_TOKEN=$(gh auth token) pnpm dev` does the same.
+Without the App, the site reads with `GITHUB_TOKEN` instead, or without a token, which GitHub allows 60 requests an hour. Locally, `GITHUB_TOKEN=$(gh auth token) pnpm dev` does the same.
 
 ## Subpath imports
 

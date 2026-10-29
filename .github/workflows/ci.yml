@@ -21,15 +21,6 @@ jobs:
         with:
           persist-credentials: false
 
-      # Before the install, so `hashFiles` cannot reach `node_modules`.
-      - name: Cache / Next.js build
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('app/**', 'assets/**', 'components/**', 'content/**', 'i18n/**', 'lib/**', 'messages/**', 'content.d.ts', 'global.ts', 'mdx-components.tsx', 'next.config.ts', 'postcss.config.ts', 'proxy.ts', 'tsconfig.json') }}
-          restore-keys: |
-            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
-
       - name: Setup / pnpm
         uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
@@ -38,10 +29,3 @@ jobs:
 
       - name: Validate / Lint and Format
         run: pnpm check
-
-      # The build reads the documentation from publira/publira through the
-      # GitHub API, which allows too few requests without a token.
-      - name: Build / Web
-        run: pnpm build
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
