@@ -103,9 +103,13 @@
         "title": "Paid episodes, through the provider you choose",
         "body": "A tenant sells through Stripe or PAY.JP on the web and through the App Store and Google Play in its app: an episode to keep or to rent, a volume, or the rest of a series at a bundle discount, at a campaign price it schedules ahead. A purchase is written only when the provider's signed notification arrives, and a full refund or a dispute closes the episode again."
       },
+      "plansAndCoins": {
+        "title": "Subscription plans and coins",
+        "body": "On Stripe, a tenant also sells subscription plans, billed every period, that open the whole catalog, some of its labels, or some of its series, and close them again once a subscription is canceled or left unpaid. Readers can buy a pack of the tenant's own coins, under the name it gives them, on the site or in the app, and spend them on episodes without a payment page for each one, until they expire after the days the tenant sets."
+      },
       "freeReading": {
         "title": "Free to read, on the tenant's schedule",
-        "body": "A paid episode opens to every reader for a free reading period, scheduled on one episode or across many episodes of a series at once. A series can also offer free if you wait: signed-in readers open its paid episodes free, one at a time, with a ticket that comes back after a wait."
+        "body": "A paid episode opens to every reader for a free reading period, scheduled on one episode or across many episodes of a series at once. A series can also offer free if you wait: signed-in readers open its paid episodes free, one at a time, with a ticket that comes back after a wait. Staff can also open an episode to one reader, such as a reviewer or a prize winner, with an access ticket."
       },
       "signIn": {
         "title": "Sign in with a passkey, Apple, or Google",
@@ -118,6 +122,10 @@
       "royalties": {
         "title": "Royalties, closed month by month",
         "body": "Each credited author carries a share of an episode's sales, including what it earns in a volume or in the rest of a series. A month closes into a statement — by hand, or on the day the tenant chooses — and a closed statement downloads as CSV. An author linked to a reader account reads their own episodes without buying them, and cannot rate them."
+      },
+      "reports": {
+        "title": "Reports on what sells and who reads",
+        "body": "Revenue, audience, how many members finish each episode and the page they leave it at, and the readers who signed up each week, followed for twelve weeks and through a funnel to their first purchase. Revenue, audience, and drop-off cover a period the staff choose and download as CSV."
       },
       "ageRatings": {
         "title": "Age ratings under the tenant's own rule",
@@ -364,7 +372,7 @@
       },
       "reports": {
         "title": "Reports and royalties",
-        "caption": "How many members finish each episode, and a month's sales, refunds, and what each author is owed, cut at the month's edges in the tenant's own time zone. Closing the month turns it into a statement that no later sale changes and that downloads as CSV, and a refund recorded after the close is carried into the next statement as an adjustment.",
+        "caption": "Revenue, audience, how many members finish each episode and the page they leave it at, and each week's sign-ups followed to a purchase. A month's sales, refunds, and what each author is owed are cut at the month's edges in the tenant's own time zone, and closing the month turns them into a statement that no later sale changes and that downloads as CSV, with a refund recorded after the close carried into the next one as an adjustment.",
         "views": {
           "readThrough": "Read-through",
           "royalties": "An open month",
