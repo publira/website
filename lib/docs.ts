@@ -126,10 +126,41 @@ const releaseRequest = () => {
   return next(null);
 };
 
+// Next.js stops a `"use cache"` function after 54 seconds, in a build or a
+// regeneration, so the retries wait less than that in all.
+const maxRetryWait = 45_000;
+
+/**
+ * How long GitHub asks to wait before trying again: the secondary rate limit
+ * names a wait, doubled per retry so a burst spreads out, and the primary
+ * rate limit names when it resets.
+ */
+const getRetryWait = (response: Response, attempt: number) => {
+  // The request that spends the last of the limit succeeds.
+  if (response.status !== 403 && response.status !== 429) {
+    return 0;
+  }
+
+  const retryAfter = Number(response.headers.get("retry-after"));
+
+  if (retryAfter > 0) {
+    return retryAfter * 1000 * 2 ** attempt;
+  }
+
+  if (response.headers.get("x-ratelimit-remaining") !== "0") {
+    return 0;
+  }
+
+  const reset = Number(response.headers.get("x-ratelimit-reset")) * 1000;
+
+  return Math.max(reset - Date.now(), 0) + 1000;
+};
+
 export const fetchGitHub = async (
   endpoint: string,
   accept = "application/vnd.github+json",
-  attempt = 0
+  attempt = 0,
+  waited = 0
 ): Promise<Response> => {
   const headers = new Headers({
     accept,
@@ -147,22 +178,24 @@ export const fetchGitHub = async (
   let response: Response;
 
   try {
+    // Next.js memoizes a GET during a render, which would answer a retry with
+    // the response it retries. A signal opts out.
     response = await fetch(
       `https://api.github.com/repos/${docsRepository}/${endpoint}`,
-      { headers }
+      attempt === 0
+        ? { headers }
+        : { headers, signal: new AbortController().signal }
     );
   } finally {
     releaseRequest();
   }
 
-  // A cold build's burst of blobs meets the secondary rate limit, which names
-  // a wait. Each retry waits longer, so the burst spreads out.
-  const retryAfter = Number(response.headers.get("retry-after"));
+  const wait = getRetryWait(response, attempt);
 
-  if (retryAfter > 0 && attempt < 4) {
-    await setTimeout(retryAfter * 1000 * 2 ** attempt);
+  if (wait > 0 && waited + wait <= maxRetryWait) {
+    await setTimeout(wait);
 
-    return fetchGitHub(endpoint, accept, attempt + 1);
+    return fetchGitHub(endpoint, accept, attempt + 1, waited + wait);
   }
 
   return response;
@@ -321,11 +354,18 @@ const getReleases = async (): Promise<readonly DocsVersion[]> => {
   return documented.flatMap(({ name, ref }) => (ref ? [{ name, ref }] : []));
 };
 
+// A preview serves the newest release alone, so its build stays small.
+const previewReleases = process.env.VERCEL_ENV === "preview" ? 1 : undefined;
+
 /** `next`, then the releases, newest first. */
-export const getDocsVersions = async (): Promise<readonly DocsVersion[]> => [
-  { name: nextVersion, ref: nextBranch },
-  ...(await getReleases()),
-];
+export const getDocsVersions = async (): Promise<readonly DocsVersion[]> => {
+  const releases = await getReleases();
+
+  return [
+    { name: nextVersion, ref: nextBranch },
+    ...releases.slice(0, previewReleases),
+  ];
+};
 
 /** The newest release, or `next` while there is none. */
 export const getCurrentVersion = async () => {
@@ -455,7 +495,8 @@ export const getDocsTree = async (
   version: string,
   locale: Locale
 ): Promise<DocsTree | null> => {
-  "use cache";
+  // Remote, so one regeneration reads a tree's pages for every instance.
+  "use cache: remote";
   cacheLife("max");
 
   const versions = await getDocsVersions();
