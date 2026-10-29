@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "仍在開發中",
-      "body": "Publira 仍在積極開發中，最新版本{version, select, none {} other { v{version} }}也尚不適合用於正式環境。本頁介紹的功能目前都能運作，也可以用每個版本發布的映像檔和一個 Compose 檔案完成部署；但若要實際提供給出版社使用，仍需閱讀程式碼、依自己的環境調整，並跟進每個 0.x 次要版本可能帶來的變更。請把它視為可供評估、二次開發和參與貢獻的專案，而不是成品。"
+      "body": "Publira 仍在積極開發中，最新版本{version, select, none {} other { v{version} }}也尚不適合用於正式環境。本頁介紹的功能目前都能運作，也可以用每個版本發布的映像檔和一個 Compose 檔案完成部署；但若要實際提供給出版社使用，仍需閱讀程式碼、依自己的環境調整，並跟進每個 0.x 次要版本可能帶來的變更。從健康檢查、備份到升級，以及在 Kubernetes 或 Amazon ECS 上部署，<operating>維運部署環境的指南</operating>都已寫進文件。請把它視為可供評估、二次開發和參與貢獻的專案，而不是成品。"
     },
     "screenshot": {
       "alt": "Publira 面向讀者的作品目錄，最上方是租戶的活動橫幅",
@@ -634,6 +634,46 @@
         "pubDev": "pub.dev",
         "dateTime": "pub.dev 上的 messageformat_datetime"
       }
+    }
+  },
+  "operating": {
+    "title": "維運部署環境",
+    "lead": "部署環境為持續運作而已經具備的功能，每一項的指南都在最新版本的文件中。",
+    "topics": {
+      "health": {
+        "title": "健康檢查",
+        "body": "每個程序都透過一般 HTTP 回應 <code>/livez</code> 和 <code>/readyz</code>。就緒檢查會列出檢查過的每個資料庫登入或服務以及失敗的原因，可直接用於協調器的探針或可用性監控。"
+      },
+      "observability": {
+        "title": "日誌、指標與告警",
+        "body": "<code>publira server</code> 和 <code>publira worker</code> 以每行一筆 <code>key=value</code> 紀錄的形式輸出結構化日誌，啟用後還會匯出 OpenTelemetry 指標。指南列出了值得告警的日誌和指標，例如最終放棄寄送的郵件。"
+      },
+      "backup": {
+        "title": "備份與還原",
+        "body": "部署環境的狀態保存在三處：PostgreSQL 資料庫、物件儲存的儲存貯體，以及只有你持有的祕密加密金鑰。指南說明如何備份這三者以便一起還原，以及如何在空的服務上重建部署環境。"
+      },
+      "upgrading": {
+        "title": "升級",
+        "body": "新版本的 <code>publiractl</code> 會在程序啟動前更新資料庫結構描述和資料庫角色。每個版本都能與上一個版本同時運作，因此升級到下一個版本時可以在持續提供服務的同時逐一替換程序。"
+      },
+      "scaling": {
+        "title": "水平擴展",
+        "body": "只要共用一個 Redis 相容快取，每個程序都可以執行多個副本。<code>publira server</code> 可依處理的流量拆分，<code>publira worker</code> 可依佇列拆分，讀者端的目錄讀取可以交給 PostgreSQL 複本。"
+      },
+      "deployments": {
+        "title": "可執行的環境",
+        "body": "用每個版本發布的 Compose 檔案在一台主機上執行，在前方放置 Gateway 或 Ingress 的 Kubernetes 叢集上執行，或在 CloudFront 和 Application Load Balancer 之後作為 AWS Fargate 上的 Amazon ECS 服務執行。"
+      }
+    },
+    "guides": {
+      "healthChecks": "監控：健康檢查",
+      "alerts": "監控：需要告警的情況",
+      "backup": "備份與還原",
+      "upgrading": "升級",
+      "scaling": "水平擴展",
+      "compose": "Docker Compose",
+      "kubernetes": "Kubernetes",
+      "ecs": "Amazon ECS on Fargate"
     }
   },
   "start": {

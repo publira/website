@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "開発中",
-      "body": "Publiraは開発中で、最新のリリース{version, select, none {} other {であるv{version}}}もまだ本番環境で使える段階ではありません。このページで紹介している機能はすべて現時点で動作しており、リリースごとに公開されるイメージとひとつのComposeファイルで環境を立ち上げることもできます。ただし実際の出版社で運用するには、コードを読んで自分の環境に合わせ、0.xのマイナーリリースごとに入りうる変更にも追従する必要があります。完成した製品ではなく、動作を検証し、手を加え、開発に参加していただくためのプロジェクトとして公開しています。"
+      "body": "Publiraは開発中で、最新のリリース{version, select, none {} other {であるv{version}}}もまだ本番環境で使える段階ではありません。このページで紹介している機能はすべて現時点で動作しており、リリースごとに公開されるイメージとひとつのComposeファイルで環境を立ち上げることもできます。ただし実際の出版社で運用するには、コードを読んで自分の環境に合わせ、0.xのマイナーリリースごとに入りうる変更にも追従する必要があります。ヘルスチェックやバックアップからアップグレード、KubernetesやAmazon ECSへのデプロイまで、<operating>運用のためのガイド</operating>はすでにドキュメントにそろっています。完成した製品ではなく、動作を検証し、手を加え、開発に参加していただくためのプロジェクトとして公開しています。"
     },
     "screenshot": {
       "alt": "出版社のキャンペーンバナーを先頭に表示したPubliraの読者向けカタログ",
@@ -634,6 +634,46 @@
         "pubDev": "pub.dev",
         "dateTime": "pub.devのmessageformat_datetime"
       }
+    }
+  },
+  "operating": {
+    "title": "運用を支える仕組み",
+    "lead": "Publiraを安定して動かし続けるためにすでに備わっているものです。それぞれのガイドは最新リリースのドキュメントにあります。",
+    "topics": {
+      "health": {
+        "title": "ヘルスチェック",
+        "body": "すべてのプロセスがプレーンなHTTPで<code>/livez</code>と<code>/readyz</code>に応答します。readinessチェックは確認したデータベース接続やサービスと失敗の理由を返すので、オーケストレーターのプローブや死活監視にそのまま使えます。"
+      },
+      "observability": {
+        "title": "ログ・メトリクス・アラート",
+        "body": "<code>publira server</code>と<code>publira worker</code>は1行1レコードの<code>key=value</code>形式で構造化ログを出力し、有効にするとOpenTelemetryのメトリクスも送ります。送信をあきらめたメールなどアラートを出すべきログとメトリクスはガイドにまとめています。"
+      },
+      "backup": {
+        "title": "バックアップと復元",
+        "body": "環境の状態はPostgreSQLのデータベース、オブジェクトストレージのバケット、運用者だけが持つシークレットの暗号鍵の3か所にあります。ガイドではこの3つをそろって復元できるようにバックアップし、空のサービスに環境を戻す手順を説明しています。"
+      },
+      "upgrading": {
+        "title": "アップグレード",
+        "body": "新しいリリースの<code>publiractl</code>がプロセスの起動前にスキーマとデータベースロールを更新します。各リリースは直前のリリースと並んで動くので、次のリリースへはサービスを続けたままプロセスを1つずつ入れ替えられます。"
+      },
+      "scaling": {
+        "title": "スケールアウト",
+        "body": "Redis互換のキャッシュを共有すれば、どのプロセスも複数動かせます。<code>publira server</code>は受け持つトラフィックごとに、<code>publira worker</code>はキューごとに分けられ、読者向けカタログの読み取りはPostgreSQLのレプリカに任せられます。"
+      },
+      "deployments": {
+        "title": "動かせる場所",
+        "body": "リリースごとに公開されるComposeファイルで1台のホストに、GatewayかIngressを前に置いたKubernetesクラスターに、またはCloudFrontとApplication Load Balancerの後ろでAWS Fargate上のAmazon ECSサービスとして動かせます。"
+      }
+    },
+    "guides": {
+      "healthChecks": "監視: ヘルスチェック",
+      "alerts": "監視: アラートを出すべきもの",
+      "backup": "バックアップと復元",
+      "upgrading": "アップグレード",
+      "scaling": "スケールアウト",
+      "compose": "Docker Compose",
+      "kubernetes": "Kubernetes",
+      "ecs": "Amazon ECS on Fargate"
     }
   },
   "start": {

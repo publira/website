@@ -48,7 +48,7 @@
     },
     "status": {
       "title": "仍在开发中",
-      "body": "Publira 仍在积极开发中，最新版本{version, select, none {} other { v{version} }}也尚不适合用于生产环境。本页介绍的功能目前都能运行，也可以用每个版本发布的镜像和一个 Compose 文件完成部署；但要真正供出版社使用，仍需阅读代码、根据自己的环境进行调整，并跟进每个 0.x 次版本可能带来的变更。请把它视为可供评估、二次开发和参与贡献的项目，而不是成品。"
+      "body": "Publira 仍在积极开发中，最新版本{version, select, none {} other { v{version} }}也尚不适合用于生产环境。本页介绍的功能目前都能运行，也可以用每个版本发布的镜像和一个 Compose 文件完成部署；但要真正供出版社使用，仍需阅读代码、根据自己的环境进行调整，并跟进每个 0.x 次版本可能带来的变更。从健康检查、备份到升级，以及在 Kubernetes 或 Amazon ECS 上部署，<operating>运维部署环境的指南</operating>都已写进文档。请把它视为可供评估、二次开发和参与贡献的项目，而不是成品。"
     },
     "screenshot": {
       "alt": "Publira 面向读者的作品目录，最上方是租户的活动横幅",
@@ -634,6 +634,46 @@
         "pubDev": "pub.dev",
         "dateTime": "pub.dev 上的 messageformat_datetime"
       }
+    }
+  },
+  "operating": {
+    "title": "运维部署环境",
+    "lead": "部署环境为持续运行而已经具备的能力，每一项的指南都在最新版本的文档中。",
+    "topics": {
+      "health": {
+        "title": "健康检查",
+        "body": "每个进程都通过普通 HTTP 响应 <code>/livez</code> 和 <code>/readyz</code>。就绪检查会列出检查过的每个数据库登录或服务以及失败的原因，可直接用于编排器的探针或可用性监控。"
+      },
+      "observability": {
+        "title": "日志、指标与告警",
+        "body": "<code>publira server</code> 和 <code>publira worker</code> 以每行一条 <code>key=value</code> 记录的形式输出结构化日志，启用后还会导出 OpenTelemetry 指标。指南列出了值得告警的日志和指标，例如最终放弃发送的邮件。"
+      },
+      "backup": {
+        "title": "备份与恢复",
+        "body": "部署环境的状态保存在三处：PostgreSQL 数据库、对象存储的存储桶，以及只有你持有的密钥加密密钥。指南说明如何备份这三者以便一起恢复，以及如何在空的服务上重建部署环境。"
+      },
+      "upgrading": {
+        "title": "升级",
+        "body": "新版本的 <code>publiractl</code> 会在进程启动前更新数据库结构和数据库角色。每个版本都能与上一个版本同时运行，因此升级到下一个版本时可以在持续提供服务的同时逐个替换进程。"
+      },
+      "scaling": {
+        "title": "横向扩展",
+        "body": "只要共用一个 Redis 兼容缓存，每个进程都可以运行多个副本。<code>publira server</code> 可按处理的流量拆分，<code>publira worker</code> 可按队列拆分，读者端的目录读取可以交给 PostgreSQL 副本。"
+      },
+      "deployments": {
+        "title": "可运行的环境",
+        "body": "用每个版本发布的 Compose 文件在一台主机上运行，在前面放置 Gateway 或 Ingress 的 Kubernetes 集群上运行，或在 CloudFront 和 Application Load Balancer 之后作为 AWS Fargate 上的 Amazon ECS 服务运行。"
+      }
+    },
+    "guides": {
+      "healthChecks": "监控：健康检查",
+      "alerts": "监控：需要告警的情况",
+      "backup": "备份与恢复",
+      "upgrading": "升级",
+      "scaling": "横向扩展",
+      "compose": "Docker Compose",
+      "kubernetes": "Kubernetes",
+      "ecs": "Amazon ECS on Fargate"
     }
   },
   "start": {
