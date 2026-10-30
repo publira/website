@@ -7,6 +7,7 @@ import { CodeBlock } from "#components/code-block";
 import { FeatureGrid } from "#components/feature-grid";
 import { Hero } from "#components/hero";
 import { JsonLd } from "#components/json-ld";
+import { OperatingGuides } from "#components/operating-guides";
 import { RepoCard } from "#components/repo-card";
 import { RequirementsTable } from "#components/requirements-table";
 import { ScreenGroups } from "#components/screen-groups";
@@ -228,11 +229,15 @@ export const Home = async () => {
         </Section>
 
         <Section
-          id="start"
-          lead={t("start.lead")}
-          title={t("start.title")}
+          id="operating"
+          lead={t("operating.lead")}
+          title={t("operating.title")}
           tone="surface"
         >
+          <OperatingGuides />
+        </Section>
+
+        <Section id="start" lead={t("start.lead")} title={t("start.title")}>
           <div className="max-w-3xl space-y-4">
             <CodeBlock
               code={getReleaseCode(version)}

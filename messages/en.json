@@ -636,6 +636,46 @@
       }
     }
   },
+  "operating": {
+    "title": "Operating an install",
+    "lead": "What an install already gives you to keep it running.",
+    "topics": {
+      "health": {
+        "title": "Health checks",
+        "body": "Every process answers <code>/livez</code> and <code>/readyz</code> over plain HTTP. The readiness check names each database login or service it checked and why one failed, ready for an orchestrator's probes or an uptime monitor."
+      },
+      "observability": {
+        "title": "Logs, metrics, and alerts",
+        "body": "<code>publira server</code> and <code>publira worker</code> write a structured log, one <code>key=value</code> record per line, and export OpenTelemetry metrics once turned on. The guide names the records and metrics worth an alert, such as a mail given up for good."
+      },
+      "backup": {
+        "title": "Backup and restore",
+        "body": "An install keeps its state in the PostgreSQL database, the object store bucket, and the secret encryption keys only you hold. The guide backs up all three so they restore together, and brings an install back on empty services."
+      },
+      "upgrading": {
+        "title": "Upgrading",
+        "body": "The new release's <code>publiractl</code> brings the schema and the database roles forward before its processes start. A release works beside the one before it, so an upgrade to the next release can replace the processes one copy at a time while the install keeps serving."
+      },
+      "scaling": {
+        "title": "Scaling out",
+        "body": "Every process can run more than one copy once they share one Redis-compatible cache. <code>publira server</code> splits by the traffic it answers, <code>publira worker</code> by its queues, and a PostgreSQL replica can take the readers' catalog reads."
+      },
+      "deployments": {
+        "title": "Where it runs",
+        "body": "On one host with the Compose file each release publishes, on a Kubernetes cluster behind a Gateway or an Ingress, or as Amazon ECS services on AWS Fargate behind CloudFront and an Application Load Balancer."
+      }
+    },
+    "guides": {
+      "healthChecks": "Monitoring: health checks",
+      "alerts": "Monitoring: what to alert on",
+      "backup": "Backup and restore",
+      "upgrading": "Upgrading",
+      "scaling": "Scaling out",
+      "compose": "Docker Compose",
+      "kubernetes": "Kubernetes",
+      "ecs": "Amazon ECS on Fargate"
+    }
+  },
   "start": {
     "title": "Running an install",
     "lead": "An install runs from container images and one Compose file, and publiractl brings its database and its first tenant into service. The host needs Docker and nothing else.",
