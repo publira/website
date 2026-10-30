@@ -15,6 +15,8 @@ const handleI18nRouting = createMiddleware(routing);
 const unversionedDocs =
   /^\/[^/]+\/docs\/(?!(?:next|latest|images|v\d+\.\d+)(?:\/|$))/u;
 
+const latestDocs = /^\/[^/]+\/docs\/latest(?:\/|$)/u;
+
 const proxy = (request: NextRequest) => {
   const response = handleI18nRouting(request);
 
@@ -26,16 +28,24 @@ const proxy = (request: NextRequest) => {
     response.headers.get("x-middleware-rewrite") ?? request.url
   );
 
-  if (!unversionedDocs.test(url.pathname)) {
+  const unversioned = unversionedDocs.test(url.pathname);
+
+  if (!unversioned && !latestDocs.test(url.pathname)) {
+    return response;
+  }
+
+  // next-intl's `Link` alternates name the URL as requested, while a `latest`
+  // page names the versioned ones.
+  response.headers.delete("link");
+
+  if (!unversioned) {
     return response;
   }
 
   url.pathname = url.pathname.replace(unversionedDocs, "$&latest/");
   // next-intl passes a path that names its locale through rather than
-  // rewriting it. Its other headers, such as the locale, are kept, but not
-  // its `Link` alternates: the page names the versioned ones.
+  // rewriting it. Its other headers, such as the locale, are kept.
   response.headers.delete("x-middleware-next");
-  response.headers.delete("link");
 
   return NextResponse.rewrite(url, { headers: response.headers });
 };
