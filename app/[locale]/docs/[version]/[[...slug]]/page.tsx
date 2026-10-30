@@ -125,7 +125,7 @@ const Docs = async ({ params }: Props) => {
 
   if (found) {
     return (
-      <DocsPage language={found.language} page={found.page} version={version} />
+      <DocsPage language={found.language} page={found.page} version={segment} />
     );
   }
 

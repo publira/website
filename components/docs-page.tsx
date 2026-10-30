@@ -19,6 +19,7 @@ import {
   getDocsPath,
   getDocsVersions,
   getLocalizedDocsPath,
+  latestVersion,
   nextVersion,
 } from "#lib/docs";
 import type { DocsNavigationPage, DocsPage as DocsPageData } from "#lib/docs";
@@ -272,16 +273,26 @@ interface DocsPageProps {
   /** The locale the page is written in: the source locale's until translated. */
   readonly language: Locale;
   readonly page: DocsPageData;
+  /**
+   * The version the URL names: `latest` for the newest release reached
+   * without one, whose links to its pages then name no version either.
+   */
   readonly version: string;
 }
 
-export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
+export const DocsPage = async ({
+  language,
+  page,
+  version: linkVersion,
+}: DocsPageProps) => {
   const [locale, t, latest, versions] = await Promise.all([
     getRootLocale(),
     getTranslations(),
     getCurrentVersion(),
     getDocsVersions(),
   ]);
+
+  const version = linkVersion === latestVersion ? latest : linkVersion;
 
   const [pageLocales, pages] = await Promise.all([
     Promise.all(
@@ -396,7 +407,7 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
                 new Set([...ancestors, page].map((crumb) => crumb.path))
               }
               items={toNavigation(pages)}
-              version={version}
+              version={linkVersion}
             />
           </DocsNavigation>
         </aside>
@@ -433,7 +444,7 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
                 <PageDate date={page.updated} kind="updated" />
               ) : null}
             </p>
-            <DocsContent slug={page.slug} version={version} />
+            <DocsContent slug={page.slug} version={linkVersion} />
           </article>
           {previous || next ? (
             <nav
@@ -445,7 +456,7 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
                   label={t("docs.previousPage")}
                   page={previous}
                   rel="prev"
-                  version={version}
+                  version={linkVersion}
                 />
               ) : null}
               {next ? (
@@ -453,7 +464,7 @@ export const DocsPage = async ({ language, page, version }: DocsPageProps) => {
                   label={t("docs.nextPage")}
                   page={next}
                   rel="next"
-                  version={version}
+                  version={linkVersion}
                 />
               ) : null}
             </nav>

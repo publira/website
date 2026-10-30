@@ -698,15 +698,18 @@ const getUnresolvedDocsPath = async () => {
 };
 
 /**
- * The URL of a page in the newest version, or of `/docs` when that version
- * has no page at `slug`, as after a page is renamed, or cannot be read.
+ * The URL of a page in the newest version, without the version, or `/docs`
+ * when that version has no page at `slug`, as after a page is renamed, or
+ * cannot be read.
  */
 export const getCurrentDocsPath = async (slug: readonly string[]) => {
   try {
     const version = await getCurrentVersion();
     const tree = await getDocsTree(version, docsSourceLocale);
 
-    return tree && findPage(tree, slug) ? getDocsPath(version, slug) : "/docs";
+    return tree && findPage(tree, slug)
+      ? getDocsPath(latestVersion, slug)
+      : "/docs";
   } catch (error) {
     unstable_rethrow(error);
     console.error(`Linking /docs for ${slug.join("/")}:`, error);

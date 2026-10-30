@@ -8,14 +8,8 @@ import { routing } from "#i18n/routing";
 // `[locale]` as English while its URL stays `/`.
 const handleI18nRouting = createMiddleware(routing);
 
-// A docs page without a version, `/<locale>/docs/<slug>` once the locale is
-// resolved, is the newest release's, which `[version]` serves as `latest`
-// (`latestVersion` in `lib/docs.ts`). The release is not read here, since
-// proxy cannot use the cache that holds it.
-const unversionedDocs =
-  /^\/[^/]+\/docs\/(?!(?:next|latest|images|v\d+\.\d+)(?:\/|$))/u;
-
-const latestDocs = /^\/[^/]+\/docs\/latest(?:\/|$)/u;
+// The segments below `/docs` that are not a page's.
+const docsSegment = /^(?:next|latest|images|v\d+\.\d+)$/u;
 
 const proxy = (request: NextRequest) => {
   const response = handleI18nRouting(request);
@@ -28,9 +22,20 @@ const proxy = (request: NextRequest) => {
     response.headers.get("x-middleware-rewrite") ?? request.url
   );
 
-  const unversioned = unversionedDocs.test(url.pathname);
+  // `/<locale>/docs/...` once the locale is resolved.
+  const [, locale, root, ...rest] = url.pathname.split("/");
+  const [segment = ""] = rest;
 
-  if (!unversioned && !latestDocs.test(url.pathname)) {
+  if (root !== "docs") {
+    return response;
+  }
+
+  // A docs URL without a version is the newest release's, which `[version]`
+  // serves as `latest` (`latestVersion` in `lib/docs.ts`). The release is not
+  // read here, since proxy cannot use the cache that holds it.
+  const unversioned = !docsSegment.test(segment);
+
+  if (!unversioned && segment !== "latest") {
     return response;
   }
 
@@ -42,7 +47,7 @@ const proxy = (request: NextRequest) => {
     return response;
   }
 
-  url.pathname = url.pathname.replace(unversionedDocs, "$&latest/");
+  url.pathname = ["", locale, root, "latest", ...rest].join("/");
   // next-intl passes a path that names its locale through rather than
   // rewriting it. Its other headers, such as the locale, are kept.
   response.headers.delete("x-middleware-next");
