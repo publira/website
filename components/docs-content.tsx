@@ -17,8 +17,10 @@ import {
   resolveDocsImage,
   findPage,
   getBlob,
+  getCurrentVersion,
   getDocsTree,
   getDocsImageSize,
+  latestVersion,
   nextVersion,
   resolveDocsUrl,
 } from "#lib/docs";
@@ -143,18 +145,25 @@ const docsComponents = { ...mdxComponents, img: DocsImage };
 
 interface DocsContentProps {
   readonly slug: readonly string[];
+  /** `latest` reads the newest release, whose links then name no version. */
   readonly version: string;
 }
 
 /** A page's body, compiled as the site compiles `content/<locale>/*.md`. */
-export const DocsContent = async ({ slug, version }: DocsContentProps) => {
+export const DocsContent = async ({
+  slug,
+  version: linkVersion,
+}: DocsContentProps) => {
   "use cache";
   cacheLife("max");
   cacheTag(
-    version === nextVersion ? docsCacheTags.next : docsCacheTags.releases
+    linkVersion === nextVersion ? docsCacheTags.next : docsCacheTags.releases
   );
 
-  const locale = await getRootLocale();
+  const [locale, version] = await Promise.all([
+    getRootLocale(),
+    linkVersion === latestVersion ? getCurrentVersion() : linkVersion,
+  ]);
 
   const [tree, source] = await Promise.all([
     getDocsTree(version, locale),
@@ -185,7 +194,7 @@ export const DocsContent = async ({ slug, version }: DocsContentProps) => {
         remarkFrontmatter,
         remarkGfm,
         remarkDocsImageSizes(trees, page.path),
-        remarkDocsUrls(locale, trees, version, page.path),
+        remarkDocsUrls(locale, trees, linkVersion, page.path),
         remarkPlaintextFences,
         remarkSugarHigh,
       ],

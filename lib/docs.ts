@@ -27,6 +27,12 @@ const nextBranch = "main";
 
 export const nextVersion = "next";
 
+/**
+ * The newest release, at the URLs without a version (`/docs/<slug>`) that
+ * `proxy.ts` rewrites to it.
+ */
+export const latestVersion = "latest";
+
 /** The cache tags the webhook revalidates. */
 export const docsCacheTags = {
   next: "docs-next",
@@ -643,10 +649,10 @@ export const getDocsPageParams = async (locale: Locale) => {
 
 /**
  * The URL of a page, or of a version's root with no slug, without the locale
- * that `Link` adds.
+ * that `Link` adds. `latest` names no version.
  */
 export const getDocsPath = (version: string, slug: readonly string[] = []) =>
-  ["/docs", version, ...slug].join("/");
+  ["/docs", ...(version === latestVersion ? [] : [version]), ...slug].join("/");
 
 /** The URL of a page in a locale. */
 export const getLocalizedDocsPath = (
@@ -692,15 +698,18 @@ const getUnresolvedDocsPath = async () => {
 };
 
 /**
- * The URL of a page in the newest version, or of `/docs` when that version
- * has no page at `slug`, as after a page is renamed, or cannot be read.
+ * The URL of a page in the newest version, without the version, or `/docs`
+ * when that version has no page at `slug`, as after a page is renamed, or
+ * cannot be read.
  */
 export const getCurrentDocsPath = async (slug: readonly string[]) => {
   try {
     const version = await getCurrentVersion();
     const tree = await getDocsTree(version, docsSourceLocale);
 
-    return tree && findPage(tree, slug) ? getDocsPath(version, slug) : "/docs";
+    return tree && findPage(tree, slug)
+      ? getDocsPath(latestVersion, slug)
+      : "/docs";
   } catch (error) {
     unstable_rethrow(error);
     console.error(`Linking /docs for ${slug.join("/")}:`, error);
