@@ -19,6 +19,7 @@ import {
   getDocsVersions,
   getLocalizedDocsPath,
   latestVersion,
+  nextVersion,
 } from "#lib/docs";
 
 type Props = PageProps<"/[locale]/docs/[version]/[[...slug]]">;
@@ -86,11 +87,13 @@ export const generateMetadata = async ({
   const { language, page } = found;
   const path = getDocsPath(version, slug);
 
-  // Every version but the newest is left out of search, and points at the
-  // same page in the newest version when it has one. An untranslated page
-  // points at the source locale's, which alone is indexed.
+  // `next` is left out of search, and points at the same page in the newest
+  // release when it has one. An untranslated page points at the source
+  // locale's, which alone is indexed.
+  const indexed = version !== nextVersion;
+
   const [latestTree, locales] = await Promise.all([
-    version === latest ? null : getDocsTree(latest, language),
+    indexed ? null : getDocsTree(latest, language),
     getDocsPageLocales(version, slug),
   ]);
 
@@ -115,7 +118,7 @@ export const generateMetadata = async ({
       publishedTime: page.published,
       type: "article",
     },
-    robots: version === latest ? undefined : { index: false },
+    robots: indexed ? undefined : { index: false },
     title: page.title,
   };
 };
