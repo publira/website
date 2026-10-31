@@ -20,11 +20,12 @@ import {
   getCurrentVersion,
   getDocsTree,
   getDocsImageSize,
+  getDocsVersions,
   latestVersion,
   nextVersion,
   resolveDocsUrl,
 } from "#lib/docs";
-import type { DocsTrees } from "#lib/docs";
+import type { DocsTrees, DocsVersion } from "#lib/docs";
 
 import { imageClassName, mdxComponents } from "../mdx-components";
 
@@ -45,9 +46,12 @@ const visit = (node: MarkdownNode, visitor: (node: MarkdownNode) => void) => {
   }
 };
 
-/** Points the relative links and images of the page at `from` at the site. */
+/**
+ * Points the relative links and images of the page at `from` at the site, and
+ * its links to the repository's files at the version's ref.
+ */
 const remarkDocsUrls =
-  (locale: Locale, trees: DocsTrees, version: string, from: string) =>
+  (locale: Locale, trees: DocsTrees, version: DocsVersion, from: string) =>
   () =>
   (root: MarkdownNode) =>
     visit(root, (node) => {
@@ -160,10 +164,17 @@ export const DocsContent = async ({
     linkVersion === nextVersion ? docsCacheTags.next : docsCacheTags.releases
   );
 
-  const [locale, version] = await Promise.all([
+  const [locale, version, versions] = await Promise.all([
     getRootLocale(),
     linkVersion === latestVersion ? getCurrentVersion() : linkVersion,
+    getDocsVersions(),
   ]);
+
+  const served = versions.find(({ name }) => name === version);
+
+  if (!served) {
+    notFound();
+  }
 
   const [tree, source] = await Promise.all([
     getDocsTree(version, locale),
@@ -194,7 +205,12 @@ export const DocsContent = async ({
         remarkFrontmatter,
         remarkGfm,
         remarkDocsImageSizes(trees, page.path),
-        remarkDocsUrls(locale, trees, linkVersion, page.path),
+        remarkDocsUrls(
+          locale,
+          trees,
+          { name: linkVersion, ref: served.ref },
+          page.path
+        ),
         remarkPlaintextFences,
         remarkSugarHigh,
       ],

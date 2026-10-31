@@ -50,7 +50,7 @@ const imageTypes = new Map([
   [".webp", "image/webp"],
 ]);
 
-interface DocsVersion {
+export interface DocsVersion {
   /** `next`, or `vX.Y`: the URL segment. */
   readonly name: string;
   /** The branch or tag the version's pages are read from. */
@@ -760,22 +760,29 @@ const findImage = (trees: DocsTrees, entry: string | undefined) => {
   return null;
 };
 
+// The contract has the pages link the repository's files at `main`.
+const sourceUrl = new RegExp(
+  `^(https://github\\.com/${docsRepository}/(?:blob|tree)/)${nextBranch}/`,
+  "u"
+);
+
 /**
- * Where a relative URL in the page at `from` leads on the site: a `.md` file
- * to its page in `locale`, translated or not, and an image to the URL that
- * names its blob. Any other URL is left alone.
+ * Where a URL in the page at `from` leads: a relative `.md` file to its page
+ * in `locale`, translated or not, a relative image to the URL that names its
+ * blob, and a file or directory of the repository to it at the version's ref.
+ * Any other URL is left alone.
  */
 export const resolveDocsUrl = (
   locale: Locale,
   trees: DocsTrees,
-  version: string,
+  version: DocsVersion,
   from: string,
   url: string
 ) => {
   const resolved = resolveEntry(from, url);
 
   if (!resolved) {
-    return url;
+    return url.replace(sourceUrl, `$1${version.ref}/`);
   }
 
   // The query or fragment is kept: a page's heading, or an SVG's view.
@@ -786,7 +793,7 @@ export const resolveDocsUrl = (
     .find((candidate) => candidate.path === entry);
 
   if (page) {
-    return `${getLocalizedDocsPath(locale, version, page.slug)}${suffix}`;
+    return `${getLocalizedDocsPath(locale, version.name, page.slug)}${suffix}`;
   }
 
   const found = findImage(trees, entry);
