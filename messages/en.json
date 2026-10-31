@@ -332,10 +332,11 @@
       },
       "payments": {
         "title": "Payments",
-        "caption": "The provider this tenant's web checkout runs through — Stripe or PAY.JP — with its keys, and the App Store and Google Play credentials its app sells through. A secret is write-only: coming back, an editor sees its state and a mask, never the value.",
+        "caption": "The provider this tenant's web checkout runs through — Stripe or PAY.JP — with its keys, the App Store and Google Play credentials its app sells through, and the subscription plans it sells on Stripe, each listed with its price, whether it opens the whole catalog, some labels, or some series, and how many readers hold it. A secret is write-only: coming back, an editor sees its state and a mask, never the value.",
         "views": {
           "checkout": "The web checkout",
-          "inApp": "In-app purchase"
+          "inApp": "In-app purchase",
+          "plans": "Subscription plans"
         }
       },
       "signIn": {
@@ -374,6 +375,7 @@
         "title": "Reports and royalties",
         "caption": "Revenue, audience, how many members finish each episode and the page they leave it at, and each week's sign-ups followed to a purchase. A month's sales, refunds, and what each author is owed are cut at the month's edges in the tenant's own time zone, and closing the month turns them into a statement that no later sale changes and that downloads as CSV, with a refund recorded after the close carried into the next one as an adjustment.",
         "views": {
+          "revenue": "Revenue",
           "readThrough": "Read-through",
           "royalties": "An open month",
           "statement": "A closed statement"
