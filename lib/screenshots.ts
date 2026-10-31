@@ -17,11 +17,13 @@ import adminPageTranslations from "#assets/screenshots/admin/page-translations.p
 import adminPaymentCheckout from "#assets/screenshots/admin/payment-checkout.png";
 import adminPaymentInApp from "#assets/screenshots/admin/payment-in-app.png";
 import adminReadThrough from "#assets/screenshots/admin/read-through.png";
+import adminRevenue from "#assets/screenshots/admin/revenue.png";
 import adminRoyalties from "#assets/screenshots/admin/royalties.png";
 import adminRoyaltyStatement from "#assets/screenshots/admin/royalty-statement.png";
 import adminSeriesForm from "#assets/screenshots/admin/series-form.png";
 import adminSeriesList from "#assets/screenshots/admin/series-list.png";
 import adminSignIn from "#assets/screenshots/admin/sign-in.png";
+import adminSubscriptionPlans from "#assets/screenshots/admin/subscription-plans.png";
 import adminThemePreview from "#assets/screenshots/admin/theme-preview.png";
 import adminTheme from "#assets/screenshots/admin/theme.png";
 import hostAuthor from "#assets/screenshots/host/author.png";
@@ -150,6 +152,7 @@ const groups = {
       [
         ["admin.payments.views.checkout", adminPaymentCheckout],
         ["admin.payments.views.inApp", adminPaymentInApp],
+        ["admin.payments.views.plans", adminSubscriptionPlans],
       ],
     ],
     [
@@ -183,6 +186,7 @@ const groups = {
     [
       "admin.reports",
       [
+        ["admin.reports.views.revenue", adminRevenue],
         ["admin.reports.views.readThrough", adminReadThrough],
         ["admin.reports.views.royalties", adminRoyalties],
         ["admin.reports.views.statement", adminRoyaltyStatement],
