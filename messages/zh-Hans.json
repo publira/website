@@ -718,8 +718,8 @@
         "description": "Publira 文档的所有版本：main 上的开发版本和各个发布版本。"
       },
       "lead": "文档的所有版本。每个发布版本的页面说明该版本的行为。",
-      "next": "<code>main</code> 上的开发版本，可能包含尚未发布的更改。",
-      "latest": "最新发布版本。"
+      "next": "<code>main</code> 上的开发版本",
+      "latest": "最新发布版本"
     }
   },
   "codeBlock": {

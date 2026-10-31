@@ -72,21 +72,25 @@ const DocsVersions = async () => {
         <p className="text-muted-foreground mt-4 leading-relaxed">
           {t("docs.versions.lead")}
         </p>
-        <ul className="border-border divide-border mt-10 divide-y border-y">
+        <ul className="mt-10 space-y-3">
           {versions.map(({ name }) => (
-            <li className="grid grid-cols-[4rem_1fr] gap-x-6 py-4" key={name}>
+            <li className="flex flex-wrap items-baseline gap-x-3" key={name}>
               <Link
-                className="text-primary w-fit font-mono underline-offset-4 hover:underline"
+                className="text-primary font-mono underline-offset-4 hover:underline"
                 href={getDocsPath(name)}
               >
                 {name}
               </Link>
-              <span className="text-muted-foreground text-sm leading-6">
-                {name === nextVersion
-                  ? t.rich("docs.versions.next", { code })
-                  : null}
-                {name === latest ? t("docs.versions.latest") : null}
-              </span>
+              {name === nextVersion ? (
+                <span className="text-muted-foreground text-sm">
+                  {t.rich("docs.versions.next", { code })}
+                </span>
+              ) : null}
+              {name === latest ? (
+                <span className="text-muted-foreground text-sm">
+                  {t("docs.versions.latest")}
+                </span>
+              ) : null}
             </li>
           ))}
         </ul>
