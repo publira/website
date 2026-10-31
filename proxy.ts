@@ -9,7 +9,7 @@ import { routing } from "#i18n/routing";
 const handleI18nRouting = createMiddleware(routing);
 
 // The segments below `/docs` that are not a page's.
-const docsSegment = /^(?:next|latest|images|v\d+\.\d+)$/u;
+const docsSegment = /^(?:next|latest|images|versions|v\d+\.\d+)$/u;
 
 const proxy = (request: NextRequest) => {
   const response = handleI18nRouting(request);

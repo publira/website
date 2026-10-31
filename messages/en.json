@@ -704,13 +704,27 @@
     "previousPage": "Previous",
     "nextPage": "Next",
     "versionLabel": "Version",
+    "allVersions": "All versions",
     "published": "Published <time>{date}</time>",
     "updated": "Updated <time>{date}</time>",
     "nextNotice": "This page describes the development version on <code>main</code>, which may include changes that are not released yet. For the newest release, see <link>the documentation for {latest}</link>.",
     "olderNotice": "This page describes {version}, which is not the newest release. See <link>the documentation for {latest}</link>.",
     "untranslatedNotice": "This page is not translated into your language yet, so it is shown in English.",
     "translatedInVersionNotice": "This page is not translated into your language in this version, so it is shown in English. <link>{version, select, next {The development version} other {The documentation for {version}}}</link> has it in your language.",
-    "translationPlannedNotice": "This page is not translated into your language yet, so it is shown in English. The plan to translate it is in <link>an issue on GitHub</link>."
+    "translationPlannedNotice": "This page is not translated into your language yet, so it is shown in English. The plan to translate it is in <link>an issue on GitHub</link>.",
+    "versions": {
+      "metadata": {
+        "title": "Documentation versions",
+        "description": "Every version of the Publira documentation: the development version on main and each release."
+      },
+      "lead": "Every version of the documentation. Each release's pages describe how that release behaves.",
+      "next": "The development version on <code>main</code>, which may include changes that are not released yet.",
+      "latest": "The newest release, and the only one that receives fixes.",
+      "olderTitle": "Older versions",
+      "previous": "The release before {latest}. It stopped receiving fixes when {latest} was released.",
+      "lastOfMajor": "The last {major}.x release. It no longer receives fixes.",
+      "olderNote": "These releases no longer receive fixes."
+    }
   },
   "codeBlock": {
     "copyLabel": "Copy code",
