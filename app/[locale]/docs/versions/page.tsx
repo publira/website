@@ -13,6 +13,8 @@ import {
   getCurrentVersion,
   getDocsPath,
   getDocsVersions,
+  getMajorVersion,
+  getMenuVersions,
   nextVersion,
 } from "#lib/docs";
 import { getPageUrl } from "#lib/structured-data";
@@ -44,6 +46,26 @@ const DocsVersions = async () => {
 
   const title = t("docs.versions.metadata.title");
 
+  // The versions the menu lists, described, then the rest.
+  const recent = new Set(getMenuVersions(versions, latest));
+  const older = versions.filter((version) => !recent.has(version));
+
+  const describe = (name: string) => {
+    if (name === nextVersion) {
+      return t.rich("docs.versions.next", { code });
+    }
+
+    if (name === latest) {
+      return t("docs.versions.latest");
+    }
+
+    const major = getMajorVersion(name);
+
+    return major === getMajorVersion(latest)
+      ? t("docs.versions.previous", { latest })
+      : t("docs.versions.lastOfMajor", { major });
+  };
+
   return (
     <>
       <JsonLd
@@ -72,28 +94,43 @@ const DocsVersions = async () => {
         <p className="text-muted-foreground mt-4 leading-relaxed">
           {t("docs.versions.lead")}
         </p>
-        <ul className="mt-10 space-y-3">
-          {versions.map(({ name }) => (
-            <li className="flex flex-wrap items-baseline gap-x-3" key={name}>
+        <ul className="border-border divide-border mt-10 divide-y border-y">
+          {[...recent].map(({ name }) => (
+            <li className="grid grid-cols-[4rem_1fr] gap-x-6 py-4" key={name}>
               <Link
-                className="text-primary font-mono underline-offset-4 hover:underline"
+                className="text-primary w-fit font-mono underline-offset-4 hover:underline"
                 href={getDocsPath(name)}
               >
                 {name}
               </Link>
-              {name === nextVersion ? (
-                <span className="text-muted-foreground text-sm">
-                  {t.rich("docs.versions.next", { code })}
-                </span>
-              ) : null}
-              {name === latest ? (
-                <span className="text-muted-foreground text-sm">
-                  {t("docs.versions.latest")}
-                </span>
-              ) : null}
+              <span className="text-muted-foreground text-sm leading-6">
+                {describe(name)}
+              </span>
             </li>
           ))}
         </ul>
+        {older.length > 0 ? (
+          <section className="mt-12">
+            <h2 className="font-display text-foreground text-xl">
+              {t("docs.versions.olderTitle")}
+            </h2>
+            <p className="text-muted-foreground mt-2 text-sm">
+              {t("docs.versions.olderNote")}
+            </p>
+            <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+              {older.map(({ name }) => (
+                <li key={name}>
+                  <Link
+                    className="text-primary font-mono underline-offset-4 hover:underline"
+                    href={getDocsPath(name)}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
       </main>
       <SiteFooter />
     </>

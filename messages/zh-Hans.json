@@ -718,8 +718,12 @@
         "description": "Publira 文档的所有版本：main 上的开发版本和各个发布版本。"
       },
       "lead": "文档的所有版本。每个发布版本的页面说明该版本的行为。",
-      "next": "<code>main</code> 上的开发版本",
-      "latest": "最新发布版本"
+      "next": "<code>main</code> 上的开发版本，可能包含尚未发布的更改。",
+      "latest": "最新发布版本，也是唯一获得修复的版本。",
+      "olderTitle": "更早的版本",
+      "previous": "{latest} 的上一个发布版本，{latest} 发布后不再获得修复。",
+      "lastOfMajor": "{major}.x 的最后一个发布版本，不再获得修复。",
+      "olderNote": "这些发布版本不再获得修复。"
     }
   },
   "codeBlock": {

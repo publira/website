@@ -718,8 +718,12 @@
         "description": "Publira 文件的所有版本：main 上的開發版本和各個發布版本。"
       },
       "lead": "文件的所有版本。每個發布版本的頁面說明該版本的行為。",
-      "next": "<code>main</code> 上的開發版本",
-      "latest": "最新發布版本"
+      "next": "<code>main</code> 上的開發版本，可能包含尚未發布的變更。",
+      "latest": "最新發布版本，也是唯一獲得修正的版本。",
+      "olderTitle": "更早的版本",
+      "previous": "{latest} 的上一個發布版本，{latest} 發布後不再獲得修正。",
+      "lastOfMajor": "{major}.x 的最後一個發布版本，不再獲得修正。",
+      "olderNote": "這些發布版本不再獲得修正。"
     }
   },
   "codeBlock": {

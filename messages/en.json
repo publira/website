@@ -718,8 +718,12 @@
         "description": "Every version of the Publira documentation: the development version on main and each release."
       },
       "lead": "Every version of the documentation. Each release's pages describe how that release behaves.",
-      "next": "The development version on <code>main</code>",
-      "latest": "The newest release"
+      "next": "The development version on <code>main</code>, which may include changes that are not released yet.",
+      "latest": "The newest release, and the only one that receives fixes.",
+      "olderTitle": "Older versions",
+      "previous": "The release before {latest}. It stopped receiving fixes when {latest} was released.",
+      "lastOfMajor": "The last {major}.x release. It no longer receives fixes.",
+      "olderNote": "These releases no longer receive fixes."
     }
   },
   "codeBlock": {

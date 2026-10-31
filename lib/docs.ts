@@ -387,6 +387,10 @@ export const getCurrentVersion = async () => {
   return newest?.name ?? nextVersion;
 };
 
+/** The major version of a release: `0` for `v0.6`. */
+export const getMajorVersion = (release: string) =>
+  release.slice(1, release.indexOf("."));
+
 /**
  * The versions the version menu lists, from `getDocsVersions()`: `next`, the
  * newest two releases of the newest major version, the newest of each older
@@ -403,8 +407,7 @@ export const getMenuVersions = <Version extends { name: string }>(
       return true;
     }
 
-    // `v0.6` is major version 0.
-    const major = name.slice(0, name.indexOf("."));
+    const major = getMajorVersion(name);
     const count = counts.get(major) ?? 0;
     counts.set(major, count + 1);
 
