@@ -26,6 +26,7 @@ export const pages = [
   "/",
   "/libraries",
   "/screenshots",
+  "/docs/versions",
   "/privacy",
   "/terms",
 ] as const;

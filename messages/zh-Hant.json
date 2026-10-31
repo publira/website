@@ -704,13 +704,23 @@
     "previousPage": "上一頁",
     "nextPage": "下一頁",
     "versionLabel": "版本",
+    "allVersions": "所有版本",
     "published": "發布於 <time>{date}</time>",
     "updated": "更新於 <time>{date}</time>",
     "nextNotice": "本頁說明的是 <code>main</code> 上的開發版本，可能包含尚未發布的變更。最新發布版本請參閱<link>{latest} 的文件</link>。",
     "olderNotice": "本頁說明的是 {version}，並非最新發布版本。最新發布版本請參閱<link>{latest} 的文件</link>。",
     "untranslatedNotice": "本頁尚未翻譯成中文，因此以英文顯示。",
     "translatedInVersionNotice": "此版本的本頁尚未翻譯成中文，因此以英文顯示。中文譯文請參閱<link>{version, select, next {開發版本} other {{version}}} 的文件</link>。",
-    "translationPlannedNotice": "本頁尚未翻譯成中文，因此以英文顯示。翻譯計畫可在 <link>GitHub 議題</link>中查看。"
+    "translationPlannedNotice": "本頁尚未翻譯成中文，因此以英文顯示。翻譯計畫可在 <link>GitHub 議題</link>中查看。",
+    "versions": {
+      "metadata": {
+        "title": "文件版本",
+        "description": "Publira 文件的所有版本：main 上的開發版本和各個發布版本。"
+      },
+      "lead": "文件的所有版本。每個發布版本的頁面說明該版本的行為。",
+      "next": "<code>main</code> 上的開發版本，可能包含尚未發布的變更。",
+      "latest": "最新發布版本。"
+    }
   },
   "codeBlock": {
     "copyLabel": "複製程式碼",

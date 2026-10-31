@@ -10,6 +10,7 @@ import { parse } from "yaml";
 import { getPathname } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
 import { getGitHubToken } from "#lib/github-app";
+import type { Page } from "#lib/site";
 
 /** The repository whose `docs/<locale>/` the documentation is read from. */
 export const docsRepository = "publira/publira";
@@ -32,6 +33,12 @@ export const nextVersion = "next";
  * `proxy.ts` rewrites to it.
  */
 export const latestVersion = "latest";
+
+/**
+ * The list of every version. `proxy.ts` keeps `versions` from naming a page
+ * of the newest release.
+ */
+export const docsVersionsPath = "/docs/versions" satisfies Page;
 
 /** The cache tags the webhook revalidates. */
 export const docsCacheTags = {
@@ -378,6 +385,31 @@ export const getCurrentVersion = async () => {
   const [newest] = await getReleases();
 
   return newest?.name ?? nextVersion;
+};
+
+/**
+ * The versions the version menu lists, from `getDocsVersions()`: `next`, the
+ * newest two releases of the newest major version, the newest of each older
+ * one, and `current` wherever it falls. `/docs/versions` lists the rest.
+ */
+export const getMenuVersions = <Version extends { name: string }>(
+  versions: readonly Version[],
+  current: string
+) => {
+  const counts = new Map<string, number>();
+
+  return versions.filter(({ name }) => {
+    if (name === nextVersion) {
+      return true;
+    }
+
+    // `v0.6` is major version 0.
+    const major = name.slice(0, name.indexOf("."));
+    const count = counts.get(major) ?? 0;
+    counts.set(major, count + 1);
+
+    return count < (counts.size === 1 ? 2 : 1) || name === current;
+  });
 };
 
 const numberedName = /^[1-9]\d*-[a-z\d]+(?:-[a-z\d]+)*$/u;

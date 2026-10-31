@@ -12,6 +12,7 @@ import { getRootLocale } from "#i18n/locale";
 import { Link } from "#i18n/navigation";
 import {
   docsSourceLocale,
+  docsVersionsPath,
   findPage,
   getCurrentVersion,
   getDocsNavigation,
@@ -19,6 +20,7 @@ import {
   getDocsPath,
   getDocsVersions,
   getLocalizedDocsPath,
+  getMenuVersions,
   latestVersion,
   nextVersion,
 } from "#lib/docs";
@@ -90,21 +92,31 @@ const NavigationList = ({
 );
 
 interface VersionMenuProps {
+  readonly allVersionsLabel: string;
   readonly current: string;
   readonly label: string;
   readonly slug: readonly string[];
   readonly versions: readonly { hasPage: boolean; name: string }[];
 }
 
-/** Every version, each leading to this page, or to its root without one. */
-const VersionMenu = ({ current, label, slug, versions }: VersionMenuProps) => (
+/**
+ * The recent versions, each leading to this page, or to its root without one,
+ * and a link to every version.
+ */
+const VersionMenu = ({
+  allVersionsLabel,
+  current,
+  label,
+  slug,
+  versions,
+}: VersionMenuProps) => (
   <Menu
     align="left"
     label={`${label}: ${current}`}
     summary={<span className="font-mono">{current}</span>}
     summaryClassName="border-border text-foreground hover:bg-accent w-fit rounded-md border px-3 py-1.5"
   >
-    {versions.map(({ hasPage, name }) => (
+    {getMenuVersions(versions, current).map(({ hasPage, name }) => (
       <li key={name}>
         <Link
           aria-current={name === current ? "page" : undefined}
@@ -115,6 +127,14 @@ const VersionMenu = ({ current, label, slug, versions }: VersionMenuProps) => (
         </Link>
       </li>
     ))}
+    <li className="border-border mt-1 border-t pt-1">
+      <Link
+        className="hover:bg-accent text-foreground block px-4 py-2"
+        href={docsVersionsPath}
+      >
+        {allVersionsLabel}
+      </Link>
+    </li>
   </Menu>
 );
 
@@ -390,6 +410,7 @@ export const DocsPage = async ({
       <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16">
         <aside className="border-border border-b py-8 lg:border-b-0 lg:py-20">
           <VersionMenu
+            allVersionsLabel={t("docs.allVersions")}
             current={version}
             label={t("docs.versionLabel")}
             slug={page.slug}
