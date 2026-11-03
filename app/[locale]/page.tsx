@@ -73,6 +73,7 @@ const platformFeatures = [
   "comments",
   "notifications",
   "mail",
+  "readerData",
   "localization",
   "engagement",
   "auditLog",

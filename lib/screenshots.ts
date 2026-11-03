@@ -2,11 +2,13 @@ import type { Messages } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import type { StaticImageData } from "next/image";
 
+import adminAnnouncementAudience from "#assets/screenshots/admin/announcement-audience.png";
 import adminAnnouncements from "#assets/screenshots/admin/announcements.png";
 import adminAppLinks from "#assets/screenshots/admin/app-links.png";
 import adminAuditLog from "#assets/screenshots/admin/audit-log.png";
 import adminAuthorAccounts from "#assets/screenshots/admin/author-accounts.png";
 import adminAuthorRoles from "#assets/screenshots/admin/author-roles.png";
+import adminCalendar from "#assets/screenshots/admin/calendar.png";
 import adminContactMessage from "#assets/screenshots/admin/contact-message.png";
 import adminContactMessages from "#assets/screenshots/admin/contact-messages.png";
 import adminDashboard from "#assets/screenshots/admin/dashboard.png";
@@ -16,6 +18,7 @@ import adminEpisodes from "#assets/screenshots/admin/episodes.png";
 import adminPageTranslations from "#assets/screenshots/admin/page-translations.png";
 import adminPaymentCheckout from "#assets/screenshots/admin/payment-checkout.png";
 import adminPaymentInApp from "#assets/screenshots/admin/payment-in-app.png";
+import adminPurchases from "#assets/screenshots/admin/purchases.png";
 import adminReadThrough from "#assets/screenshots/admin/read-through.png";
 import adminRevenue from "#assets/screenshots/admin/revenue.png";
 import adminRoyalties from "#assets/screenshots/admin/royalties.png";
@@ -26,6 +29,7 @@ import adminSignIn from "#assets/screenshots/admin/sign-in.png";
 import adminSubscriptionPlans from "#assets/screenshots/admin/subscription-plans.png";
 import adminThemePreview from "#assets/screenshots/admin/theme-preview.png";
 import adminTheme from "#assets/screenshots/admin/theme.png";
+import hostAuthorPages from "#assets/screenshots/host/author-pages.png";
 import hostAuthor from "#assets/screenshots/host/author.png";
 import hostAuthors from "#assets/screenshots/host/authors.png";
 import hostCatalog from "#assets/screenshots/host/catalog.png";
@@ -138,6 +142,7 @@ const groups = {
         ["admin.episodes.views.list", adminEpisodes],
         ["admin.episodes.views.schedule", adminEpisodeSchedule],
         ["admin.episodes.views.pages", adminEpisodePages],
+        ["admin.episodes.views.calendar", adminCalendar],
       ],
     ],
     [
@@ -153,6 +158,7 @@ const groups = {
         ["admin.payments.views.checkout", adminPaymentCheckout],
         ["admin.payments.views.inApp", adminPaymentInApp],
         ["admin.payments.views.plans", adminSubscriptionPlans],
+        ["admin.payments.views.purchases", adminPurchases],
       ],
     ],
     [
@@ -174,6 +180,7 @@ const groups = {
       [
         ["admin.site.views.pages", adminPageTranslations],
         ["admin.site.views.announcements", adminAnnouncements],
+        ["admin.site.views.audience", adminAnnouncementAudience],
       ],
     ],
     [
@@ -241,6 +248,7 @@ const groups = {
         ["host.account.views.myPage", hostMyPage],
         ["host.account.views.purchases", hostPurchases],
         ["host.account.views.notifications", hostNotificationSettings],
+        ["host.account.views.authorPages", hostAuthorPages],
       ],
     ],
   ],
