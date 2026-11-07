@@ -102,13 +102,15 @@ export const DocsSidebarNavigation = ({
   versionLabel,
   versions,
 }: DocsSidebarNavigationProps) => {
-  const base = getDocsPath(segment);
   const pathname = usePathname();
 
-  const current =
-    pathname === base || pathname.startsWith(`${base}/`)
-      ? pathname.slice(base.length + 1)
-      : "";
+  // The newest release is reached without a version, or as `/docs/latest`,
+  // which `proxy.ts` passes through.
+  const base = [`/docs/${segment}`, getDocsPath(segment)].find(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+
+  const current = base ? pathname.slice(base.length + 1) : "";
 
   const currentPage = pages.find(({ slug }) => slug.join("/") === current);
 
