@@ -152,8 +152,8 @@ const releaseRequest = () => {
   return next(null);
 };
 
-// Next.js stops a `"use cache"` function after 54 seconds, in a build or a
-// regeneration, so the retries wait less than that in all.
+// Next.js stops a `"use cache: remote"` function after 54 seconds, so the
+// retries wait less than that in all.
 const maxRetryWait = 45_000;
 
 /**

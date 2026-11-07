@@ -1,9 +1,9 @@
 import type { Locale } from "next-intl";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { cacheLife } from "next/cache";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { DocsContent } from "#components/docs-content";
 import { JsonLd } from "#components/json-ld";
 import { getRootLocale } from "#i18n/locale";
 import { Link } from "#i18n/navigation";
@@ -12,14 +12,16 @@ import {
   findPage,
   getCurrentVersion,
   getDocsNavigation,
+  getDocsPage,
   getDocsPath,
+  getDocsRedirect,
   getDocsVersions,
   getLocalizedDocsPath,
   hasDocsPage,
   latestVersion,
   nextVersion,
 } from "#lib/docs";
-import type { DocsNavigationPage, DocsPage as DocsPageData } from "#lib/docs";
+import type { DocsNavigationPage } from "#lib/docs";
 import { getAbsoluteUrl } from "#lib/site";
 import { getPageUrl, getWebSiteId, organizationId } from "#lib/structured-data";
 
@@ -189,10 +191,8 @@ const findTranslatedVersion = async (
   return findTranslatedVersion(rest, locale, slug);
 };
 
-interface DocsArticleProps {
-  /** The locale the page is written in: the source locale's until translated. */
-  readonly language: Locale;
-  readonly page: DocsPageData;
+interface DocsPartProps {
+  readonly slug: readonly string[];
   /**
    * The version the URL names: `latest` for the newest release reached
    * without one, whose links to its pages then name no version either.
@@ -200,33 +200,51 @@ interface DocsArticleProps {
   readonly version: string;
 }
 
-/** A docs page's notices, article, and links to the pages next to it. */
-export const DocsArticle = async ({
-  language,
-  page,
-  version: linkVersion,
-}: DocsArticleProps) => {
+/** The page a locale serves at the URL, with the version it is read from. */
+const findDocsPage = async ({ slug, version: segment }: DocsPartProps) => {
+  const [locale, latest] = await Promise.all([
+    getRootLocale(),
+    getCurrentVersion(),
+  ]);
+
+  const version = segment === latestVersion ? latest : segment;
+
+  return {
+    found: await getDocsPage(version, locale, slug),
+    latest,
+    locale,
+    version,
+  };
+};
+
+/** Where the page stands: an older version, or not yet translated. */
+export const DocsNotices = async (props: DocsPartProps) => {
   "use cache: remote";
   cacheLife("max");
 
-  const [locale, t, latest, versions] = await Promise.all([
-    getRootLocale(),
-    getTranslations(),
-    getCurrentVersion(),
+  const [{ found, latest, locale, version }, versions] = await Promise.all([
+    findDocsPage(props),
     getDocsVersions(),
   ]);
 
-  const version = linkVersion === latestVersion ? latest : linkVersion;
-  const translated = language === locale;
+  if (!found) {
+    return null;
+  }
+
+  const { page } = found;
+  const translated = found.language === locale;
+
+  if (version === latest && translated) {
+    return null;
+  }
 
   // Only an untranslated page points to a version with its translation: the
   // newest release that has one, or `next`. Failing both, the locale is yet
   // to be translated when `next` has the page at all.
-  const [pages, translatedVersion, translationPlanned] = await Promise.all([
-    getDocsNavigation(version, locale),
-    translated
-      ? undefined
-      : findTranslatedVersion(
+  const [translatedVersion, translationPlanned] = translated
+    ? [undefined, false]
+    : await Promise.all([
+        findTranslatedVersion(
           [
             ...versions.flatMap(({ name }) =>
               name === nextVersion ? [] : [name]
@@ -236,9 +254,45 @@ export const DocsArticle = async ({
           locale,
           page.slug
         ),
-    !translated && hasDocsPage(nextVersion, docsSourceLocale, page.slug),
+        hasDocsPage(nextVersion, docsSourceLocale, page.slug),
+      ]);
+
+  return (
+    <div className="mb-8 space-y-3">
+      {version === latest ? null : (
+        <VersionNotice latest={latest} version={version} />
+      )}
+      {translated ? null : (
+        <TranslationNotice
+          planned={translationPlanned}
+          slug={page.slug}
+          translatedVersion={translatedVersion}
+        />
+      )}
+    </div>
+  );
+};
+
+/** The title, the dates, and the page's structured data. */
+const DocsHeadingView = async ({
+  slug,
+  version: linkVersion,
+}: DocsPartProps) => {
+  "use cache: remote";
+  cacheLife("max");
+
+  const [{ found, locale, version }, t] = await Promise.all([
+    findDocsPage({ slug, version: linkVersion }),
+    getTranslations(),
   ]);
 
+  if (!found) {
+    return null;
+  }
+
+  const { language, page } = found;
+  const translated = language === locale;
+  const pages = await getDocsNavigation(version, locale);
   const url = getAbsoluteUrl(getLocalizedDocsPath(locale, version, page.slug));
 
   // The directories' pages above this one.
@@ -250,12 +304,10 @@ export const DocsArticle = async ({
     return ancestor ? [ancestor] : [];
   });
 
-  const position = pages.findIndex(({ path }) => path === page.path);
-  const previous = pages[position - 1];
-  const next = pages[position + 1];
-
   return (
-    <>
+    // An untranslated article is marked as the source locale's, all but the
+    // dates, which are the reader's.
+    <header lang={translated ? undefined : language}>
       <JsonLd
         graph={[
           {
@@ -287,64 +339,99 @@ export const DocsArticle = async ({
             })),
           },
         ]}
-      />
-      {version === latest && translated ? null : (
-        <div className="mb-8 space-y-3">
-          {version === latest ? null : (
-            <VersionNotice latest={latest} version={version} />
-          )}
-          {translated ? null : (
-            <TranslationNotice
-              planned={translationPlanned}
-              slug={page.slug}
-              translatedVersion={translatedVersion}
-            />
-          )}
-        </div>
-      )}
-      {/* An untranslated article is marked as the source locale's, all
-          but the dates, which are the reader's. */}
-      <article
-        className="text-muted-foreground"
-        lang={translated ? undefined : language}
+      />{" "}
+      <h1 className="font-display text-foreground text-3xl text-balance sm:text-4xl">
+        {page.title}
+      </h1>
+      <p
+        className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm"
+        lang={translated ? undefined : locale}
       >
-        <h1 className="font-display text-foreground text-3xl text-balance sm:text-4xl">
-          {page.title}
-        </h1>
-        <p
-          className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm"
-          lang={translated ? undefined : locale}
-        >
-          <PageDate date={page.published} kind="published" />
-          {page.updated ? (
-            <PageDate date={page.updated} kind="updated" />
-          ) : null}
-        </p>
-        <DocsContent slug={page.slug} version={linkVersion} />
-      </article>
-      {previous || next ? (
-        <nav
-          aria-label={t("docs.adjacentPagesLabel")}
-          className="border-border mt-12 grid gap-4 border-t pt-8 sm:grid-cols-2"
-        >
-          {previous ? (
-            <AdjacentPageLink
-              label={t("docs.previousPage")}
-              page={previous}
-              rel="prev"
-              version={linkVersion}
-            />
-          ) : null}
-          {next ? (
-            <AdjacentPageLink
-              label={t("docs.nextPage")}
-              page={next}
-              rel="next"
-              version={linkVersion}
-            />
-          ) : null}
-        </nav>
+        <PageDate date={page.published} kind="published" />
+        {page.updated ? <PageDate date={page.updated} kind="updated" /> : null}
+      </p>
+    </header>
+  );
+};
+
+/**
+ * The heading, or for a URL without a page, its redirect when a page lists it
+ * in `redirect_from` or it is a version's root, and a 404 otherwise.
+ */
+export const DocsHeading = async (props: DocsPartProps) => {
+  const { slug, version: segment } = props;
+  const { found, locale, version } = await findDocsPage(props);
+
+  if (found) {
+    return <DocsHeadingView {...props} />;
+  }
+
+  // A page renamed or moved lists its former URL in `redirect_from`, which
+  // keeps leading to it in every version whose tree says so. A URL without a
+  // version leads to one without a version, so it never pins a release.
+  const target =
+    slug.length > 0 ? await getDocsRedirect(version, locale, slug) : null;
+
+  if (target) {
+    permanentRedirect(getLocalizedDocsPath(locale, segment, target));
+  }
+
+  // A version without a root `index.md` opens at its first page.
+  const [first] =
+    slug.length === 0 ? await getDocsNavigation(version, locale) : [];
+
+  if (first) {
+    redirect(getLocalizedDocsPath(locale, segment, first.slug));
+  }
+
+  notFound();
+};
+
+/** The links to the pages before and after this one. */
+export const DocsAdjacentPages = async (props: DocsPartProps) => {
+  "use cache: remote";
+  cacheLife("max");
+
+  const [{ found, locale, version }, t] = await Promise.all([
+    findDocsPage(props),
+    getTranslations(),
+  ]);
+
+  if (!found) {
+    return null;
+  }
+
+  const linkVersion = props.version;
+  const pages = await getDocsNavigation(version, locale);
+  const position = pages.findIndex(({ path }) => path === found.page.path);
+  const previous = pages[position - 1];
+  const next = pages[position + 1];
+
+  if (!(previous || next)) {
+    return null;
+  }
+
+  return (
+    <nav
+      aria-label={t("docs.adjacentPagesLabel")}
+      className="border-border mt-12 grid gap-4 border-t pt-8 sm:grid-cols-2"
+    >
+      {previous ? (
+        <AdjacentPageLink
+          label={t("docs.previousPage")}
+          page={previous}
+          rel="prev"
+          version={linkVersion}
+        />
       ) : null}
-    </>
+      {next ? (
+        <AdjacentPageLink
+          label={t("docs.nextPage")}
+          page={next}
+          rel="next"
+          version={linkVersion}
+        />
+      ) : null}
+    </nav>
   );
 };

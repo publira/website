@@ -3,7 +3,6 @@ import remarkSugarHigh from "@sugar-high/remark";
 import type { Locale } from "next-intl";
 import { cacheLife, cacheTag } from "next/cache";
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
@@ -172,8 +171,9 @@ export const DocsContent = async ({
 
   const served = versions.find(({ name }) => name === version);
 
+  // The heading answers a URL without a page with a redirect or a 404.
   if (!served) {
-    notFound();
+    return null;
   }
 
   const [tree, source] = await Promise.all([
@@ -185,7 +185,7 @@ export const DocsContent = async ({
   const page = translation ?? (source && findPage(source, slug));
 
   if (!page) {
-    notFound();
+    return null;
   }
 
   // An untranslated page's URLs resolve in its own tree, the source locale's.
@@ -217,5 +217,10 @@ export const DocsContent = async ({
     }
   );
 
-  return <Content components={docsComponents} />;
+  // An untranslated article is read in the source locale.
+  return (
+    <div lang={translation ? undefined : docsSourceLocale}>
+      <Content components={docsComponents} />
+    </div>
+  );
 };

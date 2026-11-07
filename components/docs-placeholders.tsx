@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 // What the docs frame shows where its sidebar and its article stream in.
 
 /** The width of each placeholder line, the last of a paragraph shorter. */
@@ -19,21 +21,27 @@ export const DocsSidebarPlaceholder = () => (
   </div>
 );
 
-export const DocsArticlePlaceholder = ({
-  label,
-}: {
-  readonly label: string;
-}) => (
-  <div aria-busy="true">
-    <span className="sr-only">{label}</span>
+export const DocsHeadingPlaceholder = () => (
+  <div aria-hidden="true">
     <Placeholder className="h-10 w-2/3" />
     <Placeholder className="mt-5 h-4 w-56" />
-    {[0, 1].map((paragraph) => (
-      <div className="mt-8 space-y-3" key={paragraph}>
-        {lines.map((width) => (
-          <Placeholder className={`h-4 ${width}`} key={width} />
-        ))}
-      </div>
-    ))}
   </div>
 );
+
+/** The article body's lines, and that it is loading for a screen reader. */
+export const DocsBodyPlaceholder = async () => {
+  const t = await getTranslations();
+
+  return (
+    <div aria-busy="true">
+      <span className="sr-only">{t("docs.loading")}</span>
+      {[0, 1].map((paragraph) => (
+        <div className="mt-8 space-y-3" key={paragraph}>
+          {lines.map((width) => (
+            <Placeholder className={`h-4 ${width}`} key={width} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
