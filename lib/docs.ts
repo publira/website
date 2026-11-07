@@ -248,25 +248,25 @@ export const fetchGitHub = (
   });
 
 /**
- * The text of each of `paths` under `docs/` at `ref`, in one GraphQL query
- * rather than a request per file. GraphQL takes no request without a token,
- * so without one each file is read on its own.
+ * The text of each blob, in one GraphQL query rather than a request per file.
+ * The blobs are named by hash, as the tree lists them, so the texts are of the
+ * same revision as the tree even when its branch has moved on. A blob GraphQL
+ * has no text of is `undefined`, and GraphQL takes no request without a token,
+ * so the caller reads those on their own.
  */
 const getTexts = async (
-  ref: string,
-  paths: readonly string[]
-): Promise<readonly string[] | null> => {
-  if (paths.length === 0 || !(await getGitHubToken(docsRepository))) {
+  shas: readonly string[]
+): Promise<readonly (string | undefined)[] | null> => {
+  if (shas.length === 0 || !(await getGitHubToken(docsRepository))) {
     return null;
   }
 
   const [owner, name] = docsRepository.split("/");
 
-  const objects = paths.map((entry, index) => {
-    const expression = JSON.stringify(`${ref}:${docsRoot}/${entry}`);
-
-    return `f${index}: object(expression: ${expression}) { ... on Blob { text } }`;
-  });
+  const objects = shas.map(
+    (sha, index) =>
+      `f${index}: object(oid: ${JSON.stringify(sha)}) { ... on Blob { text } }`
+  );
 
   const response = await requestGitHub({
     accept: "application/json",
@@ -278,7 +278,7 @@ const getTexts = async (
 
   if (!response.ok) {
     throw new Error(
-      `GitHub responded to the texts of ${ref} with ${response.status}`
+      `GitHub responded to ${shas.length} blobs' texts with ${response.status}`
     );
   }
 
@@ -294,11 +294,13 @@ const getTexts = async (
 
   if (!data || errors?.length) {
     throw new Error(
-      `GitHub could not read the texts of ${ref}: ${errors?.map(({ message }) => message).join(", ")}`
+      `GitHub could not read ${shas.length} blobs' texts: ${errors?.map(({ message }) => message).join(", ")}`
     );
   }
 
-  return paths.map((_, index) => data.repository[`f${index}`]?.text ?? "");
+  return shas.map(
+    (_, index) => data.repository[`f${index}`]?.text ?? undefined
+  );
 };
 
 const fetchGitHubOk = async (endpoint: string, accept?: string) => {
@@ -659,10 +661,7 @@ export const getDocsTree = async (
   // Every page's frontmatter, for the navigation, in one request.
   const markdown = entries.filter(({ path: entry }) => entry.endsWith(".md"));
 
-  const texts = await getTexts(
-    ref,
-    markdown.map(({ path: entry }) => `${locale}/${entry}`)
-  );
+  const texts = await getTexts(markdown.map(({ sha }) => sha));
 
   const pages = await Promise.all(
     markdown.map((entry, index) => toPage(entry, texts?.[index]))
