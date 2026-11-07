@@ -707,6 +707,7 @@
     "referenceTranslation": "This is a reference translation. The <link>Japanese version</link> is the original, and it prevails where the two differ."
   },
   "docs": {
+    "loading": "Loading…",
     "navigationLabel": "Documentation",
     "adjacentPagesLabel": "Previous and next pages",
     "previousPage": "Previous",

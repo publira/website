@@ -1,7 +1,8 @@
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
-import { LocaleMenu } from "#components/locale-menu";
+import { LocaleMenu, LocaleMenuFallback } from "#components/locale-menu";
 import { Link } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
 
@@ -32,6 +33,14 @@ export const SiteHeader = async ({
 }: SiteHeaderProps = {}) => {
   const t = await getTranslations();
 
+  const menu = {
+    label: t("header.localeLabel"),
+    options: routing.locales.map((locale) => ({
+      locale,
+      name: autonym(locale),
+    })),
+  };
+
   return (
     <header className="border-border bg-surface sticky top-0 z-50 border-b">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-5 sm:px-8">
@@ -61,14 +70,11 @@ export const SiteHeader = async ({
         </nav>
 
         <div className="ml-auto md:ml-0">
-          <LocaleMenu
-            label={t("header.localeLabel")}
-            locales={locales}
-            options={routing.locales.map((locale) => ({
-              locale,
-              name: autonym(locale),
-            }))}
-          />
+          {/* The path is URL data, which a page reading its params on request
+              does not have in its shell. */}
+          <Suspense fallback={<LocaleMenuFallback {...menu} />}>
+            <LocaleMenu {...menu} locales={locales} />
+          </Suspense>
         </div>
 
         <a

@@ -707,6 +707,7 @@
     "referenceTranslation": "これは参考訳です。原文は<link>日本語版</link>で、内容に相違がある場合は日本語版が優先します。"
   },
   "docs": {
+    "loading": "読み込み中…",
     "navigationLabel": "ドキュメント",
     "adjacentPagesLabel": "前後のページ",
     "previousPage": "前へ",

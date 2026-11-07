@@ -19,15 +19,13 @@ interface LocaleMenuProps {
   readonly options: readonly LocaleOption[];
 }
 
-/**
- * The locales, in a menu. Switching keeps the reader on the same page in the
- * other locale, as a client-side navigation, so the scripts already loaded
- * stay. A locale the page is not served in leads to its home page.
- */
-export const LocaleMenu = ({ label, locales, options }: LocaleMenuProps) => {
+const LocaleMenuList = ({
+  label,
+  locales,
+  options,
+  pathname,
+}: LocaleMenuProps & { readonly pathname: string }) => {
   const current = useLocale();
-  // The path without its locale prefix, which `Link` prefixes again.
-  const pathname = usePathname();
   const currentName = options.find(({ locale }) => locale === current)?.name;
   const hasPage = (locale: Locale) => !locales || locales.includes(locale);
   const currentLink = hasPage(current) ? "page" : "true";
@@ -69,3 +67,21 @@ export const LocaleMenu = ({ label, locales, options }: LocaleMenuProps) => {
     </Menu>
   );
 };
+
+/**
+ * The locales, in a menu. Switching keeps the reader on the same page in the
+ * other locale, as a client-side navigation, so the scripts already loaded
+ * stay. A locale the page is not served in leads to its home page.
+ */
+export const LocaleMenu = (props: LocaleMenuProps) => (
+  // The path without its locale prefix, which `Link` prefixes again.
+  <LocaleMenuList {...props} pathname={usePathname()} />
+);
+
+/**
+ * The menu before the path is known, as in the shell of a page whose params
+ * are read on request: each locale leads to its home page.
+ */
+export const LocaleMenuFallback = (props: LocaleMenuProps) => (
+  <LocaleMenuList {...props} locales={[]} pathname="/" />
+);

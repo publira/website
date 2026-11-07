@@ -1,55 +1,32 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound, permanentRedirect, redirect } from "next/navigation";
+import { Suspense } from "react";
 
-import { DocsPage } from "#components/docs-page";
+import { DocsContent } from "#components/docs-content";
+import {
+  DocsAdjacentPages,
+  DocsHeading,
+  DocsNotices,
+} from "#components/docs-page";
+import {
+  DocsBodyPlaceholder,
+  DocsHeadingPlaceholder,
+} from "#components/docs-placeholders";
 import { getRootLocale } from "#i18n/locale";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { getPathname } from "#i18n/navigation";
 import {
   findPage,
   getCurrentVersion,
-  getDocsNavigation,
   getDocsPage,
   getDocsPageLocales,
-  getDocsPageParams,
   getDocsPath,
-  getDocsRedirect,
   getDocsTree,
-  getDocsVersions,
-  getLocalizedDocsPath,
   latestVersion,
   nextVersion,
 } from "#lib/docs";
 
 type Props = PageProps<"/[locale]/docs/[version]/[[...slug]]">;
-
-// A page that does not exist answers 404, and a version's root a redirect, so
-// the params are read before the response starts rather than behind a
-// fallback. The sidebar prefetches each page in full instead.
-export const instant = false;
-
-// Every locale serves the source locale's pages, translated or not. Each
-// version's root is given too, which redirects without an `index.md`, and the
-// newest release's pages again as `latest`.
-export const generateStaticParams = async () => {
-  const [versions, pages, current] = await Promise.all([
-    getDocsVersions(),
-    getDocsPageParams(await getRootLocale()),
-    getCurrentVersion(),
-  ]);
-
-  return [
-    ...[...versions.map(({ name }) => name), latestVersion].map((version) => ({
-      slug: [],
-      version,
-    })),
-    ...pages,
-    ...pages.flatMap(({ slug, version }) =>
-      version === current ? [{ slug, version: latestVersion }] : []
-    ),
-  ];
-};
 
 const loadPage = async (params: Props["params"]) => {
   const [{ slug = [], version: segment }, locale] = await Promise.all([
@@ -74,15 +51,16 @@ const loadPage = async (params: Props["params"]) => {
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const [{ found, locale, slug, version }, latest, t] = await Promise.all([
-    loadPage(params),
-    getCurrentVersion(),
-    getTranslations(),
-  ]);
+  const { found, locale, slug, version } = await loadPage(params);
 
   if (!found) {
     return {};
   }
+
+  const [latest, t] = await Promise.all([
+    getCurrentVersion(),
+    getTranslations(),
+  ]);
 
   const { language, page } = found;
   const path = getDocsPath(version, slug);
@@ -123,34 +101,37 @@ export const generateMetadata = async ({
   };
 };
 
-const Docs = async ({ params }: Props) => {
-  const { found, locale, segment, slug, version } = await loadPage(params);
+// Each part reads what it shows, cached, behind a boundary of its own; the
+// page itself reads nothing. The heading answers a URL without a page.
+const Docs = ({ params }: Props) => {
+  const part = params.then(({ slug = [], version }) => ({ slug, version }));
 
-  if (found) {
-    return (
-      <DocsPage language={found.language} page={found.page} version={segment} />
-    );
-  }
-
-  // A page renamed or moved lists its former URL in `redirect_from`, which
-  // keeps leading to it in every version whose tree says so. A URL without a
-  // version leads to one without a version, so it never pins a release.
-  const target =
-    slug.length > 0 ? await getDocsRedirect(version, locale, slug) : null;
-
-  if (target) {
-    permanentRedirect(getLocalizedDocsPath(locale, segment, target));
-  }
-
-  // A version without a root `index.md` opens at its first page.
-  const [first] =
-    slug.length === 0 ? await getDocsNavigation(version, locale) : [];
-
-  if (first) {
-    redirect(getLocalizedDocsPath(locale, segment, first.slug));
-  }
-
-  notFound();
+  return (
+    <>
+      <Suspense>
+        {part.then((props) => (
+          <DocsNotices {...props} />
+        ))}
+      </Suspense>
+      <article className="text-muted-foreground">
+        <Suspense fallback={<DocsHeadingPlaceholder />}>
+          {part.then((props) => (
+            <DocsHeading {...props} />
+          ))}
+        </Suspense>
+        <Suspense fallback={<DocsBodyPlaceholder />}>
+          {part.then((props) => (
+            <DocsContent {...props} />
+          ))}
+        </Suspense>
+      </article>
+      <Suspense>
+        {part.then((props) => (
+          <DocsAdjacentPages {...props} />
+        ))}
+      </Suspense>
+    </>
+  );
 };
 
 export default Docs;

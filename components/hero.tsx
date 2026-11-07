@@ -1,10 +1,13 @@
 import { getTranslations } from "next-intl/server";
+import { cacheLife } from "next/cache";
 import Image from "next/image";
+import { Suspense } from "react";
 
 import heroImage from "#assets/screenshots/host/catalog-plain.png";
 import { BrowserFrame } from "#components/browser-frame";
 import { Link } from "#i18n/navigation";
-import { getLatestRelease } from "#lib/latest-release";
+import { skipGitHubInBuild } from "#lib/docs";
+import { resolveLatestRelease } from "#lib/latest-release";
 
 const facts = [
   "nextApps",
@@ -14,11 +17,37 @@ const facts = [
   "license",
 ] as const;
 
+/** Where development stands, naming the newest release once it is read. */
+const Status = async ({ release }: { readonly release: string | null }) => {
+  const t = await getTranslations("hero");
+
+  return (
+    <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+      {t("status.body", { version: release ?? "none" })}
+    </p>
+  );
+};
+
+const ReleaseStatus = async () => {
+  "use cache: remote";
+
+  if (skipGitHubInBuild()) {
+    return null;
+  }
+
+  const { release, resolved } = await resolveLatestRelease();
+
+  if (resolved) {
+    cacheLife("max");
+  } else {
+    cacheLife("minutes");
+  }
+
+  return <Status release={release} />;
+};
+
 export const Hero = async () => {
-  const [t, release] = await Promise.all([
-    getTranslations("hero"),
-    getLatestRelease(),
-  ]);
+  const t = await getTranslations("hero");
 
   return (
     <section>
@@ -73,9 +102,9 @@ export const Hero = async () => {
           <p className="text-foreground text-sm font-medium">
             {t("status.title")}
           </p>
-          <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            {t("status.body", { version: release ?? "none" })}
-          </p>
+          <Suspense fallback={<Status release={null} />}>
+            <ReleaseStatus />
+          </Suspense>
         </div>
 
         <figure className="mt-14">

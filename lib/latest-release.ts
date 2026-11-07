@@ -45,25 +45,16 @@ const readLatestRelease = async () => {
 };
 
 /**
- * No version, while GitHub cannot be read. Its short life makes the page that
- * renders it ask GitHub again within minutes.
+ * The newest release's version, or `null` when there is none or it cannot be
+ * read, which `resolved` says so the caller tries again soon.
  */
-// oxlint-disable-next-line require-await -- "use cache" takes only async functions.
-const getUnresolvedRelease = async () => {
-  "use cache";
-  cacheLife("minutes");
-
-  return null;
-};
-
-/** The newest release's version, or `null` when it cannot be named. */
-export const getLatestRelease = async (): Promise<string | null> => {
+export const resolveLatestRelease = async () => {
   try {
-    return await readLatestRelease();
+    return { release: await readLatestRelease(), resolved: true };
   } catch (error) {
     unstable_rethrow(error);
     console.error("Reading the latest Release:", error);
 
-    return getUnresolvedRelease();
+    return { release: null, resolved: false };
   }
 };
