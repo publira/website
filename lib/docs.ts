@@ -10,8 +10,8 @@ import { parse } from "yaml";
 
 import { getPathname } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
+import { getDocsPath, latestVersion, nextVersion } from "#lib/docs-path";
 import { getGitHubToken } from "#lib/github-app";
-import type { Page } from "#lib/site";
 
 /** The repository whose `docs/<locale>/` the documentation is read from. */
 export const docsRepository = "publira/publira";
@@ -27,19 +27,12 @@ export const docsSourceLocale = routing.defaultLocale;
 /** The branch served as the `next` version. */
 const nextBranch = "main";
 
-export const nextVersion = "next";
-
-/**
- * The newest release, at the URLs without a version (`/docs/<slug>`) that
- * `proxy.ts` rewrites to it.
- */
-export const latestVersion = "latest";
-
-/**
- * The list of every version. `proxy.ts` keeps `versions` from naming a page
- * of the newest release.
- */
-export const docsVersionsPath = "/docs/versions" satisfies Page;
+export {
+  docsVersionsPath,
+  getDocsPath,
+  latestVersion,
+  nextVersion,
+} from "#lib/docs-path";
 
 /** The cache tags the webhook revalidates. */
 export const docsCacheTags = {
@@ -110,11 +103,24 @@ export interface DocsTree {
   readonly pages: readonly DocsPage[];
 }
 
+// A build reads nothing from GitHub, whose limit it would spend at every
+// deployment, since a remote cache entry does not outlive its deployment.
+const isBuilding = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
+
 /**
- * A build reads nothing from GitHub, whose limit it would spend at every
- * deployment. Each URL reads the docs on its first visit instead.
+ * For a cached component that reads GitHub: in a build, makes it dynamic so
+ * Next.js leaves it out of the static shell, and says to read nothing. On
+ * request it renders from the remote cache; call `cacheLife` after reading.
  */
-export const isBuilding = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
+export const skipGitHubInBuild = () => {
+  if (!isBuilding) {
+    return false;
+  }
+
+  cacheLife({ expire: 0, revalidate: 0, stale: 0 });
+
+  return true;
+};
 
 // GitHub allows 100 concurrent requests, which the instances share.
 const maxRequests = 10;
@@ -176,9 +182,15 @@ const getRetryWait = (response: Response, attempt: number) => {
   return Math.max(reset - Date.now(), 0) + 1000;
 };
 
-export const fetchGitHub = async (
-  endpoint: string,
-  accept = "application/vnd.github+json",
+interface GitHubRequest {
+  readonly accept: string;
+  /** A GraphQL query's JSON, which makes the request a POST. */
+  readonly body?: string;
+  readonly url: string;
+}
+
+const requestGitHub = async (
+  { accept, body, url }: GitHubRequest,
   attempt = 0,
   waited = 0
 ): Promise<Response> => {
@@ -200,12 +212,17 @@ export const fetchGitHub = async (
   try {
     // Next.js memoizes a GET during a render, which would answer a retry with
     // the response it retries. A signal opts out.
-    response = await fetch(
-      `https://api.github.com/repos/${docsRepository}/${endpoint}`,
-      attempt === 0
-        ? { headers }
-        : { headers, signal: new AbortController().signal }
-    );
+    const init: RequestInit = {
+      body,
+      headers,
+      method: body === undefined ? "GET" : "POST",
+    };
+
+    if (attempt > 0) {
+      init.signal = new AbortController().signal;
+    }
+
+    response = await fetch(url, init);
   } finally {
     releaseRequest();
   }
@@ -215,10 +232,73 @@ export const fetchGitHub = async (
   if (wait > 0 && waited + wait <= maxRetryWait) {
     await setTimeout(wait);
 
-    return fetchGitHub(endpoint, accept, attempt + 1, waited + wait);
+    return requestGitHub({ accept, body, url }, attempt + 1, waited + wait);
   }
 
   return response;
+};
+
+export const fetchGitHub = (
+  endpoint: string,
+  accept = "application/vnd.github+json"
+) =>
+  requestGitHub({
+    accept,
+    url: `https://api.github.com/repos/${docsRepository}/${endpoint}`,
+  });
+
+/**
+ * The text of each of `paths` under `docs/` at `ref`, in one GraphQL query
+ * rather than a request per file. GraphQL takes no request without a token,
+ * so without one each file is read on its own.
+ */
+const getTexts = async (
+  ref: string,
+  paths: readonly string[]
+): Promise<readonly string[] | null> => {
+  if (paths.length === 0 || !(await getGitHubToken(docsRepository))) {
+    return null;
+  }
+
+  const [owner, name] = docsRepository.split("/");
+
+  const objects = paths.map((entry, index) => {
+    const expression = JSON.stringify(`${ref}:${docsRoot}/${entry}`);
+
+    return `f${index}: object(expression: ${expression}) { ... on Blob { text } }`;
+  });
+
+  const response = await requestGitHub({
+    accept: "application/json",
+    body: JSON.stringify({
+      query: `query { repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(name)}) { ${objects.join(" ")} } }`,
+    }),
+    url: "https://api.github.com/graphql",
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `GitHub responded to the texts of ${ref} with ${response.status}`
+    );
+  }
+
+  // SAFETY: the shape the query asks for.
+  const { data, errors } = (await response.json()) as {
+    readonly data?: {
+      readonly repository: Readonly<
+        Record<string, { readonly text: string | null } | null>
+      >;
+    };
+    readonly errors?: readonly { readonly message: string }[];
+  };
+
+  if (!data || errors?.length) {
+    throw new Error(
+      `GitHub could not read the texts of ${ref}: ${errors?.map(({ message }) => message).join(", ")}`
+    );
+  }
+
+  return paths.map((_, index) => data.repository[`f${index}`]?.text ?? "");
 };
 
 const fetchGitHubOk = async (endpoint: string, accept?: string) => {
@@ -462,21 +542,37 @@ const parseFrontmatter = (source: string) => {
 
 const decoder = new TextDecoder();
 
-const toPage = async ({ path: entry, sha }: TreeEntry) => {
+/** A page's `<n>-<slug>` names, or `null` for a file that is not a page. */
+const parsePagePath = (entry: string) => {
   const { directories, file } = parsePath(entry);
 
   const name =
     file === "index.md" ? null : parseName(path.posix.parse(file).name);
 
-  if (!directories || (file !== "index.md" && !name)) {
+  if (
+    !entry.endsWith(".md") ||
+    !directories ||
+    (file !== "index.md" && !name)
+  ) {
+    return null;
+  }
+
+  return { name, names: name ? [...directories, name] : directories };
+};
+
+/** A page's entry, with its text when it was read with the tree's. */
+const toPage = async ({ path: entry, sha }: TreeEntry, text?: string) => {
+  const parsed = parsePagePath(entry);
+
+  if (!parsed) {
     return [];
   }
 
-  const names = name ? [...directories, name] : directories;
+  const { name, names } = parsed;
   const order = names.map((segment) => segment.order);
 
   const { redirect_from: redirectFrom = [], ...frontmatter } = parseFrontmatter(
-    decoder.decode(await getBlob(sha))
+    text ?? decoder.decode(await getBlob(sha))
   );
 
   return [
@@ -560,10 +656,16 @@ export const getDocsTree = async (
     return null;
   }
 
+  // Every page's frontmatter, for the navigation, in one request.
+  const markdown = entries.filter(({ path: entry }) => entry.endsWith(".md"));
+
+  const texts = await getTexts(
+    ref,
+    markdown.map(({ path: entry }) => `${locale}/${entry}`)
+  );
+
   const pages = await Promise.all(
-    entries.flatMap((entry) =>
-      entry.path.endsWith(".md") ? [toPage(entry)] : []
-    )
+    markdown.map((entry, index) => toPage(entry, texts?.[index]))
   );
 
   return {
@@ -672,13 +774,6 @@ export const getDocsNavigation = async (
   );
 };
 
-/**
- * The URL of a page, or of a version's root with no slug, without the locale
- * that `Link` adds. `latest` names no version.
- */
-export const getDocsPath = (version: string, slug: readonly string[] = []) =>
-  ["/docs", ...(version === latestVersion ? [] : [version]), ...slug].join("/");
-
 /** The URL of a page in a locale. */
 export const getLocalizedDocsPath = (
   locale: Locale,
@@ -693,6 +788,35 @@ export const getLocalizedDocsPath = (
 const getDocsImagePath = (locale: Locale, { sha, slug }: DocsImage) =>
   getPathname({ href: ["/docs/images", sha, ...slug].join("/"), locale });
 
+/**
+ * The slugs of a version's pages in a locale, joined with `/`, from its tree
+ * alone: knowing a page is there reads none of the files.
+ */
+const getPageSlugs = async (version: string, locale: Locale) => {
+  const versions = await getDocsVersions();
+  const ref = versions.find(({ name }) => name === version)?.ref;
+  const entries = ref ? await getLocaleEntries(ref, locale) : null;
+
+  return new Set(
+    entries?.flatMap(({ path: entry }) => {
+      const parsed = parsePagePath(entry);
+
+      return parsed ? [parsed.names.map(({ slug }) => slug).join("/")] : [];
+    })
+  );
+};
+
+/** Whether a locale's tree has the page at `slug` in a version. */
+export const hasDocsPage = async (
+  version: string,
+  locale: Locale,
+  slug: readonly string[]
+) => {
+  const slugs = await getPageSlugs(version, locale);
+
+  return slugs.has(slug.join("/"));
+};
+
 /** The locales whose tree has the page at `slug` in a version. */
 export const getDocsPageLocales = async (
   version: string,
@@ -700,50 +824,46 @@ export const getDocsPageLocales = async (
 ) => {
   const trees = await Promise.all(
     routing.locales.map(async (locale) => ({
+      found: await hasDocsPage(version, locale, slug),
       locale,
-      tree: await getDocsTree(version, locale),
     }))
   );
 
-  return trees.flatMap(({ locale, tree }) =>
-    tree && findPage(tree, slug) ? [locale] : []
-  );
+  return trees.flatMap(({ found, locale }) => (found ? [locale] : []));
 };
 
 /**
- * `/docs`, for a page that links the docs in a build or while GitHub cannot be
- * read. Its short life makes the page that renders it ask GitHub within minutes.
+ * The slugs of the pages a locale serves in a version, its own or the source
+ * locale's, joined with `/`.
  */
-// oxlint-disable-next-line require-await -- "use cache" takes only async functions.
-const getUnresolvedDocsPath = async () => {
-  "use cache: remote";
-  cacheLife("minutes");
+export const getServedSlugs = async (version: string, locale: Locale) => {
+  const [own, source] = await Promise.all([
+    getPageSlugs(version, locale),
+    getPageSlugs(version, docsSourceLocale),
+  ]);
 
-  return "/docs";
+  return [...new Set([...own, ...source])];
 };
 
 /**
  * The URL of a page in the newest version, without the version, or `/docs`
  * when that version has no page at `slug`, as after a page is renamed, or
- * cannot be read.
+ * cannot be read, which `resolved` says so the caller tries again soon.
  */
-export const getCurrentDocsPath = async (slug: readonly string[]) => {
-  if (isBuilding) {
-    return getUnresolvedDocsPath();
-  }
-
+export const resolveCurrentDocsPath = async (slug: readonly string[]) => {
   try {
     const version = await getCurrentVersion();
-    const tree = await getDocsTree(version, docsSourceLocale);
+    const found = await hasDocsPage(version, docsSourceLocale, slug);
 
-    return tree && findPage(tree, slug)
-      ? getDocsPath(latestVersion, slug)
-      : "/docs";
+    return {
+      path: found ? getDocsPath(latestVersion, slug) : "/docs",
+      resolved: true,
+    };
   } catch (error) {
     unstable_rethrow(error);
     console.error(`Linking /docs for ${slug.join("/")}:`, error);
 
-    return getUnresolvedDocsPath();
+    return { path: "/docs", resolved: false };
   }
 };
 

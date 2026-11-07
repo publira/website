@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { connection } from "next/server";
+import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import type { ReactNode } from "react";
 
@@ -18,6 +18,7 @@ import {
   getMajorVersion,
   getMenuVersions,
   nextVersion,
+  skipGitHubInBuild,
 } from "#lib/docs";
 import { getPageUrl } from "#lib/structured-data";
 
@@ -39,8 +40,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const code = (chunks: ReactNode) => <code>{chunks}</code>;
 
 const VersionList = async () => {
-  // The docs are read at request time, not in a build.
-  await connection();
+  "use cache: remote";
+
+  if (skipGitHubInBuild()) {
+    return null;
+  }
+
+  cacheLife("max");
 
   const [t, versions, latest] = await Promise.all([
     getTranslations(),

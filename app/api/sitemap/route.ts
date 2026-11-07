@@ -128,7 +128,7 @@ const toUrlElement = ({ alternates = {}, lastModified, url }: SitemapEntry) =>
   ].join("\n");
 
 const serveSitemap = async () => {
-  // The docs are read at request time, not in a build.
+  // The docs are read on request, not in a build.
   await connection();
 
   const entries = [...getPageEntries(), ...(await getDocsEntries())];

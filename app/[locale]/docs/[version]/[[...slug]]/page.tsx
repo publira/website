@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 
-import { DocsPage } from "#components/docs-page";
-import type { DocsPageTarget } from "#components/docs-page";
+import { DocsArticle } from "#components/docs-page";
 import { getRootLocale } from "#i18n/locale";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { getPathname } from "#i18n/navigation";
@@ -23,21 +22,11 @@ import {
 
 type Props = PageProps<"/[locale]/docs/[version]/[[...slug]]">;
 
-// Cache Components needs a param to build, and Next.js stores a page it renders
-// for any other. No version is named so, and the build reads nothing for it.
-const buildVersion = "__build__";
-
-export const generateStaticParams = () => [{ slug: [], version: buildVersion }];
-
 const loadPage = async (params: Props["params"]) => {
   const [{ slug = [], version: segment }, locale] = await Promise.all([
     params,
     getRootLocale(),
   ]);
-
-  if (segment === buildVersion) {
-    notFound();
-  }
 
   // `latest` renders as the newest release's page, so the canonical link and
   // the links inside it name that release.
@@ -106,17 +95,17 @@ export const generateMetadata = async ({
   };
 };
 
-/**
- * The page the params name. A URL without one is a redirect when a page lists
- * it in `redirect_from` or it is a version's root, and a 404 otherwise.
- */
-const resolvePage = async (
-  params: Props["params"]
-): Promise<DocsPageTarget> => {
+const Docs = async ({ params }: Props) => {
   const { found, locale, segment, slug, version } = await loadPage(params);
 
   if (found) {
-    return { ...found, version: segment };
+    return (
+      <DocsArticle
+        language={found.language}
+        page={found.page}
+        version={segment}
+      />
+    );
   }
 
   // A page renamed or moved lists its former URL in `redirect_from`, which
@@ -139,7 +128,5 @@ const resolvePage = async (
 
   notFound();
 };
-
-const Docs = ({ params }: Props) => <DocsPage target={resolvePage(params)} />;
 
 export default Docs;

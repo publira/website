@@ -1,9 +1,8 @@
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import type { ComponentProps } from "react";
 
-import { LocaleMenu } from "#components/locale-menu";
+import { LocaleMenu, LocaleMenuFallback } from "#components/locale-menu";
 import { Link } from "#i18n/navigation";
 import { routing } from "#i18n/routing";
 
@@ -21,22 +20,9 @@ type NavigationKey = (typeof navigation)[number]["key"];
 const autonym = (locale: string) =>
   new Intl.DisplayNames(locale, { type: "language" }).of(locale) ?? locale;
 
-type ServedLocales = readonly Locale[] | undefined;
-
-/** The menu once a page streaming in names the locales it is served in. */
-const ServedLocaleMenu = async ({
-  locales,
-  ...props
-}: Omit<ComponentProps<typeof LocaleMenu>, "locales"> & {
-  readonly locales: Promise<ServedLocales>;
-}) => <LocaleMenu {...props} locales={await locales} />;
-
 interface SiteHeaderProps {
-  /**
-   * The locales the page is served in, when it is not served in every one. A
-   * page still streaming in lists every locale until it names them.
-   */
-  readonly locales?: Promise<ServedLocales> | ServedLocales;
+  /** The locales the page is served in, when it is not served in every one. */
+  readonly locales?: readonly Locale[];
   /** The navigation item the page is, or falls under. */
   readonly section?: NavigationKey;
 }
@@ -84,13 +70,11 @@ export const SiteHeader = async ({
         </nav>
 
         <div className="ml-auto md:ml-0">
-          {locales instanceof Promise ? (
-            <Suspense fallback={<LocaleMenu {...menu} />}>
-              <ServedLocaleMenu {...menu} locales={locales} />
-            </Suspense>
-          ) : (
+          {/* The path is URL data, which a page reading its params on request
+              does not have in its shell. */}
+          <Suspense fallback={<LocaleMenuFallback {...menu} />}>
             <LocaleMenu {...menu} locales={locales} />
-          )}
+          </Suspense>
         </div>
 
         <a
