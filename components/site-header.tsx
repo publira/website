@@ -1,5 +1,7 @@
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
+import type { ComponentProps } from "react";
 
 import { LocaleMenu } from "#components/locale-menu";
 import { Link } from "#i18n/navigation";
@@ -19,9 +21,22 @@ type NavigationKey = (typeof navigation)[number]["key"];
 const autonym = (locale: string) =>
   new Intl.DisplayNames(locale, { type: "language" }).of(locale) ?? locale;
 
+type ServedLocales = readonly Locale[] | undefined;
+
+/** The menu once a page streaming in names the locales it is served in. */
+const ServedLocaleMenu = async ({
+  locales,
+  ...props
+}: Omit<ComponentProps<typeof LocaleMenu>, "locales"> & {
+  readonly locales: Promise<ServedLocales>;
+}) => <LocaleMenu {...props} locales={await locales} />;
+
 interface SiteHeaderProps {
-  /** The locales the page is served in, when it is not served in every one. */
-  readonly locales?: readonly Locale[];
+  /**
+   * The locales the page is served in, when it is not served in every one. A
+   * page still streaming in lists every locale until it names them.
+   */
+  readonly locales?: Promise<ServedLocales> | ServedLocales;
   /** The navigation item the page is, or falls under. */
   readonly section?: NavigationKey;
 }
@@ -31,6 +46,14 @@ export const SiteHeader = async ({
   section,
 }: SiteHeaderProps = {}) => {
   const t = await getTranslations();
+
+  const menu = {
+    label: t("header.localeLabel"),
+    options: routing.locales.map((locale) => ({
+      locale,
+      name: autonym(locale),
+    })),
+  };
 
   return (
     <header className="border-border bg-surface sticky top-0 z-50 border-b">
@@ -61,14 +84,13 @@ export const SiteHeader = async ({
         </nav>
 
         <div className="ml-auto md:ml-0">
-          <LocaleMenu
-            label={t("header.localeLabel")}
-            locales={locales}
-            options={routing.locales.map((locale) => ({
-              locale,
-              name: autonym(locale),
-            }))}
-          />
+          {locales instanceof Promise ? (
+            <Suspense fallback={<LocaleMenu {...menu} />}>
+              <ServedLocaleMenu {...menu} locales={locales} />
+            </Suspense>
+          ) : (
+            <LocaleMenu {...menu} locales={locales} />
+          )}
         </div>
 
         <a

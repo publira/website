@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 
 import { DocsPage } from "#components/docs-page";
+import type { DocsPageTarget } from "#components/docs-page";
 import { getRootLocale } from "#i18n/locale";
 import { getAlternates, getOpenGraph } from "#i18n/metadata";
 import { getPathname } from "#i18n/navigation";
@@ -105,13 +106,17 @@ export const generateMetadata = async ({
   };
 };
 
-const Docs = async ({ params }: Props) => {
+/**
+ * The page the params name. A URL without one is a redirect when a page lists
+ * it in `redirect_from` or it is a version's root, and a 404 otherwise.
+ */
+const resolvePage = async (
+  params: Props["params"]
+): Promise<DocsPageTarget> => {
   const { found, locale, segment, slug, version } = await loadPage(params);
 
   if (found) {
-    return (
-      <DocsPage language={found.language} page={found.page} version={segment} />
-    );
+    return { ...found, version: segment };
   }
 
   // A page renamed or moved lists its former URL in `redirect_from`, which
@@ -134,5 +139,7 @@ const Docs = async ({ params }: Props) => {
 
   notFound();
 };
+
+const Docs = ({ params }: Props) => <DocsPage target={resolvePage(params)} />;
 
 export default Docs;
