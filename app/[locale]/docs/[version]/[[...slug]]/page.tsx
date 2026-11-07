@@ -12,11 +12,9 @@ import {
   getDocsNavigation,
   getDocsPage,
   getDocsPageLocales,
-  getDocsPageParams,
   getDocsPath,
   getDocsRedirect,
   getDocsTree,
-  getDocsVersions,
   getLocalizedDocsPath,
   latestVersion,
   nextVersion,
@@ -24,38 +22,21 @@ import {
 
 type Props = PageProps<"/[locale]/docs/[version]/[[...slug]]">;
 
-// A page that does not exist answers 404, and a version's root a redirect, so
-// the params are read before the response starts rather than behind a
-// fallback. The sidebar prefetches each page in full instead.
-export const instant = false;
+// Cache Components needs a param to build, and Next.js stores a page it renders
+// for any other. No version is named so, and the build reads nothing for it.
+const buildVersion = "__build__";
 
-// Every locale serves the source locale's pages, translated or not. Each
-// version's root is given too, which redirects without an `index.md`, and the
-// newest release's pages again as `latest`.
-export const generateStaticParams = async () => {
-  const [versions, pages, current] = await Promise.all([
-    getDocsVersions(),
-    getDocsPageParams(await getRootLocale()),
-    getCurrentVersion(),
-  ]);
-
-  return [
-    ...[...versions.map(({ name }) => name), latestVersion].map((version) => ({
-      slug: [],
-      version,
-    })),
-    ...pages,
-    ...pages.flatMap(({ slug, version }) =>
-      version === current ? [{ slug, version: latestVersion }] : []
-    ),
-  ];
-};
+export const generateStaticParams = () => [{ slug: [], version: buildVersion }];
 
 const loadPage = async (params: Props["params"]) => {
   const [{ slug = [], version: segment }, locale] = await Promise.all([
     params,
     getRootLocale(),
   ]);
+
+  if (segment === buildVersion) {
+    notFound();
+  }
 
   // `latest` renders as the newest release's page, so the canonical link and
   // the links inside it name that release.
@@ -74,15 +55,16 @@ const loadPage = async (params: Props["params"]) => {
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const [{ found, locale, slug, version }, latest, t] = await Promise.all([
-    loadPage(params),
-    getCurrentVersion(),
-    getTranslations(),
-  ]);
+  const { found, locale, slug, version } = await loadPage(params);
 
   if (!found) {
     return {};
   }
+
+  const [latest, t] = await Promise.all([
+    getCurrentVersion(),
+    getTranslations(),
+  ]);
 
   const { language, page } = found;
   const path = getDocsPath(version, slug);

@@ -707,6 +707,7 @@
     "referenceTranslation": "本文為參考譯文。原文為<link>日文版</link>，兩者內容不一致時以日文版為準。"
   },
   "docs": {
+    "loading": "載入中…",
     "navigationLabel": "文件",
     "adjacentPagesLabel": "上一頁和下一頁",
     "previousPage": "上一頁",

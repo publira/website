@@ -707,6 +707,7 @@
     "referenceTranslation": "이 문서는 참고용 번역입니다. 원문은 <link>일본어판</link>이며, 내용이 서로 다를 경우 일본어판이 우선합니다."
   },
   "docs": {
+    "loading": "불러오는 중…",
     "navigationLabel": "문서",
     "adjacentPagesLabel": "이전 및 다음 페이지",
     "previousPage": "이전",

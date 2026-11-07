@@ -158,7 +158,7 @@ export const DocsContent = async ({
   slug,
   version: linkVersion,
 }: DocsContentProps) => {
-  "use cache";
+  "use cache: remote";
   cacheLife("max");
   cacheTag(
     linkVersion === nextVersion ? docsCacheTags.next : docsCacheTags.releases

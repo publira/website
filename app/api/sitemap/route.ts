@@ -1,4 +1,5 @@
 import type { Locale } from "next-intl";
+import { connection } from "next/server";
 
 import { getAlternates } from "#i18n/metadata";
 import { routing } from "#i18n/routing";
@@ -127,6 +128,9 @@ const toUrlElement = ({ alternates = {}, lastModified, url }: SitemapEntry) =>
   ].join("\n");
 
 const serveSitemap = async () => {
+  // The docs are read at request time, not in a build.
+  await connection();
+
   const entries = [...getPageEntries(), ...(await getDocsEntries())];
 
   const xml = [

@@ -4,6 +4,7 @@ import { setTimeout } from "node:timers/promises";
 import { imageSize } from "image-size";
 import type { Locale } from "next-intl";
 import { cacheLife, cacheTag } from "next/cache";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { unstable_rethrow } from "next/navigation";
 import { parse } from "yaml";
 
@@ -109,7 +110,13 @@ export interface DocsTree {
   readonly pages: readonly DocsPage[];
 }
 
-// GitHub allows 100 concurrent requests, which parallel build workers share.
+/**
+ * A build reads nothing from GitHub, whose limit it would spend at every
+ * deployment. Each URL reads the docs on its first visit instead.
+ */
+export const isBuilding = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
+
+// GitHub allows 100 concurrent requests, which the instances share.
 const maxRequests = 10;
 let activeRequests = 0;
 const waitingRequests: ((value: null) => void)[] = [];
@@ -281,9 +288,7 @@ const getLocaleEntries = async (
 
 /** A file's content. A blob never changes, so it is cached by its hash alone. */
 export const getBlob = async (sha: string) => {
-  // Not remote: the CDN keeps each image for good, and a screenshot nears the
-  // 2 MB a Vercel runtime cache entry may hold.
-  "use cache";
+  "use cache: remote";
   cacheLife("max");
 
   const response = await fetchGitHubOk(
@@ -367,7 +372,7 @@ const getReleases = async (): Promise<readonly DocsVersion[]> => {
   return documented.flatMap(({ name, ref }) => (ref ? [{ name, ref }] : []));
 };
 
-// A preview serves the newest release alone, so its build stays small.
+// A preview serves the newest release alone, to spend less of the limit.
 const previewReleases = process.env.VERCEL_ENV === "preview" ? 1 : undefined;
 
 /** `next`, then the releases, newest first. */
@@ -667,21 +672,6 @@ export const getDocsNavigation = async (
   );
 };
 
-/** Every version's pages that a locale lists, as route params. */
-export const getDocsPageParams = async (locale: Locale) => {
-  const versions = await getDocsVersions();
-
-  const params = await Promise.all(
-    versions.map(async ({ name }) => {
-      const pages = await getDocsNavigation(name, locale);
-
-      return pages.map(({ slug }) => ({ slug: [...slug], version: name }));
-    })
-  );
-
-  return params.flat();
-};
-
 /**
  * The URL of a page, or of a version's root with no slug, without the locale
  * that `Link` adds. `latest` names no version.
@@ -721,12 +711,12 @@ export const getDocsPageLocales = async (
 };
 
 /**
- * `/docs`, for a page that links the docs while GitHub cannot be read. Its
- * short life makes the page that renders it ask GitHub again within minutes.
+ * `/docs`, for a page that links the docs in a build or while GitHub cannot be
+ * read. Its short life makes the page that renders it ask GitHub within minutes.
  */
 // oxlint-disable-next-line require-await -- "use cache" takes only async functions.
 const getUnresolvedDocsPath = async () => {
-  "use cache";
+  "use cache: remote";
   cacheLife("minutes");
 
   return "/docs";
@@ -738,6 +728,10 @@ const getUnresolvedDocsPath = async () => {
  * cannot be read.
  */
 export const getCurrentDocsPath = async (slug: readonly string[]) => {
+  if (isBuilding) {
+    return getUnresolvedDocsPath();
+  }
+
   try {
     const version = await getCurrentVersion();
     const tree = await getDocsTree(version, docsSourceLocale);

@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { unstable_rethrow } from "next/navigation";
 
-import { docsRepository, fetchGitHub } from "#lib/docs";
+import { docsRepository, fetchGitHub, isBuilding } from "#lib/docs";
 
 /** The cache tag the webhook revalidates when a Release changes. */
 export const latestReleaseCacheTag = "latest-release";
@@ -45,12 +45,12 @@ const readLatestRelease = async () => {
 };
 
 /**
- * No version, while GitHub cannot be read. Its short life makes the page that
- * renders it ask GitHub again within minutes.
+ * No version, in a build or while GitHub cannot be read. Its short life makes
+ * the page that renders it ask GitHub within minutes.
  */
 // oxlint-disable-next-line require-await -- "use cache" takes only async functions.
 const getUnresolvedRelease = async () => {
-  "use cache";
+  "use cache: remote";
   cacheLife("minutes");
 
   return null;
@@ -58,6 +58,10 @@ const getUnresolvedRelease = async () => {
 
 /** The newest release's version, or `null` when it cannot be named. */
 export const getLatestRelease = async (): Promise<string | null> => {
+  if (isBuilding) {
+    return getUnresolvedRelease();
+  }
+
   try {
     return await readLatestRelease();
   } catch (error) {

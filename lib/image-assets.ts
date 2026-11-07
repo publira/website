@@ -14,7 +14,7 @@ const fetchOk = async (url: string) => {
 
 /** A Google Fonts face, cut down to the glyphs that `text` draws. */
 export const loadGoogleFont = async (family: string, text: string) => {
-  "use cache";
+  "use cache: remote";
   cacheLife("max");
 
   const query = new URLSearchParams({ family, text });
@@ -39,7 +39,7 @@ export const loadGoogleFont = async (family: string, text: string) => {
 
 /** The GitHub organization's avatar as a data URL. */
 export const loadOrganizationAvatar = async () => {
-  "use cache";
+  "use cache: remote";
   cacheLife("max");
 
   const response = await fetchOk(organizationAvatarUrl);

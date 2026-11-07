@@ -2,20 +2,7 @@ import { hasLocale } from "next-intl";
 
 import { renderOpenGraphImage } from "#components/open-graph-image";
 import { routing } from "#i18n/routing";
-import { getDocsPage, getDocsPageParams } from "#lib/docs";
-
-// The cards of the pages each locale serves, translated or not.
-export const generateStaticParams = async () => {
-  const pages = await Promise.all(
-    routing.locales.map(async (locale) => {
-      const params = await getDocsPageParams(locale);
-
-      return params.map((page) => ({ ...page, locale }));
-    })
-  );
-
-  return pages.flat();
-};
+import { getDocsPage } from "#lib/docs";
 
 // The card of a docs page. A metadata image cannot sit below the pages'
 // catch-all segment, so it is a Route Handler of its own.
