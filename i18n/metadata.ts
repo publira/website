@@ -85,7 +85,7 @@ export const getOpenGraph = (
     url: `${getPathname({ href: image, locale })}?${new URLSearchParams({ v: getCardVersion(siteName, title) })}`,
   },
   locale: toOpenGraphLocale(language),
-  siteName,
   type: "website",
   url: getPathname({ href, locale }),
+  siteName,
 });

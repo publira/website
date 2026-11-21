@@ -44,7 +44,7 @@ const Start = async ({ guideHref, release }: StartProps) => {
           lang="shell"
         />
         <div className="text-muted-foreground space-y-3 text-sm leading-relaxed">
-          {t.rich("start.release", { code, p: paragraph, version })}
+          {t.rich("start.release", { p: paragraph, code, version })}
         </div>
       </div>
       <div className="mt-8 flex flex-wrap gap-3">

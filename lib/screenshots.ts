@@ -355,8 +355,8 @@ export const getScreenshots = async (): Promise<
       if ("src" in source) {
         return {
           caption,
-          featured: isFeatured,
           title,
+          featured: isFeatured,
           views: [{ image: source, label: title }],
         };
       }
@@ -370,8 +370,8 @@ export const getScreenshots = async (): Promise<
 
       return {
         caption,
-        featured: isFeatured,
         title,
+        featured: isFeatured,
         views: [toView(first), ...rest.map(toView)],
       };
     });
