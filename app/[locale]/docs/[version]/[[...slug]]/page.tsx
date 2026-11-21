@@ -87,10 +87,10 @@ export const generateMetadata = async ({
     openGraph: {
       ...getOpenGraph(path, locale, {
         image: getDocsPath(version, ["opengraph-image", ...slug]),
-        language,
-        locales,
         siteName: t("site.name"),
         title: page.title,
+        language,
+        locales,
       }),
       modifiedTime: page.updated,
       publishedTime: page.published,
@@ -103,8 +103,14 @@ export const generateMetadata = async ({
 
 // Each part reads what it shows, cached, behind a boundary of its own; the
 // page itself reads nothing. The heading answers a URL without a page.
+const getPart = async (params: Props["params"]) => {
+  const { slug = [], version } = await params;
+
+  return { slug, version };
+};
+
 const Docs = ({ params }: Props) => {
-  const part = params.then(({ slug = [], version }) => ({ slug, version }));
+  const part = getPart(params);
 
   return (
     <>

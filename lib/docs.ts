@@ -601,9 +601,9 @@ const toImage = ({ path: entry, sha }: TreeEntry) => {
   return [
     {
       path: entry,
-      sha,
       slug: [...directories.map((segment) => segment.slug), file],
       type,
+      sha,
     },
   ];
 };
@@ -668,8 +668,8 @@ export const getDocsTree = async (
   );
 
   return {
-    images: entries.flatMap(toImage),
     locale,
+    images: entries.flatMap(toImage),
     pages: pages.flat().toSorted((a, b) => compareNumbers(a.order, b.order)),
   };
 };

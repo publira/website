@@ -1,9 +1,19 @@
 const productionHost = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
 /** The production origin, which every deployment's absolute URLs point at. */
-export const productionUrl = productionHost
-  ? new URL(`https://${productionHost}`)
-  : null;
+export const productionUrl = (() => {
+  if (!productionHost) {
+    return null;
+  }
+
+  const origin = `https://${productionHost}`;
+
+  if (!URL.canParse(origin)) {
+    return null;
+  }
+
+  return new URL(origin);
+})();
 
 /**
  * A path on the production origin. Without one, as in a local build, the path

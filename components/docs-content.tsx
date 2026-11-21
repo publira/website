@@ -197,9 +197,9 @@ export const DocsContent = async ({
     new TextDecoder().decode(await getBlob(page.sha)),
     {
       Fragment,
-      format: "md",
       jsx,
       jsxs,
+      format: "md",
       rehypePlugins: [rehypeSlug],
       remarkPlugins: [
         remarkFrontmatter,
